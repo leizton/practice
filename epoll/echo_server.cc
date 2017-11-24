@@ -24,19 +24,17 @@ struct Packet {
 }
 
 struct ClientEntry {
-    int fd;
-    struct sockaddr_in addr;
+    Socket sock;
     int requestCount;
     Packet in;
     Packet out;
 
-    ClientEntry(int _fd, struct sockaddr_in _addr)
-        : fd(_fd), addr(_addr) {}
+    ClientEntry(Socket& _sock) : sock(_sock) {}
 }
 
 int main() {
     ServerSocket server_sock = net_util::newServerSocket("127.0.0.1", 8000, 64);
-    if (server_sock.fd < 0) {
+    if (server_sock.inValid()) {
         return -1;
     }
 
@@ -62,30 +60,19 @@ int main() {
             struct epoll_event& event = events[event_i];
             if (event.data.fd == server_sock.fd) {
                 // accept
-                struct sockaddr_in client_addr;
-                memset(&client_addr, 0, sizeof(client_addr));
-                int client_fd = accept(server_sock.fd, (sockaddr*)&client_addr, sizeof(client_addr));
-                if (client_fd < 0) {
-                    log("accept fail");
-                    continue;
-                }
-                log("new connection. addr=%s:%d", net_util::sockaddrToStr(client_addr.sin_addr), ntohs(client_addr.sin_port));
-
-                // set non-block
-                if (net_util::setNonBlock(client_fd) < 0) {
-                    log("set non-block fail. addr=%s:%d", net_util::sockaddrToStr(client_addr.sin_addr), ntohs(client_addr.sin_port));
-                    close(client_fd);
+                net_util::Socket client_sock = server_sock.accept();
+                if (client_sock.inValid()) {
                     continue;
                 }
 
                 // add client event
-                if (epoll_util::addEvent(epfd, EPOLLIN | EPOLLET, client_fd) < 0) {
+                if (epoll_util::addEvent(epfd, EPOLLIN | EPOLLET, client_sock.fd) < 0) {
                     log("add client event fail. addr=%s:%d", net_util::sockaddrToStr(client_addr.sin_addr), ntohs(client_addr.sin_port));
-                    close(client_fd);
                     continue;
                 }
+
                 // new client entry
-                client_entries[client_fd] = make_unique<ClientEntry>(client_fd, client_addr);
+                client_entries[client_sock.fd] = make_unique<ClientEntry>(client_sock);
             }
             else if (event.events & EPOLLIN) {
                 unique_ptr<ClientEntry>& entry = client_entries[event.data.fd];
@@ -95,14 +82,14 @@ int main() {
                     continue;
                 }
 
-                int n = read(entry->fd, entry->in.buf + entry->in.pos, kPacketMaxSize - entry->in.pos);
+                int n = read(entry->sock.fd, entry->in.buf + entry->in.pos, kPacketMaxSize - entry->in.pos);
                 if (n < 0) {
-                    log("read fail. addr=%s:%d", net_util::sockaddrToStr(entry->addr.sin_addr), ntohs(entry->addr.sin_port));
+                    log("read fail. addr=%s:%d", net_util::sockaddrToStr(entry->sock.addr.sin_addr), ntohs(entry->sock.addr.sin_port));
                 }
                 else if (n == 0) {
-                    log("disconnect. addr=%s:%d", net_util::sockaddrToStr(entry->addr.sin_addr), ntohs(entry->addr.sin_port));
-                    client_entries.erase(entry->fd);
-                    close(entry->fd);
+                    log("disconnect. addr=%s:%d", net_util::sockaddrToStr(entry->sock.addr.sin_addr), ntohs(entry->sock.addr.sin_port));
+                    client_entries.erase(entry->sock.fd);
+                    close(entry->sock.fd);
                 }
                 else {
                     // ignore check total_size

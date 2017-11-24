@@ -31,18 +31,48 @@ char* sockaddrToStr(struct sockaddr_in& addr);
 
 int newServerSocket(const char* ip, int port, int backlog, bool reuse=false);
 
-class ServerSocket {
+class Socket {
 public:
     int fd;
+    struct sockaddr_in addr;
 private:
     std::shared_ptr<void> ptr_;
 
 public:
-    ServerSocket() :fd(-1), ptr_(std::nullptr) {}
+    Socket() : fd(-1), ptr_(std::nullptr) {
+        memset(&addr, 0, sizeof(addr));
+    }
 
-    ServerSocket(int sock_fd)
-        : fd(sock_fd),
-          ptr_(std::nullptr, [fd](void* p) { log("close ServerSocket: %d", fd); close(fd); }) {}
+    Socket(const Socket& sock) {
+        fd = sock.fd;
+        addr = sock.addr;
+        ptr = sock.ptr_;
+    }
+
+    Socket(const Socket&& sock) {
+        Socket(sock);
+    }
+
+    Socket& operator=(const Socket& sock) {
+        Socket(sock);
+    }
+
+    void init(int sock_fd) {
+        fd = sock_fd;
+        ptr_ = shared_ptr(std::nullptr, [fd, addr](void* p) {
+            log("close socket. fd=%d, addr=%s:%d", fd, net_util::sockaddrToStr(addr.sin_addr), ntohs(addr.sin_port));
+            close(fd);
+        });
+    }
+
+    bool inValid() const {
+        return fd < 0;
+    }
+};
+
+class ServerSocket : public Socket {
+public:
+    ClientSocket accept() const;
 };
 
 }  // namespace net_util
