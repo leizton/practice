@@ -16,6 +16,9 @@ int main() {
     auto f1 = genVarFunc(1), f2 = genVarFunc(2), f3 = genVarFunc(3);
     printf("%d %d %d\n", f1(1), f2(1), f3(1));
     f1 = genRefFunc(1), f2 = genRefFunc(2), f3 = genRefFunc(3);
-    printf("%d %d %d\n", f1(1), f2(1), f3(1));
+    printf("%d %d %d\n\n", f1(1), f2(1), f3(1));
+
+    auto square = [](int x) { int y = x*x; printf("%d^2 = %d\n", x, y); };
+    square(10);
     return 0;
 }

@@ -1,15 +1,12 @@
 #include <string>
 
+#include <unistd.h>
+
 #include "common/net/net_util.h"
 #include "common/log.h"
-#include "common/wh_util.h"
+#include "common/util.h"
 
 namespace net_util {
-
-int newTcpSocket() {
-    // open socket
-    return socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);  // domain, socket_type, protocol
-}
 
 int setNonBlock(int sock_fd) {
     /**
@@ -27,8 +24,8 @@ void setSocketAddr(const char* ip, uint16_t port, struct sockaddr_in& addr) {
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
-    if (wh_util::isNullOrEmpty(ip) || wh_util::equal("0", ip)
-        || wh_util::equal("*", ip) || wh_util::equal("0.0.0.0", ip)) {
+    if (util::isNullOrEmpty(ip) || util::equal("0", ip) ||
+        util::equal("*", ip) || util::equal("0.0.0.0", ip)) {
         addr.sin_addr.s_addr = htonl(INADDR_ANY);
     }
     else {
@@ -42,21 +39,20 @@ char* sockaddrToStr(struct sockaddr_in& addr) {
     return gIPAddr;
 }
 
-int newServerSocket(const char* ip, uint16_t port, int backlog, bool reuse=false) {
+ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool reuse=false) {
     if (port == 0) {
         log("port 0 is reserved");
         return -1;
     }
 
-    int sock_fd = newTcpSocket();
+    int sock_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);  // domain, socket_type, protocol
     if (sock_fd < 0) {
         log("open new socket fail: %d", sock_fd);
-        return -1;
+        return ServerSocket();
     }
     if (setNonBlock(sock_fd) < 0) {
         log("setNonBlock fail");
-        close(sock_fd);
-        return -1;
+        return ServerSocket();
     }
     if (reuse) {
         int nReuseAddr = 1;
@@ -70,19 +66,17 @@ int newServerSocket(const char* ip, uint16_t port, int backlog, bool reuse=false
     setSocketAddr(ip, port, addr);
     if (bind(sock_fd, (sockaddr*)&addr, sizeof(addr)) < 0) {
         log("bind socket fail");
-        close(sock_fd);
-        return -1;
+        return ServerSocket();
     }
 
     // listen
     if (listen(sock_fd, backlog) < 0) {
         log("listen socket fail");
-        close(sock_fd);
-        return -1;
+        return ServerSocket();
     }
 
     log("create server socket. fd=%d, addr=%s:%d", sock_fd, ip, port);
-    return sock_fd;
+    return ServerSocket(sock_fd);
 }
 
 }  // namespace net_util

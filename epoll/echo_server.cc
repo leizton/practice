@@ -35,21 +35,19 @@ struct ClientEntry {
 }
 
 int main() {
-    int server_fd = net_util::newServerSocket("127.0.0.1", 8000, 64);
-    if (server_fd < 0) {
+    ServerSocket server_sock = net_util::newServerSocket("127.0.0.1", 8000, 64);
+    if (server_sock.fd < 0) {
         return -1;
     }
 
     int epfd = epoll_create(epoll_util::kEpollFdLimit);
     if (epfd < 0) {
         log("epoll_create fail: %d", epfd);
-        close(server_fd);
         return -1;
     }
 
-    if (epoll_util::addEvent(epfd, EPOLLIN, server_fd) < 0) {
+    if (epoll_util::addEvent(epfd, EPOLLIN, server_sock.fd) < 0) {
         log("add listen event fail");
-        close(server_fd);
         close(epfd);
         return -1;
     }
@@ -62,11 +60,11 @@ int main() {
         int event_num = epoll_wait(epfd, events.get(), epoll_util::kEpollFdLimit, -1);
         for (int event_i = 0; event_i < event_num; ++event_i) {
             struct epoll_event& event = events[event_i];
-            if (event.data.fd == server_fd) {
+            if (event.data.fd == server_sock.fd) {
                 // accept
                 struct sockaddr_in client_addr;
                 memset(&client_addr, 0, sizeof(client_addr));
-                int client_fd = accept(server_fd, (sockaddr*)&client_addr, sizeof(client_addr));
+                int client_fd = accept(server_sock.fd, (sockaddr*)&client_addr, sizeof(client_addr));
                 if (client_fd < 0) {
                     log("accept fail");
                     continue;
@@ -103,6 +101,7 @@ int main() {
                 }
                 else if (n == 0) {
                     log("disconnect. addr=%s:%d", net_util::sockaddrToStr(entry->addr.sin_addr), ntohs(entry->addr.sin_port));
+                    client_entries.erase(entry->fd);
                     close(entry->fd);
                 }
                 else {
