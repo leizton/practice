@@ -89,7 +89,6 @@ int main() {
                 else if (n == 0) {
                     log("disconnect. addr=%s:%d", net_util::sockaddrToStr(entry->sock.addr.sin_addr), ntohs(entry->sock.addr.sin_port));
                     client_entries.erase(entry->sock.fd);
-                    close(entry->sock.fd);
                 }
                 else {
                     // ignore check total_size
