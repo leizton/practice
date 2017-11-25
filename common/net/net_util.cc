@@ -1,4 +1,5 @@
 #include <string>
+#include <thread>
 
 #include <unistd.h>
 
@@ -33,10 +34,10 @@ void setSocketAddr(const char* ip, uint16_t port, struct sockaddr_in& addr) {
     }
 }
 
-char gIpAddr[20];
+thread_local char gtlIpAddr[20];
 char* sockaddrToStr(struct sockaddr_in& addr) {
-    inet_ntop(AF_INET, (void*) &addr.sin_addr, gIpAddr, sizeof(gIpAddr));
-    return gIPAddr;
+    inet_ntop(AF_INET, (void*) &addr.sin_addr, gtlIpAddr, sizeof(gtlIpAddr));
+    return gtlIpAddr;
 }
 
 ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool reuse=false) {
