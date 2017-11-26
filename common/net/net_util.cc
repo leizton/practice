@@ -34,9 +34,13 @@ void setSocketAddr(const char* ip, uint16_t port, struct sockaddr_in& addr) {
     }
 }
 
-thread_local char gtlIpAddr[20];
+static const kIpAddrMaxLen = 24;
+thread_local char gtlIpAddr[kIpAddrMaxLen];
+
 char* sockaddrToStr(struct sockaddr_in& addr) {
-    inet_ntop(AF_INET, (void*) &addr.sin_addr, gtlIpAddr, sizeof(gtlIpAddr));
+    inet_ntop(AF_INET, (void*) &addr.sin_addr, gtlIpAddr, kIpAddrMaxLen);
+    int idx = util::strlen(gtlIpAddr, kIpAddrMaxLen);
+    snprintf(gtlIpAddr + idx, kIpAddrMaxLen - idx, ":%d", ntohs(addr.sin_port));
     return gtlIpAddr;
 }
 

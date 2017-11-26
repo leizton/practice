@@ -13,6 +13,14 @@ inline bool equal(const char* s1, const char* s2) {
     return (s1 == s2) || (s1 != nullptr && s2 != nullptr && strcmp(s1, s2) == 0);
 }
 
+int strlen(const char* s, int max) {
+    if (s == nullptr) {
+        return -1;
+    }
+    *(s + (max - 1)) = '\0';
+    return strlen(s);
+}
+
 }  // namespace util
 
 #endif

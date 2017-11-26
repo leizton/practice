@@ -60,7 +60,7 @@ public:
     void init(int sock_fd) {
         fd = sock_fd;
         ptr_ = shared_ptr(std::nullptr, [fd, addr](void* p) {
-            log("close socket. fd=%d, addr=%s:%d", fd, net_util::sockaddrToStr(addr.sin_addr), ntohs(addr.sin_port));
+            log("close socket. fd=%d, addr=%s", fd, net_util::sockaddrToStr(addr));
             close(fd);
         });
     }
