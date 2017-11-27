@@ -7,7 +7,7 @@
 
 struct ClientEntry {
     Socket sock;
-    int requestCount;
+    int responseCount;
     Packet in;
     Packet out;
 
@@ -50,7 +50,7 @@ int main() {
     auto getClientEntry = [&client_entries](int client_fd) -> unique_ptr<ClientEntry>& {
         unique_ptr<ClientEntry>& entry = client_entries[client_fd];
         if (entry == nullptr) {
-            log("lost client entry.");
+            log("lost client entry: %d", client_fd);
             close(client_fd);
         }
         return entry;
@@ -63,7 +63,8 @@ int main() {
         int event_num = epoll_wait(epfd, events.get(), epoll_util::kEpollFdLimit, -1);
         for (int event_i = 0; event_i < event_num; ++event_i) {
             struct epoll_event& event = events[event_i];
-            if (event.data.fd == server_sock.fd) {
+            int event_fd = event.data.fd;
+            if (event_fd == server_sock.fd) {
                 // accept
                 net_util::Socket client_sock = server_sock.accept();
                 if (client_sock.inValid()) {
@@ -80,7 +81,7 @@ int main() {
                 client_entries[client_sock.fd] = make_unique<ClientEntry>(client_sock);
             }
             else if (event.events & EPOLLIN) {
-                unique_ptr<ClientEntry>& entry = getClientEntry(event.data.fd);
+                unique_ptr<ClientEntry>& entry = getClientEntry(event_fd);
                 if (entry == nullptr) {
                     continue;
                 }
@@ -99,11 +100,11 @@ int main() {
                     // ignore check total_size
                     entry->in.pos += read_num;
                     if (entry->in.isReadComplete()) {
-                        entry->requestCount++;
+                        entry->responseCount++;
                         entry->out.reset();
-                        // assert: Packet::HeaderSize + len(reply %d) + entry->in.pos < Packet::MaxSize
+                        // assert: Packet::HeaderSize + len(response %d) + entry->in.pos < Packet::MaxSize
                         char* const data_out = entry->out.buf + Packet::HeaderSize;
-                        int len = snprintf(data_out, Packet::MaxSize, "reply %d: ", entry->requestCount);
+                        int len = snprintf(data_out, Packet::MaxSize, "response %d: ", entry->responseCount);
                         memcpy(data_out + len, entry->in.buf + Packet::HeaderSize, entry->in.pos - Packet::HeaderSize);
                         entry->out.limit = Packet::HeaderSize + len + entry->in.pos - Packet::HeaderSize;
                         entry->out.setPacketSize();
@@ -112,7 +113,7 @@ int main() {
                 }
             }
             else if (event.events & EPOLLOUT) {
-                unique_ptr<ClientEntry>& entry = getClientEntry(event.data.fd);
+                unique_ptr<ClientEntry>& entry = getClientEntry(event_fd);
                 if (entry != nullptr) {
                     entry->write();
                 }
