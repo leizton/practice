@@ -15,19 +15,19 @@ public:
     ~Resource() { printf("decon %d\n", fd); }
 
     Resource(const Resource&& res) {
-        printf("con-&& %d\n", res.fd);
+        printf("con&& %d\n", res.fd);
         ptr = res.ptr;
         fd = res.fd;
     }
 
     Resource(const Resource& res) {
-        printf("con-& %d\n", res.fd);
+        printf("con& %d\n", res.fd);
         ptr = res.ptr;
         fd = res.fd;
     }
 
     Resource& operator=(const Resource& res) {
-        printf("con-= %d\n", res.fd);
+        printf("con= %d\n", res.fd);
         ptr = res.ptr;
         fd = res.fd;
         return *this;

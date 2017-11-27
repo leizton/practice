@@ -3,26 +3,7 @@
 #include "common/net/net_util.h"
 #include "common/net/epoll_util.h"
 
-const int kPacketMaxSize = 1024;
-const int kPacketHeaderSize = 4;
-
-struct Packet {
-    char buf[kPacketMaxSize];  // total_size[4 bytes] + user_data[(total_size - 4) bytes]
-    int pos = 0;
-    int limit = 0;
-
-    int totalSize() {
-        return *(int*)buf;
-    }
-
-    bool isReadComplete() {
-        return pos >= kPacketHeaderSize && pos == totalSize();
-    }
-
-    void reset() {
-        limit = pos = 0;
-    }
-};
+#include "epoll/include/packet.h"
 
 struct ClientEntry {
     Socket sock;
@@ -35,15 +16,27 @@ struct ClientEntry {
     void write();
 };
 
+void ClientEntry::write() {
+    if (out.pos < out.limit) {
+        int write_num = write(sock.fd, out.buf, out.limit - out.pos);
+        if (write_num > 0) {
+            out.pos += write_num;
+        }
+        else if (write_num < 0) {
+            log("write error. addr=%s", net_util::sockaddrToStr(sock.addr));
+        }
+        // write_num == 0 表示写缓冲已满
+    }
+}
+
 int main() {
-    ServerSocket server_sock = net_util::newServerSocket("127.0.0.1", 8000, 64);
+    net_util::ServerSocket server_sock = net_util::newServerSocket("127.0.0.1", 8000, 100);
     if (server_sock.inValid()) {
         return -1;
     }
 
-    int epfd = epoll_create(epoll_util::kEpollFdLimit);
+    int epfd = epoll_util::createEpoll();
     if (epfd < 0) {
-        log("epoll_create fail: %d", epfd);
         return -1;
     }
 
@@ -92,7 +85,7 @@ int main() {
                     continue;
                 }
 
-                int read_num = read(entry->sock.fd, entry->in.buf + entry->in.pos, kPacketMaxSize - entry->in.pos);
+                int read_num = read(entry->sock.fd, entry->in.buf + entry->in.pos, Packet::MaxSize - entry->in.pos);
                 if (read_num < 0) {
                     log("read fail. addr=%s", net_util::sockaddrToStr(entry->sock.addr));
                 }
@@ -108,10 +101,12 @@ int main() {
                     if (entry->in.isReadComplete()) {
                         entry->requestCount++;
                         entry->out.reset();
-                        // assert: len(reply %d) + entry->in.pos < kPacketMaxSize
-                        int len = snprintf(entry->out.buf, kPacketMaxSize, "reply %d: ", entry->requestCount);
-                        memcpy(entry->out.buf + len, entry->in.buf + kPacketHeaderSize, entry->in.pos - kPacketHeaderSize);
-                        entry->out.limit = len + entry->in.pos - kPacketHeaderSize;
+                        // assert: Packet::HeaderSize + len(reply %d) + entry->in.pos < Packet::MaxSize
+                        char* const data_out = entry->out.buf + Packet::HeaderSize;
+                        int len = snprintf(data_out, Packet::MaxSize, "reply %d: ", entry->requestCount);
+                        memcpy(data_out + len, entry->in.buf + Packet::HeaderSize, entry->in.pos - Packet::HeaderSize);
+                        entry->out.limit = Packet::HeaderSize + len + entry->in.pos - Packet::HeaderSize;
+                        entry->out.setPacketSize();
                         entry->write();
                     }
                 }
@@ -126,17 +121,4 @@ int main() {
     }
 
     return 0;
-}
-
-void ClientEntry::write() {
-    if (out.pos < out.limit) {
-        int write_num = write(sock.fd, out.buf, out.limit - out.pos);
-        if (write_num > 0) {
-            out.pos += write_num;
-        }
-        else if (write_num < 0) {
-            log("write error. addr=%s", net_util::sockaddrToStr(sock.addr));
-        }
-        // write_num == 0 表示写缓冲已满
-    }
 }

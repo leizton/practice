@@ -44,6 +44,20 @@ char* sockaddrToStr(struct sockaddr_in& addr) {
     return gtlIpAddr;
 }
 
+int newNonBlockTcpSocket() {
+    int sock_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);  // domain, socket_type, protocol
+    if (sock_fd < 0) {
+        log("open new socket fail");
+        return -1;
+    }
+    if (setNonBlock(sock_fd) < 0) {
+        log("setNonBlock fail");
+        close(sock_fd);
+        return -1;
+    }
+    return sock_fd;
+}
+
 ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool reuse=false) {
     if (port == 0) {
         log("port 0 is reserved");
@@ -51,15 +65,14 @@ ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool re
     }
 
     // create socket
-    int server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);  // domain, socket_type, protocol
+    int server_fd = newNonBlockTcpSocket();
     if (server_fd < 0) {
-        log("open new socket fail: %d", server_fd);
         return ServerSocket();
     }
-    if (setNonBlock(server_fd) < 0) {
-        log("setNonBlock fail");
-        return ServerSocket();
-    }
+    ServerSocket server_sock;
+    server_sock.init(server_fd);
+
+    // reuse
     if (reuse) {
         int nReuseAddr = 1;
         if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &nReuseAddr, sizeof(nReuseAddr)) < 0) {
@@ -67,8 +80,6 @@ ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool re
             return ServerSocket();
         }
     }
-    ServerSocket server_sock;
-    server_sock.init(server_fd);
 
     // bind
     setSocketAddr(ip, port, server_sock.addr);
@@ -85,6 +96,23 @@ ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool re
 
     log("create server socket. fd=%d, addr=%s:%d", server_fd, ip, port);
     return server_sock;
+}
+
+Socket newClientSocket(const char* server_ip, uint16_t server_port) {
+    int client_fd = newNonBlockTcpSocket();
+    if (client_fd < 0) {
+        return Socket();
+    }
+    Socket client_sock;
+    client_sock.init(client_fd);
+
+    struct sockaddr_in server_addr;
+    setSocketAddr(server_ip, server_port, server_addr);
+    if (connect(client_fd, (sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+        log("connect %s:%d fail.", ip, port);
+        return Socket();
+    }
+    return client_sock;
 }
 
 Socket ServerSocket::accept() {
