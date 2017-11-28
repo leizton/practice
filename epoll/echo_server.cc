@@ -13,21 +13,12 @@ struct ClientEntry {
 
     ClientEntry(Socket& _sock) : sock(_sock) {}
 
-    void write();
-};
-
-void ClientEntry::write() {
-    if (out.pos < out.limit) {
-        int write_num = write(sock.fd, out.buf, out.limit - out.pos);
-        if (write_num > 0) {
-            out.pos += write_num;
-        }
-        else if (write_num < 0) {
+    void write() {
+        if (out.isWriteUnComplete() && out.write(sock.fd) < 0) {
             log("write error. addr=%s", net_util::sockaddrToStr(sock.addr));
         }
-        // write_num == 0 表示写缓冲已满
     }
-}
+};
 
 int main() {
     net_util::ServerSocket server_sock = net_util::newServerSocket("127.0.0.1", 8000, 100);
@@ -64,8 +55,9 @@ int main() {
         for (int event_i = 0; event_i < event_num; ++event_i) {
             struct epoll_event& event = events[event_i];
             int event_fd = event.data.fd;
+
+            // accept
             if (event_fd == server_sock.fd) {
-                // accept
                 net_util::Socket client_sock = server_sock.accept();
                 if (client_sock.inValid()) {
                     continue;
@@ -79,14 +71,17 @@ int main() {
 
                 // new client entry
                 client_entries[client_sock.fd] = make_unique<ClientEntry>(client_sock);
+                continue;
             }
-            else if (event.events & EPOLLIN) {
-                unique_ptr<ClientEntry>& entry = getClientEntry(event_fd);
-                if (entry == nullptr) {
-                    continue;
-                }
 
-                int read_num = read(entry->sock.fd, entry->in.buf + entry->in.pos, Packet::MaxSize - entry->in.pos);
+            unique_ptr<ClientEntry>& entry = getClientEntry(event_fd);
+            if (entry == nullptr) {
+                continue;
+            }
+
+            // io
+            if (event.events & EPOLLIN) {
+                int read_num = entry->in.read(entry->sock.fd);
                 if (read_num < 0) {
                     log("read fail. addr=%s", net_util::sockaddrToStr(entry->sock.addr));
                 }
@@ -98,25 +93,22 @@ int main() {
                 }
                 else {
                     // ignore check total_size
-                    entry->in.pos += read_num;
                     if (entry->in.isReadComplete()) {
                         entry->responseCount++;
                         entry->out.reset();
-                        // assert: Packet::HeaderSize + len(response %d) + entry->in.pos < Packet::MaxSize
+                        // assert: Packet::HeaderSize + len(response %d) + entry->in.dataSize() < Packet::MaxSize
                         char* const data_out = entry->out.buf + Packet::HeaderSize;
                         int len = snprintf(data_out, Packet::MaxSize, "response %d: ", entry->responseCount);
-                        memcpy(data_out + len, entry->in.buf + Packet::HeaderSize, entry->in.pos - Packet::HeaderSize);
-                        entry->out.limit = Packet::HeaderSize + len + entry->in.pos - Packet::HeaderSize;
+                        memcpy(data_out + len, entry->in.buf + Packet::HeaderSize, entry->in.dataSize());
+                        entry->out.limit = Packet::HeaderSize + len + entry->in.dataSize();
                         entry->out.setPacketSize();
                         entry->write();
                     }
                 }
             }
             else if (event.events & EPOLLOUT) {
-                unique_ptr<ClientEntry>& entry = getClientEntry(event_fd);
-                if (entry != nullptr) {
-                    entry->write();
-                }
+                log("[write: %d]", entry->sock.fd);
+                entry->write();
             }
         }
     }

@@ -17,7 +17,7 @@ struct Connect {
 
     Connect(Socket _sock, const string& _data, const int _maxRequestCount)
         : id(++ObjCount), sock(_sock), data(_data), maxRequestCount(_maxRequestCount) {}
-    
+
     ~Connect() {
         --ObjCount;
     }
@@ -25,6 +25,7 @@ struct Connect {
     bool request();
     void encode();
     void write();
+    bool read();
 };
 
 bool Connect::request() {
@@ -46,15 +47,19 @@ void Connect::encode() {
 }
 
 void Connect::write() {
-    if (out.pos < out.limit) {
-        int write_num = write(sock.fd, out.buf, out.limit - out.pos);
-        if (write_num > 0) {
-            out.pos += write_num;
-        }
-        else if (write_num < 0) {
-            log("write error. connectId=%d", id);
-        }
+    if (out.isWriteUnComplete() && out.write(sock.fd) < 0) {
+        log("write error. connectId=%d", id);
     }
+}
+
+bool read() {
+    int read_num = in.read(sock.fd);
+    if (in.isReadComplete()) {
+        string response(in.buf + Packet::HeaderSize, in.dataSize());
+        log("%s", response.c_str());
+        return true;
+    }
+    return false;
 }
 
 int main() {
@@ -81,13 +86,13 @@ int main() {
     }
     for (auto& kv : connects) {
         if (!kv.second->request()) {
-            connects.erase(kv.first);
+            connects.erase(kv.first);  // TODO
         }
     }
 
     unique_ptr<struct epoll_event[]> events = make_unique<struct epoll_event[]>(epoll_util::kEpollFdLimit);
 
-    while (Connect.ObjCount > 0) {
+    while (!connects.empty()) {
         int event_num = epoll_wait(epfd, events.get(), epoll_util::kEpollFdLimit, -1);
         for (int event_i = 0; event_i < event_num; ++event_i) {
             struct epoll_event& event = events[event_i];
@@ -99,8 +104,14 @@ int main() {
             }
 
             if (event.events & EPOLLIN) {
+                log("[read %d]", connect->sock.fd);
+                if (connect->read() && !connect->request()) {
+                    connects.erase(connect->sock.fd);
+                }
             }
             else if (event.events & EPOLLOUT) {
+                log("[write %d]", connect->sock.fd);
+                connect->write();
             }
         }
     }
