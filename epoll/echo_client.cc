@@ -84,9 +84,12 @@ int main() {
         }
         connects[client_sock.fd] = make_unique<Connect>(client_sock, data, connects.size() + 1);
     }
-    for (auto& kv : connects) {
-        if (!kv.second->request()) {
-            connects.erase(kv.first);  // TODO
+    for (auto it = connects.begin(); it != connects.end() ) {
+        if (it->second->request()) {
+            ++it;
+        }
+        else {
+            connects.erase(it++);
         }
     }
 
