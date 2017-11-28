@@ -91,19 +91,15 @@ int main() {
                     log("disconnect. addr=%s", net_util::sockaddrToStr(entry->sock.addr));
                     client_entries.erase(entry->sock.fd);
                 }
-                else {
-                    // ignore check total_size
-                    if (entry->in.isReadComplete()) {
-                        entry->responseCount++;
-                        entry->out.reset();
-                        // assert: Packet::HeaderSize + len(response %d) + entry->in.dataSize() < Packet::MaxSize
-                        char* const data_out = entry->out.buf + Packet::HeaderSize;
-                        int len = snprintf(data_out, Packet::MaxSize, "response %d: ", entry->responseCount);
-                        memcpy(data_out + len, entry->in.buf + Packet::HeaderSize, entry->in.dataSize());
-                        entry->out.limit = Packet::HeaderSize + len + entry->in.dataSize();
-                        entry->out.setPacketSize();
-                        entry->write();
-                    }
+                else if (entry->in.isReadComplete()) {  // ignore check total_size
+                    entry->out.reset();
+                    // assert: Packet::HeaderSize + len(response %d) + entry->in.dataSize() < Packet::MaxSize
+                    char* const data_out = entry->out.buf + Packet::HeaderSize;
+                    int len = snprintf(data_out, Packet::MaxSize, "response %d: ", ++entry->responseCount);
+                    memcpy(data_out + len, entry->in.buf + Packet::HeaderSize, entry->in.dataSize());
+                    entry->out.limit = Packet::HeaderSize + len + entry->in.dataSize();
+                    entry->out.setPacketSize();
+                    entry->write();
                 }
             }
             else if (event.events & EPOLLOUT) {
