@@ -54,19 +54,24 @@ public:
     }
 
     Socket(const Socket&& sock) {
-        Socket(sock);
+        fd = sock.fd;
+        addr = sock.addr;
+        ptr_ = sock.ptr_;
     }
 
     Socket& operator=(const Socket& sock) {
-        Socket(sock);
+        fd = sock.fd;
+        addr = sock.addr;
+        ptr_ = sock.ptr_;
         return *this;
     }
 
     void init(int sock_fd) {
         fd = sock_fd;
-        ptr_ = shared_ptr(nullptr, [=fd, =addr](void* p) {
-            log("close socket. fd=%d, addr=%s", fd, net_util::sockaddrToStr(addr));
-            close(fd);
+        struct sockaddr_in addr = this->addr;
+        ptr_ = shared_ptr<void>(nullptr, [sock_fd, addr](void* p) {
+            log("close socket. fd=%d, addr=%s", sock_fd, net_util::sockaddrToStr(addr));
+            close(sock_fd);
         });
     }
 
@@ -77,7 +82,7 @@ public:
 
 class ServerSocket : public Socket {
 public:
-    ClientSocket accept() const;
+    Socket accept() const;
 };
 
 }  // namespace net_util

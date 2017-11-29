@@ -17,6 +17,8 @@ epoll_data_t union {
 
 namespace epoll_util {
 
+static const int kEpollFdLimit = 1024;
+
 int createEpoll();
 
 int addEvent(int epoll_fd, uint32_t events, int fd);

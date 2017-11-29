@@ -4,8 +4,6 @@
 
 namespace epoll_util {
 
-static const int kEpollFdLimit = 1024;
-
 int createEpoll() {
     int epfd = epoll_create(kEpollFdLimit);
     if (epfd < 0) {

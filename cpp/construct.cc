@@ -11,8 +11,29 @@ private:
 
 public:
     Resource() :fd(-1), ptr(nullptr) {}
-    Resource(int _fd) : fd(_fd), ptr(nullptr, [_fd](void *p) { destory(_fd); }) { printf("con %d\n", fd); }
-    ~Resource() { printf("decon %d\n", fd); }
+
+    Resource(int _fd1, int _fd2)
+            : fd(-1),
+              ptr(nullptr, [_fd1, _fd2](void* p) { destory(_fd1); destory(_fd2); }) {
+        printf("con %d, %d\n", _fd1, _fd2);
+    }
+
+    Resource(int _fd) : fd(_fd) {
+        int fd = this->fd;
+        ptr = shared_ptr<void>(nullptr, [fd](void *p) { destory(fd); });
+        printf("con %d\n", fd);
+    }
+
+    // 通过new方式调用其他构造函数
+    // 不可以用 Resource((int)x), 这是在创建一个临时对象
+    Resource(double x) {
+        printf("call other con %.2f\n", x);
+        new (this) Resource((int)x);
+    }
+
+    ~Resource() {
+        printf("decon %d\n", fd);
+    }
 
     Resource(const Resource&& res) {
         printf("con&& %d\n", res.fd);
@@ -39,16 +60,26 @@ Resource getRes(int fd) {
 }
 
 int main() {
-    {
-        Resource res1 = getRes(1);
-    }
-    printf("\n");
+    printf("\n>>\n");
+    { Resource res = getRes(1); }
 
-    Resource res2 = getRes(2);
-    Resource res21 = res2;
-    Resource res22(res2);
+    printf("\n>>\n");
+    { Resource res(5,6); }
 
-    Resource res23;
-    res23 = res2;
+    printf("\n>>\n");
+    { Resource res(2.53); }
+
+    printf("\n>>\n");
+    Resource resX = getRes(3);
+
+    printf("\n>> con&\n");
+    Resource resX1 = resX;
+    Resource resX2(resX);
+
+    printf("\n>> con=\n");
+    Resource resX3;
+    resX3 = resX;
+
+    printf("\n>> return\n");
     return 0;
 }

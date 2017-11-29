@@ -54,7 +54,10 @@ void Connect::write() {
 
 bool Connect::read() {
     int read_num = in.read(sock.fd);
-    if (in.isReadComplete()) {
+    if (read_num < 0) {
+        log("read error. connectId=%d", id);
+    }
+    else if (in.isReadComplete()) {
         string response(in.buf + Packet::HeaderSize, in.dataSize());
         log("%s", response.c_str());
         return true;
@@ -73,7 +76,7 @@ int main() {
     unordered_map<int, unique_ptr<Connect>> connects;
     for (auto& data : datas) {
         net_util::Socket client_sock = net_util::newClientSocket("127.0.0.1", 8000);
-        if (client_sock.invalid()) {
+        if (client_sock.inValid()) {
             return -1;
         }
 
