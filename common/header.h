@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include <memory>
+#include <cstring>
 #include <string>
 #include <vector>
 #include <unordered_map>

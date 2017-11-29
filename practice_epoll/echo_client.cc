@@ -8,14 +8,14 @@
 struct Connect {
     static atomic<int> ObjCount(0);
     int id;
-    Socket sock;
+    net_util::Socket sock;
     Packet in;
     Packet out;
     string data;
     int maxRequestCount;
     int requestCount;
 
-    Connect(Socket _sock, const string& _data, const int _maxRequestCount)
+    Connect(net_util::Socket _sock, const string& _data, const int _maxRequestCount)
         : id(++ObjCount), sock(_sock), data(_data), maxRequestCount(_maxRequestCount) {}
 
     ~Connect() {
@@ -52,7 +52,7 @@ void Connect::write() {
     }
 }
 
-bool read() {
+bool Connect::read() {
     int read_num = in.read(sock.fd);
     if (in.isReadComplete()) {
         string response(in.buf + Packet::HeaderSize, in.dataSize());

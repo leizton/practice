@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-include(bin/practice.cmake)
+include(bin/tools.cmake)
 project(practice)
 
 message(">> module: ${MODULE}")
@@ -15,11 +15,12 @@ set(CMAKE_CXX_COMPILER "g++")
 # -Werror 任一警告都是错误，都会停止编译过程
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -g3 -ggdb -O0 -Wall -Werror")
 
-# executable
-set(SOURCE_FILES "")
-append_source_files(SOURCE_FILES "common")
-append_source_files(SOURCE_FILES "${MODULE}")
-include_directories(".")
-add_executable(practice_epoll ${SOURCE_FILES})
+# common source files
+set(COMMON_SOURCE_FILES "")
+append_source_files(COMMON_SOURCE_FILES "common")
 
-target_link_libraries(practice_epoll pthread)
+# include
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+
+# module cmake
+add_subdirectory(${MODULE})

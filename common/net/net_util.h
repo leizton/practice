@@ -14,7 +14,7 @@ in_addr {
 #ifndef _PRACTICE_COMMON_NETUTIL_H
 #define _PRACTICE_COMMON_NETUTIL_H
 
-#include <memory>
+#include <cstring>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
@@ -23,6 +23,9 @@ in_addr {
 #include "common/log.h"
 
 namespace net_util {
+
+class Socket;
+class ServerSocket;
 
 int setNonBlock(int sock_fd);
 
@@ -40,14 +43,14 @@ private:
     std::shared_ptr<void> ptr_;
 
 public:
-    Socket() : fd(-1), ptr_(std::nullptr) {
+    Socket() : fd(-1), ptr_(nullptr) {
         memset(&addr, 0, sizeof(addr));
     }
 
     Socket(const Socket& sock) {
         fd = sock.fd;
         addr = sock.addr;
-        ptr = sock.ptr_;
+        ptr_ = sock.ptr_;
     }
 
     Socket(const Socket&& sock) {
@@ -56,11 +59,12 @@ public:
 
     Socket& operator=(const Socket& sock) {
         Socket(sock);
+        return *this;
     }
 
     void init(int sock_fd) {
         fd = sock_fd;
-        ptr_ = shared_ptr(std::nullptr, [fd, addr](void* p) {
+        ptr_ = shared_ptr(nullptr, [=fd, =addr](void* p) {
             log("close socket. fd=%d, addr=%s", fd, net_util::sockaddrToStr(addr));
             close(fd);
         });
