@@ -3,3 +3,5 @@ tmp/*
 
 *.out
 main.cc
+
+build/*
