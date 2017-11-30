@@ -28,7 +28,8 @@ struct Packet {
     }
 
     int read(int fd) {
-        int read_num = read(fd, buf + pos, MaxSize - pos);
+        // 调用全局的同名函数(read)必须加::来指定, 否则是Packet::(this->Packet::)
+        int read_num = ::read(fd, buf + pos, MaxSize - pos);
         if (read_num > 0) {
             pos += read_num;
         }
@@ -40,7 +41,8 @@ struct Packet {
     }
 
     int write(int fd) {
-        int write_num = write(fd, buf + pos, limit - pos);
+        // 调用全局的同名函数(write)必须加::来指定
+        int write_num = ::write(fd, buf + pos, limit - pos);
         if (write_num > 0) {
             pos += write_num;
         }

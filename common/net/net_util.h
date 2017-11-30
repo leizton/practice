@@ -71,7 +71,9 @@ public:
         struct sockaddr_in addr = this->addr;
         ptr_ = shared_ptr<void>(nullptr, [sock_fd, addr](void* p) {
             log("close socket. fd=%d, addr=%s", sock_fd, net_util::sockaddrToStr(addr));
-            close(sock_fd);
+            if (::close(sock_fd) < 0) {
+                log("close socket fail. fd=%d, addr=%s", sock_fd, net_util::sockaddrToStr(addr));
+            }
         });
     }
 

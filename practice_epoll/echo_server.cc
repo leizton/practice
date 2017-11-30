@@ -15,7 +15,7 @@ struct ClientEntry {
 
     void write() {
         if (out.isWriteUnComplete() && out.write(sock.fd) < 0) {
-            log("write error. addr=%s", net_util::sockaddrToStr(sock.addr));
+            log("write fail. addr=%s", net_util::sockaddrToStr(sock.addr));
         }
     }
 };

@@ -51,8 +51,10 @@ int newNonBlockTcpSocket() {
         return -1;
     }
     if (setNonBlock(sock_fd) < 0) {
-        log("setNonBlock fail");
-        close(sock_fd);
+        log("setNonBlock fail. fd=%d", sock_fd);
+        if (::close(sock_fd) < 0) {
+            log("close fail. fd=%d", sock_fd);
+        }
         return -1;
     }
     return sock_fd;
