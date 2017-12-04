@@ -15,6 +15,8 @@ epoll_data_t union {
 #ifndef _PRACTICE_COMMON_EPOLL_UTIL_H
 #define _PRACTICE_COMMON_EPOLL_UTIL_H
 
+#include <sys/epoll.h>
+
 namespace epoll_util {
 
 static const int kEpollFdLimit = 1024;

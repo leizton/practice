@@ -2,6 +2,7 @@
 #include <thread>
 
 #include <unistd.h>
+#include <fcntl.h>
 
 #include "common/net/net_util.h"
 #include "common/log.h"
@@ -34,7 +35,7 @@ void setSocketAddr(const char* ip, uint16_t port, struct sockaddr_in& addr) {
     }
 }
 
-static const kIpAddrMaxLen = 24;
+static const int kIpAddrMaxLen = 24;
 thread_local char gtlIpAddr[kIpAddrMaxLen];
 
 char* sockaddrToStr(struct sockaddr_in& addr) {
@@ -63,7 +64,7 @@ int newNonBlockTcpSocket() {
 ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool reuse=false) {
     if (port == 0) {
         log("port 0 is reserved");
-        return -1;
+        return ServerSocket();
     }
 
     // create socket
@@ -117,9 +118,10 @@ Socket newClientSocket(const char* server_ip, uint16_t server_port) {
     return client_sock;
 }
 
-Socket ServerSocket::accept() {
+Socket ServerSocket::accept() const {
     Socket client_sock;
-    int client_fd = accept(server_sock.fd, (sockaddr*)&client_sock.addr, sizeof(client_sock.addr));
+    int addr_len;
+    int client_fd = ::accept(this->fd, (sockaddr*)&client_sock.addr, (socklen_t*)&addr_len);
     if (client_fd < 0) {
         log("accept fail");
         return Socket();

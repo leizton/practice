@@ -15,6 +15,7 @@ in_addr {
 #define _PRACTICE_COMMON_NETUTIL_H
 
 #include <cstring>
+#include <memory>
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
@@ -69,7 +70,7 @@ public:
     void init(int sock_fd) {
         fd = sock_fd;
         struct sockaddr_in addr = this->addr;
-        ptr_ = shared_ptr<void>(nullptr, [sock_fd, addr](void* p) {
+        ptr_ = std::shared_ptr<void>(nullptr, [sock_fd, addr](void* p) {
             log("close socket. fd=%d, addr=%s", sock_fd, net_util::sockaddrToStr(addr));
             if (::close(sock_fd) < 0) {
                 log("close socket fail. fd=%d, addr=%s", sock_fd, net_util::sockaddrToStr(addr));

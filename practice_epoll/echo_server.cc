@@ -6,12 +6,12 @@
 #include "practice_epoll/include/packet.h"
 
 struct ClientEntry {
-    Socket sock;
+    net_util::Socket sock;
     int responseCount;
     Packet in;
     Packet out;
 
-    ClientEntry(Socket& _sock) : sock(_sock) {}
+    ClientEntry(net_util::Socket& _sock) : sock(_sock) {}
 
     void write() {
         if (out.isWriteUnComplete() && out.write(sock.fd) < 0) {

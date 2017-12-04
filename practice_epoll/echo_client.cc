@@ -89,7 +89,7 @@ int main() {
         }
         connects[client_sock.fd] = make_unique<Connect>(client_sock, data, connects.size() + 1);
     }
-    for (auto it = connects.begin(); it != connects.end() ) {
+    for (auto it = connects.begin(); it != connects.end(); ) {
         if (it->second->request()) {
             ++it;
         }

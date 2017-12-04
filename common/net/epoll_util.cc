@@ -1,6 +1,5 @@
-#include <sys/epoll.h>
-
 #include "common/log.h"
+#include "common/net/epoll_util.h"
 
 namespace epoll_util {
 
