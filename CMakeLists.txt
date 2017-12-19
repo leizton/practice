@@ -15,12 +15,14 @@ set(CMAKE_CXX_COMPILER "g++")
 # -Werror 任一警告都是错误，都会停止编译过程
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -g3 -ggdb -O0 -Wall -Werror")
 
-# common source files
+# common library
 set(COMMON_SOURCE_FILES "")
 append_source_files(COMMON_SOURCE_FILES "common")
+add_library(common STATIC ${COMMON_SOURCE_FILES})
+link_libraries(${PROJECT_BINARY_DIR}/libcommon.a)
 
 # include
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
+include_directories("${PROJECT_SOURCE_DIR}/include")
 
 # module cmake
 add_subdirectory(${MODULE})
