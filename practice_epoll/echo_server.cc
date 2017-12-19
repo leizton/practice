@@ -3,7 +3,7 @@
 #include "common/net/net_util.h"
 #include "common/net/epoll_util.h"
 
-#include "practice_epoll/include/packet.h"
+#include "practice_epoll/packet.h"
 
 struct ClientEntry {
     net_util::Socket sock;

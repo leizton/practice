@@ -20,7 +20,7 @@ set(COMMON_SOURCE_FILES "")
 append_source_files(COMMON_SOURCE_FILES "common")
 
 # include
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 # module cmake
 add_subdirectory(${MODULE})
