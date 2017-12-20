@@ -61,7 +61,7 @@ int newNonBlockTcpSocket() {
     return sock_fd;
 }
 
-ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool reuse=false) {
+ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool reuse) {
     if (port == 0) {
         log("port 0 is reserved");
         return ServerSocket();
