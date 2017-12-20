@@ -33,7 +33,7 @@ int setNonBlock(int sock_fd);
 void setSocketAddr(const char* ip, uint16_t port, struct sockaddr_in& addr);
 char* sockaddrToStr(struct sockaddr_in& addr);
 
-ServerSocket newServerSocket(const char* ip, int port, int backlog, bool reuse=false);
+ServerSocket newServerSocket(const char* ip, int port, int backlog, bool reuse);
 Socket newClientSocket(const char* server_ip, uint16_t server_port);
 
 class Socket {

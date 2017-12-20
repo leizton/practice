@@ -21,7 +21,7 @@ struct ClientEntry {
 };
 
 int main() {
-    net_util::ServerSocket server_sock = net_util::newServerSocket("127.0.0.1", 8000, 100);
+    net_util::ServerSocket server_sock = net_util::newServerSocket("127.0.0.1", 8000, 100, true);
     if (server_sock.inValid()) {
         return -1;
     }
