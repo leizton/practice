@@ -6,7 +6,7 @@ namespace epoll_util {
 int createEpoll() {
     int epfd = epoll_create(kEpollFdLimit);
     if (epfd < 0) {
-        logs("epoll_create fail");
+        LOG("epoll_create fail");
         return -1;
     }
     return epfd;

@@ -15,7 +15,7 @@ struct ClientEntry {
 
     void write() {
         if (out.isWriteUnComplete() && out.write(sock.fd) < 0) {
-            log("write fail. addr=%s", net_util::sockaddrToStr(sock.addr));
+            LOG("write fail. addr=%s", net_util::sockaddrToStr(sock.addr));
         }
     }
 };
@@ -32,7 +32,7 @@ int main() {
     }
 
     if (epoll_util::addEvent(epfd, EPOLLIN, server_sock.fd) < 0) {
-        log("add listen event fail");
+        LOG("add listen event fail");
         close(epfd);
         return -1;
     }
@@ -41,7 +41,7 @@ int main() {
     auto getClientEntry = [&client_entries](int client_fd) -> unique_ptr<ClientEntry>& {
         unique_ptr<ClientEntry>& entry = client_entries[client_fd];
         if (entry == nullptr) {
-            log("lost client entry: %d", client_fd);
+            LOG("lost client entry: %d", client_fd);
             close(client_fd);
         }
         return entry;
@@ -65,7 +65,7 @@ int main() {
 
                 // add client event
                 if (epoll_util::addEvent(epfd, EPOLLIN | EPOLLET, client_sock.fd) < 0) {
-                    log("add client event fail. addr=%s", net_util::sockaddrToStr(client_addr));
+                    LOG("add client event fail. addr=%s", net_util::sockaddrToStr(client_sock.addr));
                     continue;
                 }
 
@@ -83,12 +83,12 @@ int main() {
             if (event.events & EPOLLIN) {
                 int read_num = entry->in.read(entry->sock.fd);
                 if (read_num < 0) {
-                    log("read fail. addr=%s", net_util::sockaddrToStr(entry->sock.addr));
+                    LOG("read fail. addr=%s", net_util::sockaddrToStr(entry->sock.addr));
                 }
                 else if (read_num == 0) {
                     // client断开了连接，server必须关闭socket否则造成socket泄露
                     // netstat查看到的处于CLOSE_WAIT状态的socket就是泄露的
-                    log("disconnect. addr=%s", net_util::sockaddrToStr(entry->sock.addr));
+                    LOG("disconnect. addr=%s", net_util::sockaddrToStr(entry->sock.addr));
                     client_entries.erase(entry->sock.fd);
                 }
                 else if (entry->in.isReadComplete()) {  // ignore check total_size
@@ -103,7 +103,7 @@ int main() {
                 }
             }
             else if (event.events & EPOLLOUT) {
-                log("[write: %d]", entry->sock.fd);
+                LOG("[write: %d]", entry->sock.fd);
                 entry->write();
             }
         }

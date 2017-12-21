@@ -30,8 +30,8 @@ class ServerSocket;
 
 int setNonBlock(int sock_fd);
 
-void setSocketAddr(const char* ip, uint16_t port, struct sockaddr_in& addr);
-char* sockaddrToStr(struct sockaddr_in& addr);
+void setSocketAddr(const char* ip, uint16_t port, sockaddr_in& addr);
+char* sockaddrToStr(const sockaddr_in& addr);
 
 ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool reuse);
 Socket newClientSocket(const char* server_ip, uint16_t server_port);
@@ -39,7 +39,7 @@ Socket newClientSocket(const char* server_ip, uint16_t server_port);
 class Socket {
 public:
     int fd;
-    struct sockaddr_in addr;
+    sockaddr_in addr;
 private:
     std::shared_ptr<void> ptr_;
 
@@ -69,11 +69,11 @@ public:
 
     void init(int sock_fd) {
         fd = sock_fd;
-        struct sockaddr_in addr = this->addr;
+        sockaddr_in addr = this->addr;
         ptr_ = std::shared_ptr<void>(nullptr, [sock_fd, addr](void* p) {
-            log("close socket. fd=%d, addr=%s", sock_fd, net_util::sockaddrToStr(addr));
+            LOG("close socket. fd=%d, addr=%s", sock_fd, net_util::sockaddrToStr(addr));
             if (::close(sock_fd) < 0) {
-                log("close socket fail. fd=%d, addr=%s", sock_fd, net_util::sockaddrToStr(addr));
+                LOG("close socket fail. fd=%d, addr=%s", sock_fd, net_util::sockaddrToStr(addr));
             }
         });
     }

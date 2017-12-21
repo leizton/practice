@@ -3,7 +3,7 @@
 #include "common/net/net_util.h"
 #include "common/net/epoll_util.h"
 
-#include "practice_epoll/include/packet.h"
+#include "practice_epoll/packet.h"
 
 struct Connect {
     static atomic<int> ObjCount;
@@ -50,18 +50,18 @@ void Connect::encode() {
 
 void Connect::write() {
     if (out.isWriteUnComplete() && out.write(sock.fd) < 0) {
-        log("write fail. connectId=%d", id);
+        LOG("write fail. connectId=%d", id);
     }
 }
 
 bool Connect::read() {
     int read_num = in.read(sock.fd);
     if (read_num < 0) {
-        log("read fail. connectId=%d", id);
+        LOG("read fail. connectId=%d", id);
     }
     else if (in.isReadComplete()) {
         string response(in.buf + Packet::HeaderSize, in.dataSize());
-        log("%s", response.c_str());
+        LOG("%s", response.c_str());
         return true;
     }
     return false;
@@ -83,7 +83,7 @@ int main() {
         }
 
         if (epoll_util::addEvent(epfd, EPOLLIN | EPOLLET, client_sock.fd) < 0) {
-            log("add client event fail");
+            LOG("add client event fail");
             close(epfd);
             return -1;
         }
@@ -106,19 +106,19 @@ int main() {
             struct epoll_event& event = events[event_i];
             unique_ptr<Connect>& connect = connects[event.data.fd];
             if (connect == nullptr) {
-                log("lost connect: %d", event.data.fd);
+                LOG("lost connect: %d", event.data.fd);
                 close(event.data.fd);
                 continue;
             }
 
             if (event.events & EPOLLIN) {
-                log("[read %d]", connect->sock.fd);
+                LOG("[read %d]", connect->sock.fd);
                 if (connect->read() && !connect->request()) {
                     connects.erase(connect->sock.fd);
                 }
             }
             else if (event.events & EPOLLOUT) {
-                log("[write %d]", connect->sock.fd);
+                LOG("[write %d]", connect->sock.fd);
                 connect->write();
             }
         }
