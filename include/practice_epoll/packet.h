@@ -34,6 +34,7 @@ struct Packet {
         if (read_num > 0) {
             pos += read_num;
         }
+        // LOG("read-%d: %d", fd, read_num);
         return read_num;
     }
 
@@ -47,6 +48,7 @@ struct Packet {
         if (write_num > 0) {
             pos += write_num;
         }
+        // LOG("write-%d: %d", fd, write_num);
         // write_num == 0 表示写缓冲已满
         return write_num;
     }

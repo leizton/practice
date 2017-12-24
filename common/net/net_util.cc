@@ -115,14 +115,12 @@ Socket newClientSocket(const char* server_ip, uint16_t server_port) {
     if (client_fd < 0) {
         return Socket();
     }
-    Socket client_sock;
-    client_sock.init(client_fd);
 
     // connect
-    sockaddr_in server_addr;
-    setSocketAddr(server_ip, server_port, server_addr);
-    if (connect(client_fd, (sockaddr*)&server_addr, sizeof(server_addr)) != 0) {
-        LOG("connect %s:%d fail: %d", server_ip, server_port, errno);
+    Socket client_sock;
+    setSocketAddr(server_ip, server_port, client_sock.addr);
+    if (connect(client_fd, (sockaddr*)&client_sock.addr, sizeof(client_sock.addr)) != 0) {
+        LOG("connect %s fail: %d", net_util::sockaddrToStr(client_sock.addr), errno);
         return Socket();
     }
 
@@ -131,7 +129,8 @@ Socket newClientSocket(const char* server_ip, uint16_t server_port) {
         return Socket();
     }
 
-    LOG("connected %s:%d", server_ip, server_port);
+    client_sock.init(client_fd);
+    LOG("connected %s", net_util::sockaddrToStr(client_sock.addr));
     return client_sock;
 }
 

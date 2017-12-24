@@ -7,11 +7,15 @@
 
 struct ClientEntry {
     net_util::Socket sock;
-    int responseCount;
     Packet in;
     Packet out;
+    int responseCount = 0;
 
     ClientEntry(net_util::Socket& _sock) : sock(_sock) {}
+
+    ~ClientEntry() {
+        LOG("client-%d response %d times", sock.fd, responseCount);
+    }
 
     void write() {
         if (out.shouldWrite() && out.write(sock.fd) < 0) {
@@ -100,6 +104,7 @@ int main() {
                     memcpy(data_out + len, entry->in.buf + Packet::HeaderSize, entry->in.dataSize());
                     entry->out.limit = Packet::HeaderSize + len + entry->in.dataSize();
                     entry->out.setPacketSize();
+                    entry->in.reset();
                     entry->write();
                 }
             }

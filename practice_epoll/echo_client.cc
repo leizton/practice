@@ -42,7 +42,7 @@ bool Connect::request() {
 void Connect::encode() {
     out.reset();
     char* const data_out = out.buf + Packet::HeaderSize;
-    int len = snprintf(data_out, Packet::MaxDataSize, "request-%d ", ++requestCount);
+    int len = snprintf(data_out, Packet::MaxDataSize, "request-%d-%d ", sock.fd, requestCount);
     memcpy(data_out + len, data.c_str(), data.length());
     out.limit = Packet::HeaderSize + len + data.length();
     out.setPacketSize();
@@ -57,11 +57,15 @@ void Connect::write() {
 bool Connect::read() {
     int read_num = in.read(sock.fd);
     if (read_num < 0) {
-        LOG("read fail. connectId=%d", id);
+        LOG("read fail. connectId=%d, fd=%d", id, sock.fd);
+        return false;
     }
-    else if (in.isReadComplete()) {
-        string response(in.buf + Packet::HeaderSize, in.dataSize());
-        LOG("%s", response.c_str());
+
+    if (in.isReadComplete()) {
+        char* const resp = in.buf + Packet::HeaderSize;
+        *(resp + in.dataSize()) = '\0';
+        LOG("%s", resp);
+        in.reset();
         return true;
     }
     return false;
@@ -112,7 +116,6 @@ int main() {
             }
 
             if (event.events & EPOLLIN) {
-                LOG("[read %d]", connect->sock.fd);
                 if (connect->read() && !connect->request()) {
                     connects.erase(connect->sock.fd);
                 }
