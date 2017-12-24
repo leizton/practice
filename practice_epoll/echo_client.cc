@@ -6,7 +6,7 @@
 #include "practice_epoll/packet.h"
 
 struct Connect {
-    static atomic<int> ObjCount;
+    static atomic_int ObjCount;
     int id;
     net_util::Socket sock;
     Packet in;
@@ -28,7 +28,7 @@ struct Connect {
     bool read();
 };
 
-atomic<int> Connect::ObjCount(0);
+atomic_int Connect::ObjCount(0);
 
 bool Connect::request() {
     if (++requestCount > maxRequestCount) {
@@ -42,14 +42,14 @@ bool Connect::request() {
 void Connect::encode() {
     out.reset();
     char* const data_out = out.buf + Packet::HeaderSize;
-    int len = snprintf(data_out, Packet::MaxSize, "request %d: ", ++requestCount);
+    int len = snprintf(data_out, Packet::MaxDataSize, "request-%d ", ++requestCount);
     memcpy(data_out + len, data.c_str(), data.length());
     out.limit = Packet::HeaderSize + len + data.length();
     out.setPacketSize();
 }
 
 void Connect::write() {
-    if (out.isWriteUnComplete() && out.write(sock.fd) < 0) {
+    if (out.shouldWrite() && out.write(sock.fd) < 0) {
         LOG("write fail. connectId=%d", id);
     }
 }

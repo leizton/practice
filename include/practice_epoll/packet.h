@@ -6,8 +6,9 @@
 struct Packet {
     static const int MaxSize = 1024;
     static const int HeaderSize = 4;
+    static const int MaxDataSize = MaxSize - HeaderSize;
 
-    char buf[HeaderSize];  // total_size[4 bytes] + user_data[(total_size - 4) bytes]
+    char buf[MaxSize];  // total_size(4B) + user_data( (total_size - 4)B )
     int pos = 0;
     int limit = 0;
 
@@ -50,7 +51,7 @@ struct Packet {
         return write_num;
     }
 
-    bool isWriteUnComplete() {
+    bool shouldWrite() {
         return pos < limit;
     }
 };

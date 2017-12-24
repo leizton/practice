@@ -14,7 +14,7 @@ struct ClientEntry {
     ClientEntry(net_util::Socket& _sock) : sock(_sock) {}
 
     void write() {
-        if (out.isWriteUnComplete() && out.write(sock.fd) < 0) {
+        if (out.shouldWrite() && out.write(sock.fd) < 0) {
             LOG("write fail. addr=%s", net_util::sockaddrToStr(sock.addr));
         }
     }
@@ -76,6 +76,7 @@ int main() {
 
             unique_ptr<ClientEntry>& entry = getClientEntry(event_fd);
             if (entry == nullptr) {
+                LOG("lost clientEntry: %d", event_fd);
                 continue;
             }
 
@@ -95,7 +96,7 @@ int main() {
                     entry->out.reset();
                     // assert: Packet::HeaderSize + len(response %d) + entry->in.dataSize() < Packet::MaxSize
                     char* const data_out = entry->out.buf + Packet::HeaderSize;
-                    int len = snprintf(data_out, Packet::MaxSize, "response %d: ", ++entry->responseCount);
+                    int len = snprintf(data_out, Packet::MaxSize, "response-%d: ", ++entry->responseCount);
                     memcpy(data_out + len, entry->in.buf + Packet::HeaderSize, entry->in.dataSize());
                     entry->out.limit = Packet::HeaderSize + len + entry->in.dataSize();
                     entry->out.setPacketSize();
