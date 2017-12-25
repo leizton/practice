@@ -66,6 +66,7 @@ int newTcpSocket() {
 }
 
 ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool reuse) {
+    ServerSocket server_sock;
     if (port == 0) {
         LOG("port 0 is reserved");
         return ServerSocket();
@@ -76,13 +77,11 @@ ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool re
     if (server_fd < 0) {
         return ServerSocket();
     }
-    ServerSocket server_sock;
-    server_sock.init(server_fd);
 
     // reuse
     if (reuse) {
-        int nReuseAddr = 1;
-        if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &nReuseAddr, sizeof(nReuseAddr)) != 0) {
+        int reuse_opt = 1;
+        if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &reuse_opt, sizeof(reuse_opt)) != 0) {
             LOG("setsockopt fail: %d", errno);
             return ServerSocket();
         }
@@ -106,18 +105,21 @@ ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool re
         return ServerSocket();
     }
 
+    server_sock.init(server_fd);
     LOG("create server socket. fd=%d, addr=%s:%d", server_fd, ip, port);
     return server_sock;
 }
 
 Socket newClientSocket(const char* server_ip, uint16_t server_port) {
+    Socket client_sock;
+
+    // create socket
     int client_fd = newTcpSocket();
     if (client_fd < 0) {
         return Socket();
     }
 
     // connect
-    Socket client_sock;
     setSocketAddr(server_ip, server_port, client_sock.addr);
     if (connect(client_fd, (sockaddr*)&client_sock.addr, sizeof(client_sock.addr)) != 0) {
         LOG("connect %s fail: %d", net_util::sockaddrToStr(client_sock.addr), errno);
