@@ -73,7 +73,7 @@ public:
         ptr_ = std::shared_ptr<void>(nullptr, [sock_fd, addr](void* p) {
             LOG("close socket. fd=%d, addr=%s", sock_fd, net_util::sockaddrToStr(addr));
             if (::close(sock_fd) != 0) {
-                LOG("close socket fail: %d. fd=%d, addr=%s", errno, sock_fd, net_util::sockaddrToStr(addr));
+                LOGERR("close socket fail. fd=%d, addr=%s", sock_fd, net_util::sockaddrToStr(addr));
             }
         });
     }

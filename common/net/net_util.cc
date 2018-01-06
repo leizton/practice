@@ -24,9 +24,9 @@ int setNonBlock(int sock_fd) {
 
 int setNonBlockWrapper(int sock_fd) {
     if (setNonBlock(sock_fd) != 0) {
-        LOG("setNonBlock fail: %d. fd=%d", errno, sock_fd);
+        LOGERR("setNonBlock fail. fd=%d", sock_fd);
         if (::close(sock_fd) != 0) {
-            LOG("close fail: %d. fd=%d", errno, sock_fd);
+            LOGERR("close fail. fd=%d", sock_fd);
         }
         return -1;
     }
@@ -59,7 +59,7 @@ char* sockaddrToStr(const sockaddr_in& addr) {
 int newTcpSocket() {
     int sock_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);  // domain, socket_type, protocol
     if (sock_fd < 0) {
-        LOG("open new socket fail: %d", errno);
+        LOGERR("open new socket fail");
         return -1;
     }
     return sock_fd;
@@ -82,7 +82,7 @@ ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool re
     if (reuse) {
         int reuse_opt = 1;
         if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &reuse_opt, sizeof(reuse_opt)) != 0) {
-            LOG("setsockopt fail: %d", errno);
+            LOGERR("setsockopt fail");
             return ServerSocket();
         }
     }
@@ -96,7 +96,7 @@ ServerSocket newServerSocket(const char* ip, uint16_t port, int backlog, bool re
 
     // listen
     if (listen(server_fd, backlog) != 0) {
-        LOG("listen socket fail: %d", errno);
+        LOGERR("listen socket fail");
         return ServerSocket();
     }
 
@@ -122,7 +122,7 @@ Socket newClientSocket(const char* server_ip, uint16_t server_port) {
     // connect
     setSocketAddr(server_ip, server_port, client_sock.addr);
     if (connect(client_fd, (sockaddr*)&client_sock.addr, sizeof(client_sock.addr)) != 0) {
-        LOG("connect %s fail: %d", net_util::sockaddrToStr(client_sock.addr), errno);
+        LOGERR("connect %s fail", net_util::sockaddrToStr(client_sock.addr));
         return Socket();
     }
 
@@ -141,13 +141,13 @@ Socket ServerSocket::accept() const {
     socklen_t addr_len = sizeof(client_sock.addr);
     int client_fd = ::accept(this->fd, (sockaddr*)&client_sock.addr, &addr_len);
     if (client_fd < 0) {
-        LOG("accept fail: %d", errno);
+        LOGERR("accept fail");
         return Socket();
     }
     client_sock.init(client_fd);
 
     if (net_util::setNonBlock(client_fd) != 0) {
-        LOG("set non-block fail: %d. addr=%s", errno, net_util::sockaddrToStr(client_sock.addr));
+        LOGERR("set non-block fail. addr=%s", net_util::sockaddrToStr(client_sock.addr));
         return Socket();
     }
 
