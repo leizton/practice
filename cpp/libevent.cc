@@ -61,6 +61,10 @@ void timeout(event_base* ev_base) {
     memcpy(&two_secs, tv_out, sizeof(timeval));
 
     static util::time_point gtl_start_time;
+    gtl_start_time = util::now();
+
+    // 不能通过cb捕获gtl_start_time, 否则cb不能转换成event_callback_fn
+    // lambda with captures相当与一个类的实例, 调用时需要用到this指针, 所以不能转成c-style function pointer
     auto cb = [](evutil_socket_t fd, short revents, void* arg) {
         if (revents & EV_TIMEOUT) {
             auto timept = util::now();
@@ -71,7 +75,6 @@ void timeout(event_base* ev_base) {
         }
     };
 
-    gtl_start_time = util::now();
     event* ev = event_new(ev_base, -1, EV_TIMEOUT, cb, event_self_cbarg());
     event_add(ev, &two_secs);
 }
