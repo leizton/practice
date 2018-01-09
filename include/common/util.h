@@ -2,6 +2,7 @@
 #define _PRACTICE_COMMON_UTIL_H
 
 #include <cstring>
+#include <chrono>
 
 namespace util {
 
@@ -23,6 +24,16 @@ int strlen(char* s, int max) {
     int len = ::strlen(s);
     *p = old;
     return len;
+}
+
+typedef std::chrono::time_point<std::chrono::system_clock> time_point;
+
+inline time_point now() {
+    return chrono::system_clock::now();
+}
+
+inline uint64_t timeDiff(const time_point& end, const time_point& start) {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 }
 
 }  // namespace util

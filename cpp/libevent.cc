@@ -1,10 +1,12 @@
 #include <event2/event.h>
 
 #include "common/header.h"
+#include "common/util.h"
 #include "common/log.h"
 
 void supportedMethod();
 event_config* getEventConfig();
+void timeout(event_base*);
 
 int main() {
     supportedMethod();
@@ -14,6 +16,9 @@ int main() {
     LOG("new event_base: %s", event_base_get_method(ev_base));
     event_config_free(ev_cfg);
 
+    timeout(ev_base);
+
+    event_base_dispatch(ev_base);
     event_base_free(ev_base);
     return 0;
 }
@@ -45,4 +50,21 @@ event_config* getEventConfig() {
         LOG("config event_base flag fail");
     }
     return cfg;
+}
+
+void timeout(event_base* ev_base) {
+    timeval two_secs = { 2, 0 };
+    const timeval* tv_out = event_base_init_common_timeout(ev_base, &two_secs);
+    memcpy(&two_secs, tv_out, sizeof(timeval));
+
+    util::time_point start_time = util::now();
+    event_callback_fn cb = [&start_time](evutil_socket_t fd, short revents, void* arg) {
+        if (revents & EV_TIMEOUT) {
+            auto timept = util::now();
+            LOG("timeout: %ld", util::timeDiff(timept, start_time));
+        }
+        event_free((event*)arg);
+    };
+    event* ev = event_new(ev_base, -1, EV_TIMEOUT, cb, event_self_cbarg());
+    event_add(ev, &two_secs);
 }
