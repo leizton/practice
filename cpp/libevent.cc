@@ -55,26 +55,36 @@ event_config* getEventConfig() {
 void timeout(event_base* ev_base) {
     using namespace std::placeholders;
 
-    timeval two_secs = { 2, 0 };
+    static timeval two_secs;
+    two_secs.tv_sec = 2;
+    two_secs.tv_usec = 0;
     const timeval* tv_out = event_base_init_common_timeout(ev_base, &two_secs);
     LOG("tv_out: %ld.%ld", tv_out->tv_sec, tv_out->tv_usec);
     memcpy(&two_secs, tv_out, sizeof(timeval));
 
-    static util::time_point gtl_start_time;
-    gtl_start_time = util::now();
+    static util::time_point g_start_time;
+    static event* g_timeout_ev;
+    g_start_time = util::now();
+    g_timeout_ev = nullptr;
 
-    // 不能通过cb捕获gtl_start_time, 否则cb不能转换成event_callback_fn
+    // 不能使用labmda捕获, 否则cb不能转换成event_callback_fn
     // lambda with captures相当于一个类的实例, 调用时需要用到this指针, 所以不能转成c-style function pointer
     auto cb = [](evutil_socket_t fd, short revents, void* arg) {
         if (revents & EV_TIMEOUT) {
+            // 执行2次, g_timeout_ev在第2次触发
             auto timept = util::now();
-            LOG("timeout: %ld", util::timeDiff(timept, gtl_start_time));
+            LOG("timeout: %ld", util::timeDiff(timept, g_start_time));
         }
         if (arg != nullptr) {
             event_free((event*)arg);
         }
+        if (g_timeout_ev != nullptr) {
+            event_add(g_timeout_ev, &two_secs);
+            g_timeout_ev = nullptr;
+        }
     };
 
+    g_timeout_ev = event_new(ev_base, -1, EV_TIMEOUT, cb, event_self_cbarg());
     event* ev = event_new(ev_base, -1, EV_TIMEOUT, cb, event_self_cbarg());
     event_add(ev, &two_secs);
 }
