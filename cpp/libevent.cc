@@ -53,18 +53,25 @@ event_config* getEventConfig() {
 }
 
 void timeout(event_base* ev_base) {
+    using namespace std::placeholders;
+
     timeval two_secs = { 2, 0 };
     const timeval* tv_out = event_base_init_common_timeout(ev_base, &two_secs);
+    LOG("tv_out: %ld.%ld", tv_out->tv_sec, tv_out->tv_usec);
     memcpy(&two_secs, tv_out, sizeof(timeval));
 
-    util::time_point start_time = util::now();
-    event_callback_fn cb = [&start_time](evutil_socket_t fd, short revents, void* arg) {
+    static util::time_point gtl_start_time;
+    auto cb = [](evutil_socket_t fd, short revents, void* arg) {
         if (revents & EV_TIMEOUT) {
             auto timept = util::now();
-            LOG("timeout: %ld", util::timeDiff(timept, start_time));
+            LOG("timeout: %ld", util::timeDiff(timept, gtl_start_time));
         }
-        event_free((event*)arg);
+        if (arg != nullptr) {
+            event_free((event*)arg);
+        }
     };
+
+    gtl_start_time = util::now();
     event* ev = event_new(ev_base, -1, EV_TIMEOUT, cb, event_self_cbarg());
     event_add(ev, &two_secs);
 }
