@@ -1,3 +1,7 @@
+/**
+ * https://www.ibm.com/developerworks/cn/aix/library/au-libev/index.html
+ */
+
 #include <event2/event.h>
 
 #include "common/header.h"
