@@ -81,7 +81,8 @@ public:
     }
 
     void reset(int fd) {
-        *this = getRes(fd);  // 调用移动赋值, 该语句结束后调用析构
+        printf("resetting\n");
+        *this = getRes(fd);  // 调用移动赋值, 该语句结束后调用旧的*this的析构
         printf("reseted\n");
     }
 };
@@ -123,7 +124,6 @@ void test1() {
     {
         // output: con-1(1)
         Resource res(1);
-        printf("to reset\n");
         // output: con-1(2), con&=
         res.reset(2);
         // output: close(1), decon(1), reseted, decon(2), close(2)
