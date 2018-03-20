@@ -41,11 +41,10 @@ bool Connect::request() {
 
 void Connect::encode() {
     out.reset();
-    char* const data_out = out.buf + Packet::HeaderSize;
+    char* const data_out = out.dataPtr();
     int len = snprintf(data_out, Packet::MaxDataSize, "request-%d-%d ", sock.fd, requestCount);
     memcpy(data_out + len, data.c_str(), data.length());
-    out.limit = Packet::HeaderSize + len + data.length();
-    out.setPacketSize();
+    out.completeWrite(len + data.length());
 }
 
 void Connect::write() {

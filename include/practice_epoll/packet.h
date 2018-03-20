@@ -24,7 +24,12 @@ struct Packet {
         return packetSize() - Packet::HeaderSize;
     }
 
-    void setPacketSize() {
+    char* dataPtr() {
+        return buf + Packet::HeaderSize;
+    }
+
+    void completeWrite(int data_size) {
+        limit = Packet::HeaderSize + data_size;
         *(int*)buf = limit - pos;
     }
 

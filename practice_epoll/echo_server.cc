@@ -99,11 +99,10 @@ int main() {
                 else if (entry->in.isReadComplete()) {  // ignore check total_size
                     entry->out.reset();
                     // assert: Packet::HeaderSize + len(response %d) + entry->in.dataSize() < Packet::MaxSize
-                    char* const data_out = entry->out.buf + Packet::HeaderSize;
+                    char* const data_out = entry->out.dataPtr();
                     int len = snprintf(data_out, Packet::MaxSize, "response-%d: ", ++entry->responseCount);
-                    memcpy(data_out + len, entry->in.buf + Packet::HeaderSize, entry->in.dataSize());
-                    entry->out.limit = Packet::HeaderSize + len + entry->in.dataSize();
-                    entry->out.setPacketSize();
+                    memcpy(data_out + len, entry->in.dataPtr(), entry->in.dataSize());
+                    entry->out.completeWrite(len + entry->in.dataSize());
                     entry->in.reset();
                     entry->write();
                 }
