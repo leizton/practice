@@ -78,7 +78,7 @@ public:
         });
     }
 
-    bool inValid() const {
+    bool invalid() const {
         return fd < 0;
     }
 };

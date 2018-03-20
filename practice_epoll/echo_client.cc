@@ -82,7 +82,7 @@ int main() {
     unordered_map<int, unique_ptr<Connect>> connects;
     for (auto& data : datas) {
         net_util::Socket client_sock = net_util::newClientSocket("127.0.0.1", 8000);
-        if (client_sock.inValid()) {
+        if (client_sock.invalid()) {
             return -1;
         }
 
