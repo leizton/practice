@@ -88,7 +88,11 @@ int main() {
             if (event.events & EPOLLIN) {
                 int read_num = entry->in.read(entry->sock.fd);
                 if (read_num < 0) {
-                    LOG("read fail. addr=%s", net_util::sockaddrToStr(entry->sock.addr));
+                    if (errno != EAGAIN) {
+                        // 关闭client
+                        LOGERR("read fail. addr=%s", net_util::sockaddrToStr(entry->sock.addr));
+                        client_entries.erase(entry->sock.fd);
+                    }
                 }
                 else if (read_num == 0) {
                     // client断开了连接，server必须关闭socket否则造成socket泄露
