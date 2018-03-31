@@ -1,4 +1,5 @@
 # make error: undefined reference to `net_util::newServerSocket(char const*, int, int, bool)
+原因: 函数声明和定义不同
 newServerSocket在头文件中的声明第2个参数是int, 但在.cc文件中实现是uint16_t, 所以出现未定义的链接错误
 
 # connect fail, errno = 115
