@@ -13,4 +13,6 @@
 #include <condition_variable>
 #include <atomic>
 
+#include <sstream>
+
 using namespace std;
