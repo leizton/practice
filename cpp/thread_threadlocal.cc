@@ -4,6 +4,10 @@
 const int kRunnableThreadNum = thread::hardware_concurrency();
 
 const int kGtlStrSize = 64;
+
+// thread_local使得变量在线程(非进程)作用域内全局可见
+// 如果不用thread_local, 那么同一个线程在调用不同函数或调用一个函数多次时不能共享同一个变量, 而是会变成函数作用域的局部变量
+// 为了保证没有竞争, thread_local变量不能被其他线程访问到
 thread_local char gtlStr[kGtlStrSize];
 thread_local int gtlCount = 0;
 
