@@ -6,3 +6,6 @@ tmp/*
 main.cc
 
 build/*
+
+xcode/practice/practice.xcodeproj/project.xcworkspace/*
+xcode/practice/practice.xcodeproj/xcuserdata/*
