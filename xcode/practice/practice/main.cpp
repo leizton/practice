@@ -1,7 +1,5 @@
-#include <iostream>
-
-using namespace std;
+#include "include/001.h"
 
 int main(int argc, const char* argv[]) {
-  cout << "test" << endl;
+  return p001::test();
 }
