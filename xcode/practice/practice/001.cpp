@@ -13,11 +13,14 @@
 using namespace std;
 
 namespace p001 {
+  
+  void test() {
+  }
 
-  int test() {
+  void test_0() {
     ifstream in("/opt/tmp/t");
     if (not in) {
-      return -1;
+      return;
     }
     vector<string> text;
     string line;
@@ -26,7 +29,6 @@ namespace p001 {
     }
     sort(text.begin(), text.end());
     for_each(text.begin(), text.end(), [](string s) { cout << s << endl; });
-    return 0;
   }
-  
+
 }

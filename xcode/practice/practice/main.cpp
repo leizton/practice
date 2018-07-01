@@ -1,5 +1,8 @@
 #include "include/001.h"
+#include "solu.hpp"
 
 int main(int argc, const char* argv[]) {
-  return p001::test();
+  p001::test();
+
+  Solution::test();
 }
