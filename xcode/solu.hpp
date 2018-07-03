@@ -16,7 +16,58 @@
 
 using namespace std;
 
-class _3Sum {
+class _3Sum
+{
+public:
+  vector<vector<int>> threeSum(vector<int> &nums) {
+    vector<vector<int>> results;
+    if (nums.size() < 3) {
+      return results;
+    }
+    sort(nums.begin(), nums.end());
+
+    for (int i = 0; i < nums.size() - 2; i++) {
+      int target = -nums[i];
+      if (target < 0) {
+        break;
+      }
+
+      // 变成nums[front, back)上的2sum
+      int front = i + 1;
+      int back = nums.size() - 1;
+      while (front < back) {
+        int sum = nums[front] + nums[back];
+        if (sum < target) {
+          front++;
+        }
+        else if (sum > target) {
+          back--;
+        }
+        else {
+          vector<int> result(3);
+          result[0] = nums[i];
+          result[1] = nums[front];
+          result[2] = nums[back];
+          results.push_back(result);
+          while (front < back && nums[front] == result[1]) {
+            front++;
+          }
+          while (front < back && nums[back] == result[2]) {
+            back--;
+          }
+        }
+      }
+
+      // 避免重复
+      while (i < nums.size() - 2 && nums[i + 1] == nums[i]) {
+        i++;
+      }
+    }
+    return results;
+  }
+};
+
+class _3Sum_old {
 public:
   vector<vector<int>> threeSum(vector<int>& nums) {
     vector<vector<int>> ret;
