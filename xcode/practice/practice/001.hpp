@@ -6,15 +6,64 @@
 //  Copyright © 2018年 wh. All rights reserved.
 //
 
-#include <iostream>
+#include <algorithm>
 #include <fstream>
+#include <iostream>
+#include <set>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
 
 namespace p001 {
-  
+
   void test() {
+  }
+
+  void test_3() {
+    set<pair<int, int>> s;
+    s.insert(make_pair(1, 1));
+    s.insert(make_pair(1, 1));
+    s.insert(make_pair(1, 2));
+    cout << (s.find(make_pair(1, 1)) != s.end()) << endl;
+    cout << (s.find(make_pair(1, 2)) != s.end()) << endl;
+    cout << (s.find(make_pair(1, 3)) != s.end()) << endl;
+  }
+
+  void test_2() {
+    unordered_map<int, set<int>> map;
+    map[1] = {1};
+    map[1].insert(2);
+    map[2] = {0};
+    for (auto& e : map) {
+      cout << e.first << ": ";
+      for (auto& e1 : e.second) {
+        cout << e1 << " ";
+      }
+      cout << endl;
+    }
+  }
+
+  void test_1() {
+    unordered_map<char, int> map;
+    // set & get
+    map['a'] = 1;
+    ++map['a'];
+    ++map['b'];
+    cout << map['a'] << endl;
+    cout << map['b'] << endl;
+    // earse
+    if (--map['b'] == 0) {
+      map.erase('b');
+    }
+    // for_each
+    for_each(map.begin(), map.end(), [](auto& e) {
+      cout << e.first << ": " << e.second << endl;
+    });
+    map['b'] = 1;
+    for (auto& e : map) {
+      cout << e.first << ": " << e.second << endl;
+    }
   }
 
   void test_0() {
