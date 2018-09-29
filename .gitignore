@@ -3,6 +3,7 @@
 tmp/*
 
 *.out
+*.out.dSYM
 main.cc
 
 build/*
