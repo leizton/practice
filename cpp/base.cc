@@ -1,8 +1,11 @@
 #include <iostream>
+#include <string>
+#include <vector>
 
 using namespace std;
 
-#define RUN literalNum
+#define RUN appendStr
+
 
 // 用户自定义字面值
 long long operator"" _k(unsigned long long x) { return x * 1000; }
@@ -16,6 +19,35 @@ void literalNum() {
   cout << 2.6_k << endl;  // 2600
   cout << "123"_len << endl;  // 3
 }
+
+
+class StrAppender {
+ public:
+  StrAppender() { strs.reserve(2); }
+  StrAppender(const string&& first) {
+    strs.reserve(2);
+    if (!first.empty()) strs.push_back(first);
+  }
+  StrAppender& Append(const string&& s) {
+    if (!s.empty()) strs.push_back(s);
+    return *this;
+  }
+  string ToString() {
+    string res;
+    for (const auto& s : strs) {
+      res += s;
+    }
+    return res;
+  }
+ private:
+  vector<const string> strs;
+};
+
+void appendStr() {
+  string res = StrAppender("1").Append("2").Append("3").ToString();
+  cout << res << endl;
+}
+
 
 int main() {
   RUN();
