@@ -1,10 +1,11 @@
 #include <iostream>
+#include <iterator>
 #include <string>
 #include <vector>
 
 using namespace std;
 
-#define RUN appendStr
+#define RUN iter
 
 
 // 用户自定义字面值
@@ -46,6 +47,62 @@ class StrAppender {
 void appendStr() {
   string res = StrAppender("1").Append("2").Append("3").ToString();
   cout << res << endl;
+}
+
+
+// 支持 for(e : lst)的迭代器
+template <typename T>
+class Container {
+ public:
+  template<typename E>
+  class Iter : public iterator<input_iterator_tag, E> {
+   private:
+    Iter(Container<E>* container) : container_(container), pos_(0) {}
+    Iter(Container<E>* container, uint32_t pos) : container_(container), pos_(pos) {}
+    friend class Container;
+   public:
+    bool operator ==(const Iter& other) {
+      return pos_ == other.pos_ &&
+             static_cast<void*>(container_) == static_cast<void*>(other.container_);
+    }
+    bool operator !=(const Iter& other) {
+      return !(*this == other);
+    }
+    Iter& operator ++() {
+      ++pos_;
+      return *this;
+    }
+    E& operator *() {
+      return container_->get(pos_);
+    }
+   private:
+    Container<E>* container_;
+    uint32_t pos_;
+  };
+
+  typedef Iter<T> iterator;
+
+  Container(const vector<T>& input) : data_(input) {}
+
+  iterator begin() {
+    return Iter<T>(this);
+  }
+  iterator end() {
+    return Iter<T>(this, data_.size());
+  }
+  T& get(uint32_t pos) {
+    return data_[pos];
+  }
+
+ private:
+  vector<T> data_;
+};
+
+void iter() {
+  Container<string> strs({"1", "2", "3"});
+  for (string& e : strs) {
+    cout << e << endl;
+  }
 }
 
 
