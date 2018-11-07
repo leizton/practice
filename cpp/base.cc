@@ -1,11 +1,11 @@
 #include <iostream>
+#include <fstream>
 #include <iterator>
 #include <string>
 #include <vector>
+#include <exception>
 
 using namespace std;
-
-#define RUN iter
 
 
 // 用户自定义字面值
@@ -14,6 +14,7 @@ long long operator"" _K(unsigned long long x) { return (x << 10); }
 long double operator"" _k(long double x) { return x * 1000; }
 size_t operator"" _len(const char* s, size_t size) { return size; }  // size参数自动推断
 
+// #define RUN literalNum
 void literalNum() {
   cout << 2_k << endl;  // 2000
   cout << 2_K << endl;  // 2048
@@ -44,6 +45,7 @@ class StrAppender {
   vector<const string> strs;
 };
 
+// #define RUN appendStr
 void appendStr() {
   string res = StrAppender("1").Append("2").Append("3").ToString();
   cout << res << endl;
@@ -98,10 +100,22 @@ class Container {
   vector<T> data_;
 };
 
+// #define RUN iter
 void iter() {
   Container<string> strs({"1", "2", "3"});
   for (string& e : strs) {
     cout << e << endl;
+  }
+}
+
+
+// #define RUN catchException
+void catchException() {
+  try {
+    auto x = 0;
+    auto y = 1 / x;
+  } catch (const std::exception& ex) {
+    cout << ex.what() << endl;
   }
 }
 

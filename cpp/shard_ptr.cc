@@ -3,13 +3,13 @@
 
 using namespace std;
 
-#define RUN base
-
 struct Foo;
+
 
 // make_shared<T>(Args&&... args)
 // shared_ptr的copy-assign和assign
 // 自身赋值
+// #define RUN base
 void base() {
   auto p1 = make_shared<Foo>(10);
   auto p2 = p1;
@@ -35,6 +35,7 @@ void manageRes() {
 
   v += 100;
 }
+
 
 int main() {
   RUN();
