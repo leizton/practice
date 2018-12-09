@@ -8,6 +8,23 @@
 using namespace std;
 
 
+// #define RUN testCast
+void testCast() {
+  float x = 1.5;
+
+  // static_cast: 代替显示转换
+  int y = static_cast<int>(x);
+  cout << y << endl;
+
+  // reinterpret_cast<T>: 无损转换, T是指针/引用/整型, 用于指针和整型间的无损转换
+  // int y1 = reinterpret_cast<int>(x);  编译报error
+  uint64_t z = reinterpret_cast<uint64_t>(&x);
+  float x1 = *reinterpret_cast<float*>(z);
+  int x_int = *reinterpret_cast<int*>(z);
+  cout << z << ", " << x1 << ", " << x_int << endl;
+}
+
+
 // 用户自定义字面值
 long long operator"" _k(unsigned long long x) { return x * 1000; }
 long long operator"" _K(unsigned long long x) { return (x << 10); }
