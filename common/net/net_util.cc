@@ -138,7 +138,7 @@ Socket newClientSocket(const char* server_ip, uint16_t server_port) {
 
 Socket ServerSocket::accept() const {
     Socket client_sock;
-    socklen_t addr_len = sizeof(client_sock.addr);
+    socklen_t addr_len = 0;
     int client_fd = ::accept(this->fd, (sockaddr*)&client_sock.addr, &addr_len);
     if (client_fd < 0) {
         LOGERR("accept fail");
