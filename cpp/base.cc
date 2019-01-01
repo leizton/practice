@@ -8,6 +8,21 @@
 using namespace std;
 
 
+// define RUN testEnumAndInt()
+enum Color {
+  Red = 1,
+  Green,
+  Blue,
+};
+
+void testEnumAndInt() {
+  int x = Color::Blue;  // enum to int
+  cout << x << endl;    // 3
+  Color c1 = Color(2);  // int to enum
+  cout << (c1 == Color::Green) << endl;  // true
+}
+
+
 // #define RUN testCast
 void testCast() {
   float x = 1.5;
