@@ -8,7 +8,31 @@
 using namespace std;
 
 
-// define RUN testEnumAndInt()
+// #define RUN testVectorExpandCapacity
+struct VecExpandCap {
+  VecExpandCap(int v) {
+    cout << "con " << v << endl;
+    this->v = v;
+  }
+  VecExpandCap(const VecExpandCap& obj) {
+    cout << "copy-con " << obj.v << endl;
+    this->v = obj.v;
+  }
+  int v;
+};
+
+// vector扩容时调用copy-con, 不能直接用memcpy, 因为copy-con里可能执行了其他用户逻辑
+void testVectorExpandCapacity() {
+  vector<VecExpandCap> v;
+  for (int i = 1; i <= 8; i++) {
+    int old_cap = v.capacity();
+    v.emplace_back(i);
+    cout << "  " << old_cap << ", " << v.capacity() << endl;
+  }
+}
+
+
+// #define RUN testEnumAndInt
 enum Color {
   Red = 1,
   Green,
