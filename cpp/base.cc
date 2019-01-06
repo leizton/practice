@@ -48,12 +48,38 @@ void testEnumAndInt() {
 
 
 // #define RUN testCast
+struct TestCastBase {
+  int v;
+};
+struct TestCastDerivedA : TestCastBase {
+  int a;
+};
+struct TestCastDerivedB : TestCastBase {
+};
+struct TestCastDerivedC : TestCastBase {
+  int c;
+};
+
 void testCast() {
   float x = 1.5;
 
   // static_cast: 代替显示转换
   int y = static_cast<int>(x);
   cout << y << endl;
+
+  TestCastDerivedA derivedA;
+  derivedA.v = 7;
+  derivedA.a = 17;
+  TestCastBase* basePtr = &derivedA;
+  TestCastDerivedC* derivedPtr = static_cast<TestCastDerivedC*>(basePtr);
+  // v=7, c=17
+  cout << "cast A to C. v=" << derivedPtr->v << ", c=" << derivedPtr->c << endl;
+  TestCastDerivedB derivedB;
+  derivedB.v = 11;
+  basePtr = &derivedB;
+  derivedPtr = static_cast<TestCastDerivedC*>(basePtr);
+  // v=11, c=1
+  cout << "cast B to C. v=" << derivedPtr->v << ", c=" << derivedPtr->c << endl;
 
   // reinterpret_cast<T>: 无损转换, T是指针/引用/整型, 用于指针和整型间的无损转换
   // int y1 = reinterpret_cast<int>(x);  编译报error
