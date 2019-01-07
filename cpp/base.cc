@@ -8,6 +8,22 @@
 using namespace std;
 
 
+// #define RUN testTypeid
+struct TestTypeid {
+  int x;
+};
+
+void testTypeid() {
+  int i;
+  string s;
+  TestTypeid a;
+  cout << typeid(i).name() << ", " << typeid(i).hash_code() << endl;  // i
+  // NSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE
+  cout << typeid(s).name() << ", " << typeid(s).hash_code() << endl;
+  cout << typeid(a).name() << ", " << typeid(a).hash_code() << endl;  // 10TestTypeid
+}
+
+
 // #define RUN testVectorExpandCapacity
 struct VecExpandCap {
   VecExpandCap(int v) {
