@@ -8,6 +8,25 @@
 using namespace std;
 
 
+#define RUN testStaticVarInFunction
+struct TestStaticVarInFunction {
+  TestStaticVarInFunction() {
+    cout << "construct" << endl;
+  }
+};
+
+void testStaticVarInFunctionRun() {
+  cout << "test start" << endl;
+  static TestStaticVarInFunction v;
+  cout << "test end" << endl;
+}
+
+// static变量延迟初始化, 只是在bss段分配了内存空间
+void testStaticVarInFunction() {
+  testStaticVarInFunctionRun();
+}
+
+
 // #define RUN testTypeid
 struct TestTypeid {
   int x;
