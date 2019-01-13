@@ -98,7 +98,7 @@ struct TestCastDerivedC : TestCastBase {
 void testCast() {
   float x = 1.5;
 
-  // static_cast: 代替显示转换
+  // static_cast: 代替隐式转换
   int y = static_cast<int>(x);
   cout << y << endl;
 
