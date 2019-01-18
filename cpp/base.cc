@@ -9,6 +9,35 @@
 using namespace std;
 
 
+struct Foo {
+  Foo() : v(0) {
+    cout << "con foo default" << endl;
+  }
+  Foo(int v) : v(v) {
+    cout << "con foo " << v << endl;
+    //this->v = v;
+  }
+  ~Foo() {
+    cout << "decon foo " << v << endl;
+  }
+  Foo(const Foo& obj) {
+    cout << "copy-con foo " << obj.v << endl;
+    this->v = obj.v;
+  }
+  int v;
+};
+
+
+// #define RUN testSharedPtrForArray
+void testSharedPtrForArray() {
+  Foo* foos = new Foo[2];
+  shared_ptr<void> ptr(nullptr, [foos](void* p) {
+    cout << reinterpret_cast<uint64_t>(p) << endl;  // 0
+    delete[] foos;
+  });
+}
+
+
 // #define RUN testConstIterator
 void testConstIterator() {
   list<int> l;
@@ -60,21 +89,9 @@ void testTypeid() {
 
 
 // #define RUN testVectorExpandCapacity
-struct VecExpandCap {
-  VecExpandCap(int v) {
-    cout << "con " << v << endl;
-    this->v = v;
-  }
-  VecExpandCap(const VecExpandCap& obj) {
-    cout << "copy-con " << obj.v << endl;
-    this->v = obj.v;
-  }
-  int v;
-};
-
 // vector扩容时调用copy-con, 不能直接用memcpy, 因为copy-con里可能执行了其他用户逻辑
 void testVectorExpandCapacity() {
-  vector<VecExpandCap> v;
+  vector<Foo> v;
   for (int i = 1; i <= 8; i++) {
     int old_cap = v.capacity();
     v.emplace_back(i);
