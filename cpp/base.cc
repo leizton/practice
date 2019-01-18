@@ -3,12 +3,28 @@
 #include <iterator>
 #include <string>
 #include <vector>
+#include <list>
 #include <exception>
 
 using namespace std;
 
 
-#define RUN testStaticVarInFunction
+// #define RUN testConstIterator
+void testConstIterator() {
+  list<int> l;
+  l.push_back(1);
+  l.push_back(2);
+  list<int>::const_iterator c_it = l.begin();  // read only
+  cout << *c_it << ", " << *(++c_it) << endl;
+
+  const list<int>::iterator it = l.begin();
+  *it = 10;
+  // *(++it) = 20;  error
+  cout << *l.begin() << ", " << *(++l.begin()) << endl;
+}
+
+
+// #define RUN testStaticVarInFunction
 struct TestStaticVarInFunction {
   TestStaticVarInFunction() {
     cout << "construct" << endl;
