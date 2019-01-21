@@ -38,8 +38,8 @@ void testSharedPtrForArray() {
 }
 
 
-// #define RUN testConstIterator
-void testConstIterator() {
+// #define RUN test_ConstIterator_And_IteratorConst
+void test_ConstIterator_And_IteratorConst() {
   list<int> l;
   l.push_back(1);
   l.push_back(2);
@@ -49,6 +49,11 @@ void testConstIterator() {
   const list<int>::iterator it = l.begin();
   *it = 10;
   // *(++it) = 20;  error
+  cout << *l.begin() << ", " << *(++l.begin()) << endl;
+
+  list<int>::iterator const it1 = l.begin();
+  *it1 = 100;
+  // *(++it1) = 200; error
   cout << *l.begin() << ", " << *(++l.begin()) << endl;
 }
 
