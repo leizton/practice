@@ -163,6 +163,38 @@ void testCast() {
 }
 
 
+// #define RUN testDynamicCast
+struct TestDynamicCast_A {
+  virtual void Do() {}  // 必须是多态才能使dynamic_cast做运行时检查
+};
+struct TestDynamicCast_B : public TestDynamicCast_A {
+};
+struct TestDynamicCast_X {
+  virtual void Do() {}
+};
+
+// 向上转可以static_cast代替, 向下转需用dynamic_cast做检查
+void testDynamicCast() {
+  TestDynamicCast_B b, *pb(&b);
+  TestDynamicCast_A a, *pa(&a);
+  TestDynamicCast_A* pab = static_cast<TestDynamicCast_A*>(&b);
+  bool r;
+
+  r = dynamic_cast<TestDynamicCast_A*>(pb) != nullptr;  // up
+  cout << r << endl;  // true
+
+  r = dynamic_cast<TestDynamicCast_B*>(pab) != nullptr;  // down
+  cout << r << endl;  // true
+
+  r = dynamic_cast<TestDynamicCast_B*>(pa) != nullptr;  // down
+  cout << r << endl;  // false
+
+  TestDynamicCast_X x;
+  r = dynamic_cast<TestDynamicCast_A*>(&x) != nullptr;
+  cout << r << endl;  // false
+}
+
+
 // 用户自定义字面值
 long long operator"" _k(unsigned long long x) { return x * 1000; }
 long long operator"" _K(unsigned long long x) { return (x << 10); }
@@ -276,5 +308,6 @@ void catchException() {
 
 
 int main() {
+  cout << boolalpha;
   RUN();
 }
