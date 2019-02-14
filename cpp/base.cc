@@ -28,6 +28,14 @@ struct Foo {
 };
 
 
+// #define RUN testNullReference
+void testNullReference() {
+  Foo* p = static_cast<Foo*>(nullptr);
+  Foo& r = *p;  // 此时并没有访问p所指内存(没有读写操作)
+  cout << reinterpret_cast<uint64_t>(&r) << endl;
+}
+
+
 // #define RUN testSharedPtrForArray
 void testSharedPtrForArray() {
   Foo* foos = new Foo[2];
