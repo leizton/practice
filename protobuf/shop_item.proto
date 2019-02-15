@@ -1,0 +1,8 @@
+package prototest;
+
+import "protobuf/goods.proto";
+
+message ShopItem {
+  required GoodsItem goods = 1;
+  required uint32 num = 2;
+}

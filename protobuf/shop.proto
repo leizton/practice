@@ -1,0 +1,9 @@
+package prototest;
+
+import "protobuf/user.proto";
+import "protobuf/shop_item.proto";
+
+message ShopCart {
+  required User user = 1;
+  repeated ShopItem shopList = 2;
+}

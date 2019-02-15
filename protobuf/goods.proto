@@ -1,0 +1,13 @@
+package prototest;
+
+message GoodsItem {
+  enum GoodsKind {
+    kFood = 1;
+    kTool = 2;
+    kClothing = 3;
+  }
+
+  required uint64 id = 1;
+  required string name = 2;
+  required double price = 3;
+}
