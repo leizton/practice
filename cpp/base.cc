@@ -1,10 +1,21 @@
 #include <iostream>
 #include <fstream>
-#include <iterator>
+#include <exception>
+
+#include <memory>
 #include <string>
+#include <algorithm>
 #include <vector>
 #include <list>
-#include <exception>
+
+#include <type_traits>
+#include <typeinfo>
+
+#include <chrono>
+#include <thread>
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
 
 using namespace std;
 
@@ -26,6 +37,56 @@ struct Foo {
   }
   int v;
 };
+
+
+class CountDownLatch {
+public:
+  CountDownLatch(int32_t n) : num_(n) {}
+
+  void wait() {
+    std::unique_lock<std::mutex> lk(mtx_);
+    cond_.wait(lk, [this] { return this->num_ <= 0; });
+  }
+
+  void countDown(int32_t n) {
+    if (num_ <= 0) {
+      return;
+    }
+    if (num_.fetch_add(-n) <= n) {
+      cond_.notify_all();
+    }
+  }
+
+private:
+  std::atomic<int32_t> num_;
+  std::mutex mtx_;
+  std::condition_variable cond_;
+};
+
+
+// #define RUN testCountDownLatch
+void testCountDownLatch() {
+  CountDownLatch latch(2);
+  thread t1([](CountDownLatch& latch) {
+    cout << "t1 start\n";
+    latch.wait();
+    cout << "t1 end\n";
+  }, std::ref(latch));
+  thread t2([](CountDownLatch& latch) {
+    cout << "t2 start\n";
+    latch.wait();
+    cout << "t2 end\n";
+  }, std::ref(latch));
+
+  latch.countDown(1);
+  cout << "main sleep\n";
+  std::this_thread::sleep_for(std::chrono::seconds(2));
+  cout << "main wake\n";
+  latch.countDown(1);
+
+  t1.join();
+  t2.join();
+}
 
 
 // #define RUN testNullReference
@@ -316,6 +377,7 @@ void catchException() {
 
 
 int main() {
-  cout << boolalpha;
+  std::cout << std::boolalpha;
   RUN();
+  std::cout << "----------" << std::endl;
 }
