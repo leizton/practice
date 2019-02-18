@@ -16,3 +16,18 @@ $PROTOCC $proto_src/shop_item.proto
 $PROTOCC $proto_src/shop.proto
 
 cd $proto_src
+
+proto_cpp_dir='./target/protobuf'
+proto_cpp=" \
+  $proto_cpp_dir/goods.pb.cc \
+  $proto_cpp_dir/user.pb.cc \
+  $proto_cpp_dir/shop_item.pb.cc \
+  $proto_cpp_dir/shop.pb.cc "
+
+rm -f a.out
+
+g++ -std=c++11 -I./target -g -O0 $@ $proto_cpp -lpthread -lprotobuf
+
+if [ -f a.out ]; then
+    ./a.out
+fi

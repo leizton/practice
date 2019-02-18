@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 package prototest;
 
 import "protobuf/goods.proto";
