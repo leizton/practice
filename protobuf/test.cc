@@ -23,8 +23,6 @@
 
 using namespace std;
 
-#define x86_64
-
 void buildShopCart(prototest::ShopCart& shop) {
   prototest::User& user = *shop.mutable_user();
   user.set_id(1001);
@@ -49,10 +47,60 @@ double calcTotalPrice(const prototest::ShopCart& shop) {
   return total_price;
 }
 
-#define RUN test
+bool appendRepeated(const std::string& raw,
+                    google::protobuf::Message* msg,
+                    const std::string& repeated_field_name)
+{
+  const google::protobuf::Descriptor* desc = msg->GetDescriptor();
+  const google::protobuf::FieldDescriptor* repeated_field = nullptr;
+  for (auto i = 0; i < desc->field_count(); i++) {
+    const google::protobuf::FieldDescriptor* field = desc->field(i);
+    if (field->name() == repeated_field_name) {
+      repeated_field = field;
+      break;
+    }
+  }
+  if (repeated_field == nullptr) {
+    return false;
+  }
+
+  const google::protobuf::Reflection* refl = msg->GetReflection();
+  google::protobuf::Message* repeated_msg = refl->AddMessage(msg, repeated_field);
+  repeated_msg->ParseFromString(raw);
+  return true;
+}
+
+
+// #define RUN test
 void test() {
   prototest::ShopCart shop;
   buildShopCart(shop);
+  cout << calcTotalPrice(shop) << endl;
+}
+
+
+// #define RUN testSerDeser
+void testSerDeser() {
+  prototest::ShopCart shop;
+  buildShopCart(shop);
+  cout << calcTotalPrice(shop) << endl;
+
+  string raw;
+  shop.SerializeToString(&raw);
+  prototest::ShopCart shop_rep;
+  shop_rep.ParseFromString(raw);
+  cout << calcTotalPrice(shop_rep) << endl;
+}
+
+
+#define RUN testReflection
+void testReflection() {
+  prototest::ShopCart shop;
+  buildShopCart(shop);
+
+  string raw;
+  shop.shoplist(0).SerializeToString(&raw);
+  appendRepeated(raw, &shop, "shopList");
   cout << calcTotalPrice(shop) << endl;
 }
 
