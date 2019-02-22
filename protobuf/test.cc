@@ -26,7 +26,7 @@ using namespace std;
 void buildShopCart(prototest::ShopCart& shop) {
   prototest::User& user = *shop.mutable_user();
   user.set_id(1001);
-  user.set_name("Zhang");
+  user.set_name("张三");
 
   prototest::ShopItem& item = *shop.add_shoplist();
   prototest::GoodsItem& goods = *item.mutable_goods();
@@ -93,7 +93,7 @@ void testSerDeser() {
 }
 
 
-#define RUN testReflection
+// #define RUN testReflection
 void testReflection() {
   prototest::ShopCart shop;
   buildShopCart(shop);
@@ -103,6 +103,17 @@ void testReflection() {
   appendRepeated(raw, &shop, "shopList");
   cout << calcTotalPrice(shop) << endl;
 }
+
+
+// #define RUN testToString
+void testToString() {
+  prototest::ShopCart shop;
+  buildShopCart(shop);
+  cout << "ShortDebugString >> \n" << shop.ShortDebugString() << endl;
+  cout << "DebugString >>\n" << shop.DebugString() << endl;
+  cout << "Utf8DebugString >> \n" << shop.Utf8DebugString() << endl;
+}
+
 
 #define RUNNAME(run) #run
 
