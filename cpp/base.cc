@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <vector>
 #include <list>
+#include <map>
+#include <unordered_map>
 
 #include <type_traits>
 #include <typeinfo>
@@ -375,10 +377,10 @@ void catchException() {
   }
 }
 
-#define RUNNAME(run) #run
+
 int main() {
   std::cout << std::boolalpha;
-  std::cout << "----------" << RUNNAME(RUN) << std::endl;
+  std::cout << "----------" << std::endl;
   RUN();
   std::cout << "----------" << std::endl;
 }
