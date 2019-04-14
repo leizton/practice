@@ -13,3 +13,6 @@ xcode/practice/practice.xcodeproj/project.xcworkspace/*
 xcode/practice/practice.xcodeproj/xcuserdata/*
 
 bazel_example/*/bazel-*
+
+gotest/main.go
+gotest/src/**
