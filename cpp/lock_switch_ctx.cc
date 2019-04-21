@@ -3,28 +3,19 @@
 #include <mutex>
 #include <vector>
 #include <string>
-#include <chrono>
 
-typedef std::chrono::time_point<std::chrono::system_clock> time_point;
-
-inline time_point now() {
-    return std::chrono::system_clock::now();
-}
-
-inline uint64_t timeDiff(const time_point& end, const time_point& start) {
-    return std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-}
+#include "chrono_util.h"
 
 int main(int argc, const char* argv[]) {
+  const int totalIncrNum = 2000000;
+  const int threadNum = 64;
+  const int incrNum = totalIncrNum / threadNum;
+
+  std::vector<std::thread> threads;
   int cnt = 0;
   std::mutex mtx;
 
-  const int totalIncrNum = 4000000;
-  const int threadNum = atoi(argv[1]);
-  const int incrNum = totalIncrNum / threadNum;
-  std::vector<std::thread> threads;
-
-  auto start_tm = now();
+  auto start_tm = ChronoUtil::now();
   for (int i = 0; i < threadNum; i++) {
     threads.push_back(std::thread([&cnt, &mtx, &incrNum] {
       for (int i = 0; i < incrNum; i++) {
@@ -41,10 +32,21 @@ int main(int argc, const char* argv[]) {
     }
   }
 
-  auto end_tm = now();
+  auto end_tm = ChronoUtil::now();
   std::cout << "cnt: " << cnt << std::endl;
   std::cout << "thread num: " << threadNum << std::endl;
-  std::cout << "cost: " << timeDiff(end_tm, start_tm) << std::endl;
+  std::cout << "cost: " << ChronoUtil::timeDiff(end_tm, start_tm) << std::endl;
 
-  return 0;
+  /*
+   * threadNum    cost
+   * ------------|----
+   * 1            3507
+   * 2            6005
+   * 4            6576
+   * 8            6828
+   * 16           6588
+   * 32           6120
+   * 64           6019
+  */
+
 }
