@@ -8,7 +8,7 @@
 
 int main(int argc, const char* argv[]) {
   const int totalIncrNum = 2000000;
-  const int threadNum = 64;
+  const int threadNum = 1;
   const int incrNum = totalIncrNum / threadNum;
 
   std::vector<std::thread> threads;
@@ -40,6 +40,7 @@ int main(int argc, const char* argv[]) {
   /*
    * threadNum    cost
    * ------------|----
+   * 1            3454    no lock, lock cost 27ns
    * 1            3507
    * 2            6005
    * 4            6576
