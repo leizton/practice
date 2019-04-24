@@ -41,6 +41,18 @@ struct Foo {
 };
 
 
+// #define RUN testString
+void testString() {
+  std::string s = "axc";
+#if __cplusplus > 201402L
+  // c++17 开始新增data()返回非const, c_str()依然返回const
+  char* d = s.data();
+  d[1] = 'b';
+#endif
+  cout << s << endl;  // 对于 c++17, 得到 abc
+}
+
+
 class CountDownLatch {
 public:
   CountDownLatch(int32_t n) : num_(n) {}
