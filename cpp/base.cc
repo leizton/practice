@@ -19,6 +19,12 @@
 #include <mutex>
 #include <condition_variable>
 
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+
+#include "chrono_util.h"
+
 using namespace std;
 
 
@@ -39,6 +45,19 @@ struct Foo {
   }
   int v;
 };
+
+
+// #define RUN testBoostUUID
+void testBoostUUID() {
+  auto start_tm = ChronoUtil::now();
+  for (int i = 0; i < 10; i++) {
+    string s = boost::uuids::to_string(boost::uuids::random_generator()());
+  }
+  auto end_tm = ChronoUtil::now();
+  auto cost = ChronoUtil::timeDiff(end_tm, start_tm);
+  std::cout << "cost: " << cost << std::endl;  // 22
+  // boost获取uuid平响2ms, 性能差, 不要使用
+}
 
 
 // #define RUN testString
