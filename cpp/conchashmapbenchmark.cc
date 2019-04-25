@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <functional>
 #include <string>
+#include <map>
 #include <unordered_map>
 #include <vector>
 #include <thread>
@@ -12,6 +13,10 @@
 
 using namespace std;
 
+inline std::size_t getHash(const std::string& s) {
+  return std::hash<std::string>{}(s);
+}
+
 void testKeys(vector<string>& keys, const int num) {
   keys.reserve(num);
   for (int i = 0; i < num; i++) {
@@ -21,15 +26,16 @@ void testKeys(vector<string>& keys, const int num) {
 
 void hashMapBenchmark(vector<string>& keys, const int runNum, const int readNum) {
   unordered_map<string, string> data;
+  const string value("abc123");
   auto start_tm = ChronoUtil::now();
 
   for (int i = 0; i < runNum; i++) {
     for (auto& e : keys) {
-      data[e] = "abc123";
+      data.insert({e, value});
     }
     for (int j = 0; j < readNum; j++) {
       for (auto& e : keys) {
-        if (data.find(e) == data.end()) {
+        if (data.count(e) == 0) {
           cout << "error" << endl;
           return;
         }
@@ -46,14 +52,14 @@ void hashMapBenchmark(vector<string>& keys, const int runNum, const int readNum)
 template <class K, class V>
 class ThreadSafeMap {
  public:
-  void put(const K& k, const V& v) {
+  bool insert(const std::pair<K, V>& e) {
     std::unique_lock<std::shared_mutex> lock(mtx_);
-    data_[k] = v;
+    return data_.insert(e).second;
   }
 
-  bool contains(const K& k) {
+  int count(const K& key) {
     std::shared_lock<std::shared_mutex> lock(mtx_);
-    return data_.find(k) != data_.end();
+    return data_.count(key);
   }
 
   void clear() {
@@ -66,9 +72,34 @@ class ThreadSafeMap {
   std::shared_mutex mtx_;
 };
 
+template <class K, class V>
+class ConcHashMapV1 {
+ public:
+  bool insert(const std::pair<K, V>& e) {
+    auto idx = getHash(e.first) % kBucketNum;
+    return buckets_[idx].insert(e);
+  }
+
+  int count(const K& key) {
+    auto idx = getHash(key) % kBucketNum;
+    return buckets_[idx].count(key);
+  }
+
+  void clear() {
+    for (std::size_t idx = 0; idx < kBucketNum; idx++) {
+      buckets_[idx].clear();
+    }
+  }
+
+ private:
+  static const std::size_t kBucketNum = 512;
+  ThreadSafeMap<K, V> buckets_[kBucketNum];
+};
+
 void threadSafedHashMapBenchmark(vector<string>& keys, const int runNum,
                                  const int readNum, const int threadNum) {
-  ThreadSafeMap<string, string> data;
+  // ThreadSafeMap<string, string> data;
+  ConcHashMapV1<string, string> data;
   const int taskNum = keys.size() / threadNum;
   const string value("abc123");
   auto start_tm = ChronoUtil::now();
@@ -80,7 +111,7 @@ void threadSafedHashMapBenchmark(vector<string>& keys, const int runNum,
     auto f = [&keys, &value, &data, &runNum] (const int keyBegin, const int keyEnd) {
       for (int i = 0; i < runNum; i++) {
         for (int j = keyBegin; j < keyEnd; j++) {
-          data.put(keys[j], value);
+          data.insert({keys[j], value});
         }
       }
     };
@@ -101,7 +132,7 @@ void threadSafedHashMapBenchmark(vector<string>& keys, const int runNum,
     threads.push_back(std::thread([&keys, &data, &runNum] {
       for (int i = 0; i < runNum; i++) {
         for (auto& e : keys) {
-          if (!data.contains(e)) {
+          if (data.count(e) == 0) {
             cout << "error" << endl;
             return;
           }
@@ -126,6 +157,14 @@ int main() {
   vector<string> keys;
   testKeys(keys, mapSize);
 
-  hashMapBenchmark(keys, 200, 10);  // 20086
-  threadSafedHashMapBenchmark(keys, 200, 10, 4);  // cost1=29273, cost2=45317
+  // -O0: 20086
+  // -O3: 7475
+  //hashMapBenchmark(keys, 200, 10);
+
+  // ThreadSafeMap
+  //   -O0: cost1=29273, cost2=45317
+  //   -O3: cost1=18442, cost2=30211
+  // ConcHashMapV1
+  //   -O3: cost1=580, cost2=2112
+  threadSafedHashMapBenchmark(keys, 200, 10, 4);
 }

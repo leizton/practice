@@ -2,7 +2,7 @@
 rm -f a.out
 
 include_dir=../include
-g++ -std=c++17 -g -O0 -I$include_dir $@ -pthread
+g++ -std=c++17 -g -O3 -I$include_dir $@ -pthread
 
 if [ -f a.out ]; then
     ./a.out
