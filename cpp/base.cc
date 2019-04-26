@@ -14,6 +14,7 @@
 #include <type_traits>
 #include <typeinfo>
 
+#include <ctime>
 #include <chrono>
 #include <thread>
 #include <atomic>
@@ -48,7 +49,17 @@ struct Foo {
 };
 
 
-#define RUN testStringStream
+// #define RUN testChrono
+void testChrono() {
+  // sleep
+  std::chrono::seconds sec3(3);
+  auto t = std::time(0);
+  std::this_thread::sleep_for(sec3);
+  cout << "sleep: " << std::time(0) - t << endl;  // 3
+}
+
+
+// #define RUN testStringStream
 void testStringStream() {
   stringstream s;
   s.str("");
