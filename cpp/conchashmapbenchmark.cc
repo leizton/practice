@@ -92,7 +92,7 @@ class ConcHashMapV1 {
   }
 
  private:
-  static const std::size_t kBucketNum = 512;
+  static const std::size_t kBucketNum = 511;
   ThreadSafeMap<K, V> buckets_[kBucketNum];
 };
 
@@ -158,13 +158,13 @@ int main() {
   testKeys(keys, mapSize);
 
   // -O0: 20086
-  // -O3: 7475
-  //hashMapBenchmark(keys, 200, 10);
+  // -O3: 7373
+  hashMapBenchmark(keys, 200, 10);
 
   // ThreadSafeMap
   //   -O0: cost1=29273, cost2=45317
   //   -O3: cost1=18442, cost2=30211
   // ConcHashMapV1
-  //   -O3: cost1=580, cost2=2112
+  //   -O3: cost1=476, cost2=1740
   threadSafedHashMapBenchmark(keys, 200, 10, 4);
 }
