@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include <functional>
 
 using namespace std;
 
@@ -59,7 +60,17 @@ void base() {
 
   p1 = p1;  // operator= 里判断 this== &another
   cout << p1.use_count();  // 3
+
+  function<shared_ptr<Foo>()> create_fn = [] {
+    return dynamic_pointer_cast<A>(make_shared<A>(10, 20));
+  };
+  function<void()> print_fn = [&create_fn] {
+    auto ptr = create_fn();
+    ptr->print();
+  };
+  print_fn();
 }
+
 
 // 管理资源. 利用析构函数释放资源
 void manageRes() {
@@ -72,7 +83,7 @@ void manageRes() {
 }
 
 
-#define RUN testBasePtrToDerivedPtr
+// #define RUN testBasePtrToDerivedPtr
 // std::dynamic_pointer_cast<T>(base_ptr)
 void testBasePtrToDerivedPtr() {
   auto base_ptr = make_shared<A>(3, 5);
