@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <string>
+#include <sstream>
 #include <algorithm>
 #include <vector>
 #include <list>
@@ -45,6 +46,29 @@ struct Foo {
   }
   int v;
 };
+
+
+#define RUN testStringStream
+void testStringStream() {
+  stringstream s;
+  s.str("");
+  s << "abc";
+  s << "\t";
+  s << 123;
+  cout << s.str() << endl;
+  cout << s.str().capacity() << endl;
+
+  s.str("");
+  cout << s.str() << endl;
+  cout << s.str().capacity() << endl;
+
+  // 复用
+  s << "def";
+  s << "\t";
+  s << 456;
+  cout << s.str() << endl;
+  cout << s.str().capacity() << endl;
+}
 
 
 // #define RUN testBoostUUID
