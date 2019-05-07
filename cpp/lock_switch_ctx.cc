@@ -17,13 +17,13 @@ int main(int argc, const char* argv[]) {
 
   auto start_tm = ChronoUtil::now();
   for (int i = 0; i < threadNum; i++) {
-    threads.push_back(std::thread([&cnt, &mtx, &incrNum] {
+    threads.emplace_back([&cnt, &mtx, &incrNum] {
       for (int i = 0; i < incrNum; i++) {
         std::lock_guard<std::mutex> lock(mtx);
         for (int j = 0; j < 1000; j++);
         cnt++;
       }
-    }));
+    });
   }
 
   for (auto& th : threads) {
