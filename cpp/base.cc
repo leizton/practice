@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <exception>
+#include <typeinfo>
 
 #include <memory>
 #include <string>
@@ -107,6 +108,7 @@ void testString() {
 }
 
 
+// #define RUN testCountDownLatch
 class CountDownLatch {
 public:
   CountDownLatch(int32_t n) : num_(n) {}
@@ -130,9 +132,6 @@ private:
   std::mutex mtx_;
   std::condition_variable cond_;
 };
-
-
-// #define RUN testCountDownLatch
 void testCountDownLatch() {
   CountDownLatch latch(2);
   thread t1([](CountDownLatch& latch) {
@@ -201,32 +200,33 @@ struct TestStaticVarInFunction {
     cout << "construct" << endl;
   }
 };
-
 void testStaticVarInFunctionRun() {
   cout << "test start" << endl;
   static TestStaticVarInFunction v;
   cout << "test end" << endl;
 }
-
 // static变量延迟初始化, 只是在bss段分配了内存空间
 void testStaticVarInFunction() {
   testStaticVarInFunctionRun();
 }
 
 
-// #define RUN testTypeid
-struct TestTypeid {
-  int x;
+#define RUN testTypeidName
+struct TypeidTest {
+  template<typename T>
+  void print(T& t) {
+    cout << typeid(t).name() << ": " << t << endl;
+  }
 };
+void testTypeidName() {
+  TypeidTest a;
+  cout << typeid(a).name() << endl;  // 10TypeidTest
 
-void testTypeid() {
-  int i;
-  string s;
-  TestTypeid a;
-  cout << typeid(i).name() << ", " << typeid(i).hash_code() << endl;  // i
-  // NSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE
-  cout << typeid(s).name() << ", " << typeid(s).hash_code() << endl;
-  cout << typeid(a).name() << ", " << typeid(a).hash_code() << endl;  // 10TestTypeid
+  int i = 1;
+  a.print<int>(i);  // i
+
+  string s("typeidtest");
+  a.print<string>(s);  // NSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEE
 }
 
 
@@ -248,7 +248,6 @@ enum Color {
   Green,
   Blue,
 };
-
 void testEnumAndInt() {
   int x = Color::Blue;  // enum to int
   cout << x << endl;    // 3
@@ -269,7 +268,6 @@ struct TestCastDerivedB : TestCastBase {
 struct TestCastDerivedC : TestCastBase {
   int c;
 };
-
 void testCast() {
   float x = 1.5;
 
@@ -309,7 +307,6 @@ struct TestDynamicCast_B : public TestDynamicCast_A {
 struct TestDynamicCast_X {
   virtual void Do() {}
 };
-
 // 向上转可以static_cast代替, 向下转需用dynamic_cast做检查
 void testDynamicCast() {
   TestDynamicCast_B b, *pb(&b);
@@ -332,13 +329,12 @@ void testDynamicCast() {
 }
 
 
+// #define RUN literalNum
 // 用户自定义字面值
 long long operator"" _k(unsigned long long x) { return x * 1000; }
 long long operator"" _K(unsigned long long x) { return (x << 10); }
 long double operator"" _k(long double x) { return x * 1000; }
 size_t operator"" _len(const char* s, size_t size) { return size; }  // size参数自动推断
-
-// #define RUN literalNum
 void literalNum() {
   cout << 2_k << endl;  // 2000
   cout << 2_K << endl;  // 2048
@@ -347,6 +343,7 @@ void literalNum() {
 }
 
 
+// #define RUN appendStr
 class StrAppender {
  public:
   StrAppender() { strs.reserve(2); }
@@ -368,14 +365,13 @@ class StrAppender {
  private:
   vector<const string> strs;
 };
-
-// #define RUN appendStr
 void appendStr() {
   string res = StrAppender("1").Append("2").Append("3").ToString();
   cout << res << endl;
 }
 
 
+// #define RUN iter
 // 支持 for(e : lst)的迭代器
 template <typename T>
 class Container {
@@ -423,8 +419,6 @@ class Container {
  private:
   vector<T> data_;
 };
-
-// #define RUN iter
 void iter() {
   Container<string> strs({"1", "2", "3"});
   for (string& e : strs) {
