@@ -14,13 +14,14 @@
 
 #include <type_traits>
 #include <typeinfo>
-
 #include <ctime>
+
 #include <chrono>
 #include <thread>
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
+#include <future>
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -48,6 +49,35 @@ struct Foo {
   }
   int v;
 };
+
+
+std::chrono::duration<int, std::milli> buildDurationMs(int ms) {
+  return std::chrono::duration<int, std::milli>(ms);
+}
+
+
+// #define RUN testFutureAndPromise
+void testFutureAndPromise() {
+  promise<int> p;
+
+  future<int> f = p.get_future();
+  future_status st = f.wait_for(buildDurationMs(3000));  // 3秒
+  cout << (st == future_status::timeout) << endl;
+
+  p.set_value(0);
+  st = f.wait_for(buildDurationMs(30000));
+  cout << (st == future_status::ready) << endl;
+
+  int v = f.get();
+  cout << v << endl;
+}
+/*
+  enum future_status {
+    ready,
+    timeout,
+    deferred
+  };
+*/
 
 
 // #define RUN testChrono
@@ -211,7 +241,7 @@ void testStaticVarInFunction() {
 }
 
 
-#define RUN testTypeidName
+// #define RUN testTypeidName
 struct TypeidTest {
   template<typename T>
   void print(T& t) {
