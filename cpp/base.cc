@@ -32,7 +32,8 @@
 using namespace std;
 
 
-struct Foo {
+// final指定类不能被继承, 也可作用于方法上
+struct Foo final {
   Foo() : v(0) {
     cout << "con foo default" << endl;
   }
