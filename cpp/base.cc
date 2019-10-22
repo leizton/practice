@@ -1,59 +1,19 @@
-#include <iostream>
-#include <fstream>
-#include <exception>
-#include <typeinfo>
-
-#include <memory>
-#include <string>
-#include <sstream>
-#include <algorithm>
-#include <vector>
-#include <list>
-#include <map>
-#include <unordered_map>
-
-#include <type_traits>
-#include <typeinfo>
-#include <ctime>
-
-#include <chrono>
-#include <thread>
-#include <atomic>
-#include <mutex>
-#include <condition_variable>
-#include <future>
-
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_io.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-
 #include "chrono_util.h"
-
-using namespace std;
-
-
-// final指定类不能被继承, 也可作用于方法上
-struct Foo final {
-  Foo() : v(0) {
-    cout << "con foo default" << endl;
-  }
-  Foo(int v) : v(v) {
-    cout << "con foo " << v << endl;
-    //this->v = v;
-  }
-  ~Foo() {
-    cout << "decon foo " << v << endl;
-  }
-  Foo(const Foo& obj) {
-    cout << "copy-con foo " << obj.v << endl;
-    this->v = obj.v;
-  }
-  int v;
-};
+#include "base.h"
 
 
-std::chrono::duration<int, std::milli> buildDurationMs(int ms) {
-  return std::chrono::duration<int, std::milli>(ms);
+// #define RUN testSharedPtrDecon
+void testSharedPtrDecon() {
+  auto b = createObj<Boo>("b");
+  auto c = createObj<Coo>("c");
+  auto a = createObj<Aoo>("a");
+  b->pa = a;
+  c->pa = a;
+  c->pb = b;
+  // 不论 a b c 的创建顺序, 析构顺序都是 c b a
+  // 依赖关系通过计数器实现
+
+  // a->pb = b; 加上这句时, a b 都不是被释放
 }
 
 
@@ -463,6 +423,7 @@ void catchException() {
   try {
     auto x = 0;
     auto y = 1 / x;
+    cout << y << endl;
   } catch (const std::exception& ex) {
     cout << ex.what() << endl;
   }
