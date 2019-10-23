@@ -1,5 +1,40 @@
 #include "chrono_util.h"
 #include "base.h"
+#include "gre_words.h"
+
+
+// #define RUN testMapAndUnorderedMap
+void testMapAndUnorderedMap() {
+  vector<string> words = getWords();
+
+  map<string, int> m1;
+  uint64_t t = nowUs();
+  for (auto& w : words) {
+    m1[w] = 1;
+  }
+  for (int i = 0; i < 4; i++) {
+    for (auto& w : words) {
+      if (m1.find(w) == m1.end()) {
+        abort();
+      }
+    }
+  }
+  cout << nowUs() - t << endl;  // 9300
+
+  unordered_map<string, int> m2;
+  t = nowUs();
+  for (auto& w : words) {
+    m2[w] = 1;
+  }
+  for (int i = 0; i < 4; i++) {
+    for (auto& w : words) {
+      if (m2.find(w) == m2.end()) {
+        abort();
+      }
+    }
+  }
+  cout << nowUs() - t << endl;  // 3700
+}
 
 
 // #define RUN testConditionVariable
