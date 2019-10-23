@@ -48,14 +48,26 @@ inline uint64_t nowUs() {
 
 
 // duration
-std::chrono::duration<int, std::ratio<1LL, 1LL>> buildDurationSec(int sec) {
+inline std::chrono::duration<int, std::ratio<1LL, 1LL>> buildDurationSec(int sec) {
   return std::chrono::duration<int, std::ratio<1LL, 1LL>>(sec);
 }
-std::chrono::duration<int, std::milli> buildDurationMs(int ms) {
+inline std::chrono::duration<int, std::milli> buildDurationMs(int ms) {
   return std::chrono::duration<int, std::milli>(ms);
 }
-std::chrono::duration<int, std::micro> buildDurationUs(int us) {
+inline std::chrono::duration<int, std::micro> buildDurationUs(int us) {
   return std::chrono::duration<int, std::micro>(us);
+}
+
+
+// sleep
+inline void sleepSec(int sec) {
+  std::this_thread::sleep_for(buildDurationSec(sec));
+}
+inline void sleepMs(int ms) {
+  std::this_thread::sleep_for(buildDurationMs(ms));
+}
+inline void sleepUs(int us) {
+  std::this_thread::sleep_for(buildDurationUs(us));
 }
 
 

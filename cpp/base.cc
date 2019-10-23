@@ -2,6 +2,40 @@
 #include "base.h"
 
 
+// #define RUN testConditionVariable
+void testConditionVariable() {
+  bool completed = false;
+  mutex mtx;
+  condition_variable cv;
+
+  thread th([&completed, &mtx, &cv]{
+    sleepSec(5);
+    {
+      unique_lock<mutex> lk(mtx);
+      completed = true;
+      cv.notify_all();  // 必须放在锁里, 防止通知语句被重排到前面
+      // 另外, 没有completed变量时也必须用锁包住notify
+      // 否则可能出现发通知时, 等待方同时判定成false, 导致跳过这条通知
+      // 加锁使notify和判定不会同时发生
+    }
+    cout << "a----" << nowMs() << endl;
+  });
+  th.detach();  // 不调用detch则需要调用th.join(), 否则会core
+                // main线程退出, 而非daemon线程未结束
+
+  bool done = false;
+  auto td = buildDurationMs(800);
+  unique_lock<mutex> lk(mtx);
+  for (int i = 0; !done; i++) {
+    // unique_lock<mutex> lk(mtx);
+    done = cv.wait_for(lk, td, [&completed]{ return completed; });
+    cout << "b-" << i << "--" << nowMs() << endl;
+  }
+  lk.unlock();
+  cout << "c----" << nowMs() << endl;
+}
+
+
 // #define RUN testSharedPtrDecon
 void testSharedPtrDecon() {
   auto b = createObj<Boo>("b");
