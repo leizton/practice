@@ -34,6 +34,22 @@
 using namespace std;
 
 
+// ostringstream的长度
+int lengthOfOstringstream(const ostringstream& ss) {
+  /**
+   * pubseekoff(off, dir, which):pos_type
+   * off:相对位置, dir:基位置, 实际位置=dir+off
+   * which: 输入流还是输出流
+   * return: 移动后的绝对位置
+   */
+  streambuf* buf = ss.rdbuf();
+  stringstream::pos_type cur = buf->pubseekoff(0, ss.cur, ios_base::out);  // 记录当前位置, 用于后面恢复
+  stringstream::pos_type end = buf->pubseekoff(0, ss.end, ios_base::out);
+  buf->pubseekpos(cur, ios_base::out);  // 恢复
+  return (int)(uint32_t)end;
+}
+
+
 // 当前时间戳
 inline uint64_t nowSec() {
   return std::chrono::duration_cast<std::chrono::seconds>(

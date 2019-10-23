@@ -3,6 +3,18 @@
 #include "gre_words.h"
 
 
+#define RUN testOstringstream
+void testOstringstream() {
+  ostringstream ss;
+  ss << 123;
+  cout << lengthOfOstringstream(ss) << endl;  // 3
+  ss << "abc";
+  cout << lengthOfOstringstream(ss) << endl;  // 6
+  ss.str("");
+  cout << lengthOfOstringstream(ss) << endl;  // 0
+}
+
+
 // #define RUN testMapAndUnorderedMap
 void testMapAndUnorderedMap() {
   vector<string> words = getWords();
