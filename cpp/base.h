@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <vector>
 #include <list>
+#include <queue>
 #include <set>
 #include <unordered_set>
 #include <map>
@@ -32,6 +33,12 @@
 #include <boost/uuid/uuid_generators.hpp>
 
 using namespace std;
+
+
+// 获取当前线程id
+uint64_t currThreadId() {
+  return std::hash<std::thread::id>{}(std::this_thread::get_id());
+}
 
 
 // ostringstream的长度

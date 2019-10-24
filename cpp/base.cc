@@ -3,6 +3,17 @@
 #include "gre_words.h"
 
 
+#define RUN testCurrThreadId
+void testCurrThreadId() {
+  cout << "main: " << currThreadId() << endl;
+  auto th = thread([] {
+    cout << "th: " << currThreadId() << endl;
+  });
+  th.join();
+  cout << "main: " << currThreadId() << endl;
+}
+
+
 // #define RUN testMapForeach
 void testMapForeach() {
   map<int, shared_ptr<int>> m;
