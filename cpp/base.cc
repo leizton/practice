@@ -3,7 +3,30 @@
 #include "gre_words.h"
 
 
-#define RUN testOstringstream
+// #define RUN testMapForeach
+void testMapForeach() {
+  map<int, shared_ptr<int>> m;
+  for (int i = 0; i < 5000; i++) {
+    m[i] = make_shared<int>(i);
+  }
+  uint64_t t1 = nowMs();
+  for (int i = 0; i < 1000; i++) {
+    for (auto& kv : m) {
+      //cout << kv.second.use_count() << endl;  // 1
+    }
+  }
+  uint64_t t2 = nowMs();
+  for (int i = 0; i < 1000; i++) {
+    for (auto iter = m.begin(); iter != m.end(); ++iter) {
+      //cout << iter->second.use_count() << endl;  // 1
+    }
+  }
+  uint64_t t3 = nowMs();
+  cout << (t2-t1) << ", " << (t3-t2) << endl;  // 50, 50
+}
+
+
+// #define RUN testOstringstream
 void testOstringstream() {
   ostringstream ss;
   ss << 123;
