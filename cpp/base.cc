@@ -3,7 +3,33 @@
 #include "gre_words.h"
 
 
-#define RUN testCurrThreadId
+// #define RUN testSnprintfAndStringStream
+void testSnprintfAndStringStream() {
+  const int run_num = 200000;
+  uint64_t t1, t2;
+
+  t1 = nowMs();
+  char s[100];
+  for (int i = 0; i < run_num; i++) {
+    snprintf(s, 100, "%s %d %ld %f", "abc", 123, 123L, 123.123);  // 77ms
+    //snprintf(s, 100, "%s ", "0123456789");  // 18ms
+  }
+  t1 = nowMs() - t1;
+
+  t2 = nowMs();
+  ostringstream ss;
+  for (int i = 0; i < run_num; i++) {
+    ss.str("");
+    ss << "123 " << 123 << " " << 123L << " " << 123.123;  // 149ms
+    //ss << "0123456789 ";  // 10ms
+  }
+  t2 = nowMs() - t2;
+
+  cout << t1 << ", " << t2 << endl;
+}
+
+
+// #define RUN testCurrThreadId
 void testCurrThreadId() {
   cout << "main: " << currThreadId() << endl;
   auto th = thread([] {
