@@ -3,6 +3,23 @@
 #include "gre_words.h"
 
 
+// #define RUN testGetline
+void testGetline() {
+  /**
+   * 输出
+   * abc
+   * ab
+   * 
+   * abcd 加上 \0 超过s的size, 所以getline()返回false
+   */
+  istringstream in("abc|ab|abcd|a");
+  char s[4];
+  while (in.getline(s, 4, '|')) {
+    cout << s << endl;
+  }
+}
+
+
 // #define RUN testSnprintfAndStringStream
 void testSnprintfAndStringStream() {
   const int run_num = 200000;
