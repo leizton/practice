@@ -234,14 +234,14 @@ void testStringStream() {
 
 // #define RUN testBoostUUID
 void testBoostUUID() {
-  auto start_tm = ChronoUtil::now();
-  for (int i = 0; i < 10; i++) {
+  // 平响13us
+  auto cost = nowUs();
+  const int num = 100;
+  for (int i = 0; i < num; i++) {
     string s = boost::uuids::to_string(boost::uuids::random_generator()());
   }
-  auto end_tm = ChronoUtil::now();
-  auto cost = ChronoUtil::timeDiff(end_tm, start_tm);
-  std::cout << "cost: " << cost << std::endl;  // 22
-  // boost获取uuid平响2ms, 性能差, 不要使用
+  cost = (nowUs() - cost) / num;
+  std::cout << "cost: " << cost << std::endl;  // 13
 }
 
 
