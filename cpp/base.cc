@@ -3,6 +3,34 @@
 #include "gre_words.h"
 
 
+#define RUN testSpinLock
+void testSpinLock() {
+  const int num = 100, thnum = 10;
+  int cnt = 0;
+  SpinLock lk;
+
+  auto run = [&]{
+    for (int i = 0; i < num; i++) {
+      lk.lock();
+      cnt++;
+      sleepUs(1);
+      lk.unlock();
+    }
+  };
+
+  vector<thread> ths;
+  for (int i = 0; i < thnum; i++) {
+    ths.emplace_back(run);
+  }
+  for (auto& th : ths) {
+    th.join();
+  }
+
+  // 没有 lk.lock() 时结果非0
+  cout << (num*thnum - cnt) << endl;
+}
+
+
 // #define RUN testGetline
 void testGetline() {
   /**

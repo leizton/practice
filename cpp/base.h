@@ -36,6 +36,27 @@
 using namespace std;
 
 
+class SpinLock {
+public:
+  SpinLock() : flag_(false) {}
+
+  void lock() {
+    bool expect = false;
+    while (!flag_.compare_exchange_strong(expect, true)) {
+      // 当cas失败时, expect是true. 所以此处必须置false
+      expect = false;
+    }
+  }
+
+  void unlock() {
+    flag_.store(false);
+  }
+
+private:
+  std::atomic<bool> flag_;
+};
+
+
 // 获取当前线程id
 uint64_t currThreadId() {
   return std::hash<std::thread::id>{}(std::this_thread::get_id());
