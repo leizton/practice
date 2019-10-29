@@ -3,7 +3,31 @@
 #include "gre_words.h"
 
 
-#define RUN testSpinLock
+// #define RUN testDynamicCast
+void testDynamicCast() {
+  class A { public: virtual ~A(){} };  // A中必须定义一个virtual才能用dynamic_cast
+  class B : public A {};
+  class C { public: virtual ~C(){} };
+
+  // dynamic_cast<T>
+  B b, *pb(&b);
+  A a, *pa(&a), *pa1(&b);
+  C c, *pc(&c);
+  ASSERT_TRUE(dynamic_cast<A*>(pb)  != nullptr);  // 向上转换
+  ASSERT_TRUE(dynamic_cast<B*>(pa)  == nullptr);  // 向下转换
+  ASSERT_TRUE(dynamic_cast<A*>(pa1) != nullptr);  // 向上转换
+  ASSERT_TRUE(dynamic_cast<A*>(pc)  == nullptr);
+
+  // dynamic_pointer_cast<T>
+  shared_ptr<A> p1(new B);
+  ASSERT_TRUE(p1.use_count() == 1);
+  shared_ptr<B> p2 = std::dynamic_pointer_cast<B>(p1);
+  ASSERT_TRUE(p1.use_count() == 2);
+  ASSERT_TRUE(p2 != nullptr);
+}
+
+
+// #define RUN testSpinLock
 void testSpinLock() {
   const int num = 100, thnum = 10;
   int cnt = 0;
@@ -472,37 +496,6 @@ void testCast() {
   float x1 = *reinterpret_cast<float*>(z);
   int x_int = *reinterpret_cast<int*>(z);
   cout << z << ", " << x1 << ", " << x_int << endl;
-}
-
-
-// #define RUN testDynamicCast
-struct TestDynamicCast_A {
-  virtual void Do() {}  // 必须是多态才能使dynamic_cast做运行时检查
-};
-struct TestDynamicCast_B : public TestDynamicCast_A {
-};
-struct TestDynamicCast_X {
-  virtual void Do() {}
-};
-// 向上转可以static_cast代替, 向下转需用dynamic_cast做检查
-void testDynamicCast() {
-  TestDynamicCast_B b, *pb(&b);
-  TestDynamicCast_A a, *pa(&a);
-  TestDynamicCast_A* pab = static_cast<TestDynamicCast_A*>(&b);
-  bool r;
-
-  r = dynamic_cast<TestDynamicCast_A*>(pb) != nullptr;  // up
-  cout << r << endl;  // true
-
-  r = dynamic_cast<TestDynamicCast_B*>(pab) != nullptr;  // down
-  cout << r << endl;  // true
-
-  r = dynamic_cast<TestDynamicCast_B*>(pa) != nullptr;  // down
-  cout << r << endl;  // false
-
-  TestDynamicCast_X x;
-  r = dynamic_cast<TestDynamicCast_A*>(&x) != nullptr;
-  cout << r << endl;  // false
 }
 
 

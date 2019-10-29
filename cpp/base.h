@@ -33,6 +33,8 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 
+#include "unit_test.h"
+
 using namespace std;
 
 
