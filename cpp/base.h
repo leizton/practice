@@ -38,6 +38,14 @@
 using namespace std;
 
 
+template<class T>
+void operator +=(vector<T>& x, vector<T> y) {
+  for (auto& e : y) {
+    x.push_back(e);
+  }
+}
+
+
 class SpinLock {
 public:
   SpinLock() : flag_(false) {}
