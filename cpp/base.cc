@@ -3,6 +3,29 @@
 #include "gre_words.h"
 
 
+// #define RUN testStringJoin
+void testStringJoin() {
+  const int n = 5000;
+  const string s("0123456789");
+  //
+  uint64_t t1 = nowUs();
+  string ret1;
+  for (int i = 0; i < n; i++) {
+    ret1 = ret1 + s;
+  }
+  t1 = nowUs() - t1;
+  //
+  uint64_t t2 = nowUs();
+  string ret2;
+  for (int i = 0; i < n; i++) {
+    ret2 += s;
+  }
+  t2 = nowUs() - t2;
+  //
+  cout << t1 << ", " << t2 << endl;  // 5100, 80
+}
+
+
 // #define RUN testDynamicCast
 void testDynamicCast() {
   class A { public: virtual ~A(){} };  // A中必须定义一个virtual才能用dynamic_cast
