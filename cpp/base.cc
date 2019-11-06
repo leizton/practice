@@ -3,6 +3,57 @@
 #include "gre_words.h"
 
 
+// #define RUN testFunctionCopy
+void testFunctionCopyUtil1(Aoo a) {
+  cout << "util1 " << a.v << endl;
+}
+void testFunctionCopyUtil2(Aoo& a) {
+  cout << "util2 " << a.v << endl;
+}
+void testFunctionCopyUtil3(Aoo* a) {
+  cout << "util3 " << a->v << endl;
+}
+void testFunctionCopy() {
+  Aoo a("a1");
+  cout << "\n\n";
+
+  /**
+   * 3次拷贝
+   * a 进入 bind 是 con&-2
+   * bind 返回的临时变量传给 f1 是 con&&-3
+   * f1产生后析构临时变量 decon-2
+   * f1调用时, 传给 testFunctionCopyUtil1 是 con&-4
+   */
+  cout << "*************** 1\n";
+  function<void()> f1 = bind(testFunctionCopyUtil1, a);
+  f1();
+  cout << "***************\n\n";
+
+  /**
+   * 2次拷贝
+   * 省去f2调用时的一次拷贝
+   */
+  cout << "*************** 2\n";
+  function<void()> f2 = bind(testFunctionCopyUtil2, a);
+  f2();
+  cout << "***************\n\n";
+
+  // 0次拷贝
+  cout << "*************** 3\n";
+  function<void()> f3 = bind(testFunctionCopyUtil3, &a);
+  f3();
+  cout << "***************\n\n";
+
+  // 0次拷贝
+  cout << "*************** 4\n";
+  function<void()> f4 = [&a] {
+    testFunctionCopyUtil2(a);
+  };
+  f4();
+  cout << "***************\n\n";
+}
+
+
 // #define RUN testStringJoin
 void testStringJoin() {
   const int n = 5000;
@@ -630,6 +681,11 @@ void catchException() {
     cout << ex.what() << endl;
   }
 }
+
+
+atomic<uint32_t> Aoo::id_;
+atomic<uint32_t> Boo::id_;
+atomic<uint32_t> Coo::id_;
 
 
 int main() {
