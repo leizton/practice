@@ -3,7 +3,22 @@
 #include "gre_words.h"
 
 
-#define RUN testMutable
+// #define RUN testConstCast
+void testConstCastUtil(const int& x) {
+  COUT(x);
+}
+void testConstCast() {
+  const int n = 1;
+  int* x = const_cast<int*>(&n);
+  *x = 2;
+  COUT(*x);     // 2
+  COUT(n);      // 1, 被编译器处理
+  COUT(*(&n));  // 2
+  testConstCastUtil(n);  // 2
+}
+
+
+// #define RUN testMutable
 void testMutableUtil(Aoo& a) { a.v = "test-"+to_string(std::rand()); }
 struct TestMutableClz {
   void print() const { testMutableUtil(a_); COUT(a_.v); }
