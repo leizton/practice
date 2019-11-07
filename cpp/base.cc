@@ -3,6 +3,19 @@
 #include "gre_words.h"
 
 
+#define RUN testMutable
+void testMutableUtil(Aoo& a) { a.v = "test-"+to_string(std::rand()); }
+struct TestMutableClz {
+  void print() const { testMutableUtil(a_); COUT(a_.v); }
+  mutable Aoo a_;
+};
+void testMutable() {
+  const TestMutableClz x;
+  x.print();
+  x.print();
+}
+
+
 // #define RUN testFunctionCopy
 void testFunctionCopyUtil1(Aoo a) {
   cout << "util1 " << a.v << endl;

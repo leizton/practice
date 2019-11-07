@@ -4,6 +4,9 @@
 #include <sstream>
 #include <string>
 
+
+#define COUT(expr) std::cout << (expr) << std::endl;
+
 #define FMTSTR_SIZE 1024
 #define FMTSTR\
   char fmtstrtmp[FMTSTR_SIZE]; {va_list ap; va_start(ap, fmt);\
