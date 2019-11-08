@@ -5,7 +5,7 @@
 #include <string>
 
 
-#define COUT(expr) std::cout << (expr) << std::endl;
+#define COUT(expr) std::cout << std::boolalpha << (expr) << std::endl;
 
 #define FMTSTR_SIZE 1024
 #define FMTSTR\
@@ -30,3 +30,17 @@ void fmtprint(const char* file, const int line, const char* func, const char* fm
     PRINT("assert_true error: %s", #expr);\
     exit(1);\
   }
+
+template<typename Map>
+std::string map_to_string(Map m) {
+  std::ostringstream ss;
+  ss << std::boolalpha << "[";
+  bool first = true;
+  for (auto& it : m) {
+    if (!first) ss << ",";
+    else first = false;
+    ss << it.first << "=" << it.second;
+  }
+  ss << "]";
+  return ss.str();
+}
