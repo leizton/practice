@@ -3,6 +3,13 @@
 #include "gre_words.h"
 
 
+// #define RUN testMacro_CSTR
+void testMacro_CSTR() {
+  VAR_STR(testMacro_CSTR);
+  cout << testMacro_CSTR << endl;
+}
+
+
 // #define RUN testConstCast
 void testConstCastUtil(const int& x) {
   COUT(x);

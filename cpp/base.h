@@ -39,6 +39,10 @@
 using namespace std;
 
 
+#define CSTR(s) #s
+#define VAR_STR(s) std::string s(CSTR(s));
+
+
 template<class T>
 void operator +=(vector<T>& x, vector<T> y) {
   for (auto& e : y) {
