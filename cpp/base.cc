@@ -3,6 +3,31 @@
 #include "gre_words.h"
 
 
+// #define RUN testBindMemberFunc
+struct TBindMemberFunc_Base { virtual void run(string) =0; };
+struct TBindMemberFunc_Impl : TBindMemberFunc_Base {
+  void run(string v) override { cout << "impl: " << v << endl; }
+};
+TBindMemberFunc_Base* TBindMemberFunc_create() { return new TBindMemberFunc_Impl; }
+void testBindMemberFunc() {
+  TBindMemberFunc_Base* base = TBindMemberFunc_create();
+
+  std::function<void(string)> t1 = [base] (string v) { base->run(v); };
+  t1("lambda");
+
+  // 需要加占位符
+  std::function<void(string)> t2 = std::bind(
+    &TBindMemberFunc_Base::run, base, std::placeholders::_1
+  );
+  t2("bind");
+
+  std::function<void(TBindMemberFunc_Base*)> t3 = std::bind(
+    &TBindMemberFunc_Base::run, std::placeholders::_1, "t3"
+  );
+  t3(base);
+}
+
+
 // #define RUN testMacro_CSTR
 void testMacro_CSTR() {
   VAR_STR(testMacro_CSTR);
