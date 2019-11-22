@@ -26,8 +26,12 @@ proto_cpp=" \
 
 rm -f a.out
 
-g++ -std=c++11 -I./target -g -O0 $@ $proto_cpp -lpthread -lprotobuf
+if [ $# -lt 1 ]; then
+  g++ -std=c++11 -I./target -g -O0 test.cc $proto_cpp -lpthread -lprotobuf
+else
+  g++ -std=c++11 -I./target -g -O0 $@ $proto_cpp -lpthread -lprotobuf
+fi
 
 if [ -f a.out ]; then
-    ./a.out
+  ./a.out
 fi

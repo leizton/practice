@@ -6,8 +6,8 @@ if [ $# -lt 1 ]; then
   g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O3 -I$include_dir main.cc -pthread
 else
   g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O3 -I$include_dir $@ -pthread
-fi  
+fi
 
 if [ -f a.out ]; then
-    ./a.out
+  ./a.out
 fi

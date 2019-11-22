@@ -118,6 +118,10 @@ void testToString() {
 int main() {
   std::cout << std::boolalpha;
   std::cout << "----------" << std::endl;
+#ifdef RUN
   RUN();
+#else
+  test();
+#endif
   std::cout << "----------" << std::endl;
 }
