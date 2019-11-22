@@ -33,6 +33,7 @@ void buildShopCart(prototest::ShopCart& shop) {
   goods.set_id(2001);
   goods.set_name("apple");
   goods.set_price(1.5);
+  goods.set_kind(prototest::GoodsKind::kFood);
   item.set_num(3);
 }
 
