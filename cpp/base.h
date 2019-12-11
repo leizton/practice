@@ -44,10 +44,22 @@ using namespace std;
 
 
 template<class T>
-void operator +=(vector<T>& x, vector<T> y) {
-  for (auto& e : y) {
-    x.push_back(e);
+ostream& operator <<(ostream& out, vector<T> v) {
+  out << "[";
+  bool first = true;
+  for (T& e : v) {
+    if (!first) out << ",";
+    first = false;
+    out << e;
   }
+  out << "]";
+  return out;
+}
+
+
+template<class T>
+void operator +=(vector<T>& x, vector<T> y) {
+  x.insert(x.end(), y.begin(), y.end());
 }
 
 

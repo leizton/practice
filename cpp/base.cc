@@ -565,6 +565,15 @@ void testTypeidName() {
 }
 
 
+// #define RUN testVectorInsert
+void testVectorInsert() {
+  vector<int> v1, v2;
+  v1 += {1,2,3};
+  v2.insert(v2.end(), v1.rbegin(), v1.rend());
+  cout << v2 << endl;  // [3,2,1]
+}
+
+
 // #define RUN testVectorExpandCapacity
 // vector扩容时调用copy-con, 不能直接用memcpy, 因为copy-con里可能执行了其他用户逻辑
 void testVectorExpandCapacity() {
