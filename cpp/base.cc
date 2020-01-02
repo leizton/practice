@@ -3,6 +3,21 @@
 #include "gre_words.h"
 
 
+// #define RUN testInitialListOverload
+// 初始化列表重载
+void TInitialListOverload(vector<string> v) {
+  cout << "vec: " << v[0] << endl;
+}
+void TInitialListOverload(string s) {
+  cout << "str: " << s << endl;
+}
+void testInitialListOverload() {
+  TInitialListOverload({{"1"}, {"2"}});  // vec
+  TInitialListOverload("3");             // str
+  // TInitialListOverload({"4", "5"});   // overload ambiguous
+}
+
+
 // #define RUN testBindMemberFunc
 struct TBindMemberFunc_Base { virtual void run(string) =0; };
 struct TBindMemberFunc_Impl : TBindMemberFunc_Base {
