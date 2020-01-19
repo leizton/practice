@@ -770,6 +770,7 @@ void catchException() {
 atomic<uint32_t> Aoo::id_;
 atomic<uint32_t> Boo::id_;
 atomic<uint32_t> Coo::id_;
+const set<string> TestStatic::empty_set;
 
 
 int main() {

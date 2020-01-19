@@ -211,3 +211,8 @@ struct Coo {
   BooPtr pb;
   static atomic<uint32_t> id_;
 };
+
+class TestStatic {
+public:
+  static const set<string> empty_set;
+};
