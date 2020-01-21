@@ -332,8 +332,12 @@ void testConditionVariable() {
   bool completed = false;
   mutex mtx;
   condition_variable cv;
+  const uint64_t start_ms = nowMs();
+  auto get_ts = [start_ms] () -> uint64_t {
+    return nowMs() - start_ms;
+  };
 
-  thread th([&completed, &mtx, &cv]{
+  thread th([&completed, &mtx, &cv, get_ts]{
     sleepSec(5);
     {
       unique_lock<mutex> lk(mtx);
@@ -343,10 +347,10 @@ void testConditionVariable() {
       // 否则可能出现发通知时, 等待方同时判定成false, 导致跳过这条通知
       // 加锁使notify和判定不会同时发生
     }
-    cout << "a----" << nowMs() << endl;
+    cout << "a----" << get_ts() << endl;
   });
   th.detach();  // 不调用detch则需要调用th.join(), 否则会core
-                // main线程退出, 而非daemon线程未结束
+                // 原因是main线程退出, 而非daemon线程未退出
 
   bool done = false;
   auto td = buildDurationMs(800);
@@ -354,10 +358,10 @@ void testConditionVariable() {
   for (int i = 0; !done; i++) {
     // unique_lock<mutex> lk(mtx);
     done = cv.wait_for(lk, td, [&completed]{ return completed; });
-    cout << "b-" << i << "--" << nowMs() << endl;
+    cout << "b-" << i << "--" << get_ts() << endl;
   }
   lk.unlock();
-  cout << "c----" << nowMs() << endl;
+  cout << "c----" << get_ts() << endl;
 }
 
 
