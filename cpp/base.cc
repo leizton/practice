@@ -580,6 +580,17 @@ void testTypeidName() {
 }
 
 
+// #define RUN testVectorSwap
+void testVectorSwap() {
+  // vector swap时, 直接换 a[0] b[0] 的地址
+  vector<int> a={1,3,2}, b={4,6,5};
+  cout << reinterpret_cast<uint64_t>(&a[0]) << ", " << reinterpret_cast<uint64_t>(&b[0]) << endl;
+  a.swap(b);
+  cout << reinterpret_cast<uint64_t>(&a[0]) << ", " << reinterpret_cast<uint64_t>(&b[0]) << endl;
+  cout << a << ", " << b << endl;
+}
+
+
 // #define RUN testVectorInsert
 void testVectorInsert() {
   vector<int> v1, v2;
