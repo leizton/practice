@@ -212,6 +212,29 @@ struct Coo {
   static atomic<uint32_t> id_;
 };
 
+class Bufcout {
+public:
+  Bufcout() {}
+
+  ostringstream out_;
+
+  constexpr static Bufcout* endl = nullptr;
+};
+
+template <class T>
+Bufcout&& operator <<(Bufcout&& out, T v) {
+  out.out_ << v;
+  return std::move(out);
+}
+
+Bufcout&& operator <<(Bufcout&& out, Bufcout* bc) {
+  if (bc != Bufcout::endl) {
+    return std::move(out);
+  }
+  cout << out.out_.str() << endl;
+  return std::move(out);
+}
+
 class TestStatic {
 public:
   static const set<string> empty_set;
