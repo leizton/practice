@@ -258,6 +258,23 @@ void testCurrThreadId() {
 }
 
 
+// #define RUN testMapInsert
+struct TestMapInsert { TestMapInsert(int) {} };
+struct TestMapInsertA { TestMapInsertA() {} };
+void testMapInsert() {
+  map<int, TestMapInsert> m;
+  m.insert({1, TestMapInsert(1)});
+  m.insert( std::pair<int, TestMapInsert>(2, TestMapInsert(2)) );
+  m.insert( std::make_pair(3, TestMapInsert(3)) );
+  // m[1] = TestMapInsert(1);  compile error: TestMapInsert没有无参构造函数
+  cout << m.size() << endl;
+
+  map<int, TestMapInsertA> m1;
+  m1[1] = TestMapInsertA();
+  cout << m1.size() << endl;
+}
+
+
 // #define RUN testMapForeach
 void testMapForeach() {
   map<int, shared_ptr<int>> m;
@@ -278,18 +295,6 @@ void testMapForeach() {
   }
   uint64_t t3 = nowMs();
   cout << (t2-t1) << ", " << (t3-t2) << endl;  // 50, 50
-}
-
-
-// #define RUN testOstringstream
-void testOstringstream() {
-  ostringstream ss;
-  ss << 123;
-  cout << lengthOfOstringstream(ss) << endl;  // 3
-  ss << "abc";
-  cout << lengthOfOstringstream(ss) << endl;  // 6
-  ss.str("");
-  cout << lengthOfOstringstream(ss) << endl;  // 0
 }
 
 
@@ -613,6 +618,18 @@ void testVectorExpandCapacity() {
     v.emplace_back(i);
     cout << "  " << old_cap << ", " << v.capacity() << endl;
   }
+}
+
+
+// #define RUN testOstringstream
+void testOstringstream() {
+  ostringstream ss;
+  ss << 123;
+  cout << lengthOfOstringstream(ss) << endl;  // 3
+  ss << "abc";
+  cout << lengthOfOstringstream(ss) << endl;  // 6
+  ss.str("");
+  cout << lengthOfOstringstream(ss) << endl;  // 0
 }
 
 
