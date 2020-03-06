@@ -56,6 +56,19 @@ ostream& operator <<(ostream& out, vector<T> v) {
   return out;
 }
 
+template<class K, class V>
+ostream& operator <<(ostream& out, map<K,V> m) {
+  out << "[";
+  bool first = true;
+  for (auto& p : m) {
+    if (!first) out << ",";
+    first = false;
+    out << p.first << "=" << p.second;
+  }
+  out << "]";
+  return out;
+}
+
 
 template<class T>
 void operator +=(vector<T>& x, vector<T> y) {
