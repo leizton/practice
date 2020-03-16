@@ -5,7 +5,7 @@ include_dir=../include
 if [ $# -lt 1 ]; then
   g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O3 -I$include_dir main.cc -pthread
 else
-  g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O3 -I$include_dir $@ -pthread
+  g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O3 -I$include_dir "$1.cc" -pthread
 fi
 
 if [ -f a.out ]; then
