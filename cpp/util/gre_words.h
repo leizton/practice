@@ -1,10 +1,10 @@
-#include "base.h"
+#include "cpp_lib.h"
 
 vector<string> getWords() {
   vector<string> words;
   words.reserve(8000);
 
-  ifstream fin("gre_words.txt");
+  ifstream fin("util/gre_words.txt");
   string line;
   while (std::getline(fin, line)) {
     if (line.empty()) continue;

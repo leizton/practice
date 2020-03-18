@@ -1,6 +1,4 @@
-#include "chrono_util.h"
-#include "base.h"
-#include "gre_words.h"
+#include "util/base.h"
 
 
 // #define RUN testInitialListOverload
@@ -44,6 +42,8 @@ void testBindMemberFunc() {
 
 
 // #define RUN testMacro_CSTR
+#define CSTR(s) #s
+#define VAR_STR(s) std::string s(CSTR(s));
 void testMacro_CSTR() {
   VAR_STR(testMacro_CSTR);
   cout << testMacro_CSTR << endl;
@@ -52,15 +52,15 @@ void testMacro_CSTR() {
 
 // #define RUN testConstCast
 void testConstCastUtil(const int& x) {
-  COUT(x);
+  print(x);
 }
 void testConstCast() {
   const int n = 1;
   int* x = const_cast<int*>(&n);
   *x = 2;
-  COUT(*x);     // 2
-  COUT(n);      // 1, 被编译器处理
-  COUT(*(&n));  // 2
+  print(*x);     // 2
+  print(n);      // 1, 被编译器处理
+  print(*(&n));  // 2
   testConstCastUtil(n);  // 2
 }
 
@@ -68,7 +68,7 @@ void testConstCast() {
 // #define RUN testMutable
 void testMutableUtil(Aoo& a) { a.v = "test-"+to_string(std::rand()); }
 struct TestMutableClz {
-  void print() const { testMutableUtil(a_); COUT(a_.v); }
+  void print() const { testMutableUtil(a_); print(a_.v); }
   mutable Aoo a_;
 };
 void testMutable() {
@@ -162,21 +162,35 @@ void testDynamicCast() {
   B b, *pb(&b);
   A a, *pa(&a), *pa1(&b);
   C c, *pc(&c);
-  ASSERT_TRUE(dynamic_cast<A*>(pb)  != nullptr);  // 向上转换
-  ASSERT_TRUE(dynamic_cast<B*>(pa)  == nullptr);  // 向下转换
-  ASSERT_TRUE(dynamic_cast<A*>(pa1) != nullptr);  // 向上转换
-  ASSERT_TRUE(dynamic_cast<A*>(pc)  == nullptr);
+  assert_T(dynamic_cast<A*>(pb)  != nullptr);  // 向上转换
+  assert_T(dynamic_cast<B*>(pa)  == nullptr);  // 向下转换
+  assert_T(dynamic_cast<A*>(pa1) != nullptr);  // 向上转换
+  assert_T(dynamic_cast<A*>(pc)  == nullptr);
 
   // dynamic_pointer_cast<T>
   shared_ptr<A> p1(new B);
-  ASSERT_TRUE(p1.use_count() == 1);
+  assert_T(p1.use_count() == 1);
   shared_ptr<B> p2 = std::dynamic_pointer_cast<B>(p1);
-  ASSERT_TRUE(p1.use_count() == 2);
-  ASSERT_TRUE(p2 != nullptr);
+  assert_T(p1.use_count() == 2);
+  assert_T(p2 != nullptr);
 }
 
 
 // #define RUN testSpinLock
+struct SpinLock {
+  SpinLock() : flag_(false) {}
+  void lock() {
+    bool expect = false;
+    while (!flag_.compare_exchange_strong(expect, true)) {
+      // 当cas失败时, expect是true. 所以此处必须置false
+      expect = false;
+    }
+  }
+  void unlock() {
+    flag_.store(false);
+  }
+  std::atomic<bool> flag_;
+};
 void testSpinLock() {
   const int num = 100, thnum = 10;
   int cnt = 0;
@@ -372,9 +386,9 @@ void testConditionVariable() {
 
 // #define RUN testSharedPtrDecon
 void testSharedPtrDecon() {
-  auto b = createObj<Boo>("b");
-  auto c = createObj<Coo>("c");
-  auto a = createObj<Aoo>("a");
+  auto b = make_shared<Boo>("b");
+  auto c = make_shared<Coo>("c");
+  auto a = make_shared<Aoo>("a");
   b->pa = a;
   c->pa = a;
   c->pb = b;
@@ -515,20 +529,12 @@ void testCountDownLatch() {
 }
 
 
-// #define RUN testNullReference
-void testNullReference() {
-  Foo* p = static_cast<Foo*>(nullptr);
-  Foo& r = *p;  // 此时并没有访问p所指内存(没有读写操作)
-  cout << reinterpret_cast<uint64_t>(&r) << endl;
-}
-
-
 // #define RUN testSharedPtrForArray
 void testSharedPtrForArray() {
-  Foo* foos = new Foo[2];
-  shared_ptr<void> ptr(nullptr, [foos](void* p) {
+  Aoo* objs = new Aoo[2];
+  shared_ptr<void> ptr(nullptr, [objs](void* p) {
     cout << reinterpret_cast<uint64_t>(p) << endl;  // 0
-    delete[] foos;
+    delete[] objs;
   });
 }
 
@@ -550,23 +556,6 @@ void test_ConstIterator_And_IteratorConst() {
   *it1 = 100;
   // *(++it1) = 200; error
   cout << *l.begin() << ", " << *(++l.begin()) << endl;
-}
-
-
-// #define RUN testStaticVarInFunction
-struct TestStaticVarInFunction {
-  TestStaticVarInFunction() {
-    cout << "construct" << endl;
-  }
-};
-void testStaticVarInFunctionRun() {
-  cout << "test start" << endl;
-  static TestStaticVarInFunction v;
-  cout << "test end" << endl;
-}
-// static变量延迟初始化, 只是在bss段分配了内存空间
-void testStaticVarInFunction() {
-  testStaticVarInFunctionRun();
 }
 
 
@@ -799,15 +788,4 @@ void catchException() {
 }
 
 
-atomic<uint32_t> Aoo::id_;
-atomic<uint32_t> Boo::id_;
-atomic<uint32_t> Coo::id_;
-const set<string> TestStatic::empty_set;
-
-
-int main() {
-  std::cout << std::boolalpha;
-  std::cout << "----------" << std::endl;
-  RUN();
-  std::cout << "----------" << std::endl;
-}
+main_run;
