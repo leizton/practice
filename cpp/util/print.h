@@ -17,6 +17,8 @@ void _printfmt(const char* file, const int line, const char* func, const char* f
 
 #define print(expr) std::cout << std::boolalpha << (expr) << std::endl;
 
+void println(int n=1) { while (n-- > 0) std::cout << std::endl; }
+
 template<class T>
 ostream& operator<<(ostream& out, vector<T> v) {
   out << "[";

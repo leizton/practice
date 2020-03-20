@@ -49,10 +49,13 @@ atomic<uint32_t> Aoo::id_;\
 atomic<uint32_t> Boo::id_;\
 atomic<uint32_t> Coo::id_;\
 int main() {\
-  std::cout << std::boolalpha;\
-  std::cout << "----------" << std::endl;\
+  using namespace std;\
+  cout << std::boolalpha;\
+  for (int i = 0; i < 5; i++) cout << "----------";\
+  cout << endl;\
   RUN();\
-  std::cout << "----------" << std::endl;\
+  for (int i = 0; i < 5; i++) cout << "----------";\
+  cout << endl;\
 }
 
 #define def(test_func) void test_func()
