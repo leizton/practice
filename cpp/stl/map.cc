@@ -20,4 +20,23 @@ def(get_or_create) {
 }
 
 
+def(emplace_insert) {
+  map<string, string> a;
+  string s = "123", key = "a";
+  a.emplace(key, s);
+  assert_eq("123", a[key]);
+
+  // emplace insert 重复插入时不会覆盖
+  s = "456";
+  a.emplace(key, s);
+  assert_eq("123", a[key]);
+  a.insert({key, s});
+  assert_eq("123", a[key]);
+
+  // operator[] 会覆盖
+  a[key] = s;
+  assert_eq("456", a[key]);
+}
+
+
 main_run;
