@@ -23,6 +23,7 @@
 #include <condition_variable>
 #include <future>
 
+#include <utility>
 #include <exception>
 #include <type_traits>
 #include <typeinfo>
