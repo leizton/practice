@@ -12,3 +12,5 @@ fi
 if [ -f a.out ]; then
   ./a.out
 fi
+
+rm -rf a.out*

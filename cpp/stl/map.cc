@@ -8,8 +8,8 @@ def(get_or_create) {
   Any* val = nullptr;
   auto it = m.find(key);
   if (it == m.end()) {
-    auto ret = m.insert({key, Any(0)});
-    val = &ret.first->second;
+    pair<map<int, Any>::iterator, bool> new_pair = m.insert({key, Any(0)});
+    val = &new_pair.first->second;
   } else {
     val = &it->second;
   }
