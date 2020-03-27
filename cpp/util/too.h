@@ -15,6 +15,7 @@ struct Aoo {
   const uint32_t id;
   string v;
   BooPtr pb;
+private:
   static atomic<uint32_t> id_;
 };
 
@@ -26,6 +27,7 @@ struct Boo {
   const uint32_t id;
   string v;
   AooPtr pa;
+private:
   static atomic<uint32_t> id_;
 };
 
@@ -38,5 +40,6 @@ struct Coo {
   string v;
   AooPtr pa;
   BooPtr pb;
+private:
   static atomic<uint32_t> id_;
 };
