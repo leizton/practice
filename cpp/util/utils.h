@@ -60,3 +60,5 @@ int main() {\
 
 #define def(test_func) void test_func()
 #define run(test_func) void RUN()
+
+#define comment(x) 0
