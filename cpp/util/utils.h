@@ -58,7 +58,7 @@ int main() {\
   cout << endl;\
 }
 
-#define def(test_func) void test_func()
-#define run(test_func) void RUN()
+#define def(func) void test_##func()
+#define run(func) void RUN()
 
 #define comment(x) 0
