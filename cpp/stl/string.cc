@@ -10,6 +10,18 @@ def(find_rfind) {
 }
 
 
+def(starts_with) {
+  auto starts_with = [](const string& s, const string& prefix) {
+    return s.find(prefix) == 0u;
+  };
+  string s = "12345";
+  assert_T(starts_with(s, "123"));
+  assert_T(starts_with(s, ""));
+  assert_F(starts_with(s, "abc"));
+  assert_F(starts_with(s, "123456"));
+}
+
+
 def(dirpath) {
   auto getDirpath = [] (const string& path) -> string {
     auto idx = path.rfind('/');
