@@ -38,3 +38,5 @@
 #include <boost/uuid/uuid_generators.hpp>
 
 using namespace std;
+
+#define reload_os_out(type) friend std::ostream& operator<<(std::ostream& out, const type& obj)

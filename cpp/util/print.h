@@ -20,6 +20,13 @@ void _printfmt(const char* file, const int line, const char* func, const char* f
 void println(int n=1) { while (n-- > 0) std::cout << std::endl; }
 
 template<class T>
+string to_str(T v) {
+  ostringstream ss;
+  ss << v;
+  return ss.str();
+}
+
+template<class T>
 ostream& operator<<(ostream& out, vector<T> v) {
   out << "[";
   bool first = true;
@@ -56,25 +63,4 @@ ostream& operator <<(ostream& out, const unordered_map<K,V>& m) {
   }
   out << "]";
   return out;
-}
-
-template<class T>
-void printvec(vector<T> v) {
-  ostringstream ss;
-  ss << v << "\n";
-  cout << ss.str();
-}
-
-template<class K, class V>
-void printmap(map<K,V> m) {
-  ostringstream ss;
-  ss << m << "\n";
-  cout << ss.str();
-}
-
-template<class K, class V>
-void printunmap(unordered_map<K,V> m) {
-  ostringstream ss;
-  ss << m << "\n";
-  cout << ss.str();
 }

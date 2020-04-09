@@ -1,5 +1,12 @@
 #include "util/cpp_lib.h"
 
+struct Int {
+  int v;
+  Int(int v_ = 0) : v(v_) {}
+  reload_os_out(Int) { out << obj.v; return out; }
+  friend bool operator<(const Int& x, const Int& y) { return x.v < y.v; }
+};
+
 struct Aoo;
 struct Boo;
 struct Coo;

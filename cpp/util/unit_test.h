@@ -4,6 +4,18 @@
 
 #define OSS std::ostringstream
 
+#define assert_T(expr) if (expr) {\
+  OSS ss; ss << "[" << __LINE__ << "] assert_T ok\n"; cout << ss.str();\
+} else {\
+  OSS ss; ss << "[" << __LINE__ << "] assert_T fail\n"; cout << ss.str();\
+}
+
+#define assert_F(expr) if (expr) {\
+  OSS ss; ss << "[" << __LINE__ << "] assert_F fail\n"; cout << ss.str();\
+} else { \
+  OSS ss; ss << "[" << __LINE__ << "] assert_F ok\n"; cout << ss.str();\
+}
+
 #define assert_eq(expect, actual) {\
   auto actual_v = actual;\
   _assert_eq(__LINE__, expect, actual_v);\
@@ -35,16 +47,4 @@ void _assert_eq(int lineno, T expect, U actual) {
   }
   ss << "\n";
   cout << ss.str();
-}
-
-#define assert_T(expr) if (expr) {\
-  OSS ss; ss << "[" << __LINE__ << "] assert_T ok\n"; cout << ss.str();\
-} else {\
-  OSS ss; ss << "[" << __LINE__ << "] assert_T fail\n"; cout << ss.str();\
-}
-
-#define assert_F(expr) if (expr) {\
-  OSS ss; ss << "[" << __LINE__ << "] assert_F fail\n"; cout << ss.str();\
-} else { \
-  OSS ss; ss << "[" << __LINE__ << "] assert_F ok\n"; cout << ss.str();\
 }
