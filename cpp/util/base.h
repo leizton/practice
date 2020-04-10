@@ -1,6 +1,7 @@
 #pragma once
 
 #include "util/cpp_lib.h"
+#include "util/singleton.h"
 #include "util/print.h"
 #include "util/utils.h"
 #include "util/too.h"
