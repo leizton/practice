@@ -11,16 +11,17 @@ SFINAE: substitution failure is not a error, 替换失败未必是一个错误
 // 利用SFINAE根据条件选择合适的函数重载或特化的实现
 template<bool B, class T=void> struct enable_if {};
 template<true, class T> struct enable_if { typedef T type; };
+利用SFINAE时, 一般enable_if<b>::type都是void, b只是用来选择编译哪段代码
 #endif
 struct EnableIfTest {
   template<class T>
-  static typename enable_if<is_integral<T>::value>::type
+  static typename enable_if<is_integral<T>::value>::type  // void
   test(const string& s) {
     cout << "i" << std::stoi(s) << endl;
   }
 
   template<class T>
-  static typename enable_if<is_floating_point<T>::value>::type
+  static typename enable_if<is_floating_point<T>::value>::type  // void
   test(const string& s) {
     cout << "f" << std::stof(s) << endl;
   }
