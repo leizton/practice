@@ -48,3 +48,36 @@ void _assert_eq(int lineno, T expect, U actual) {
   ss << "\n";
   cout << ss.str();
 }
+
+#define assert_neq(expect, actual) {\
+  auto actual_v = actual;\
+  _assert_neq(__LINE__, expect, actual_v);\
+}
+
+template<class T=const char*, class U=const char*>
+void _assert_neq(int lineno, const char* expect, const char* actual) {
+  OSS ss;
+  ss << "[" << lineno << "] assert_neq";
+  if (strcmp(expect, actual) == 0) {
+    ss << " fail.";
+  } else {
+    ss << " ok.";
+  }
+  ss << " expect=\"" << expect << "\", actual=\"" << actual << "\"";
+  ss << "\n";
+  cout << ss.str();
+}
+
+template<class T, class U>
+void _assert_neq(int lineno, T expect, U actual) {
+  OSS ss;
+  ss << "[" << lineno << "] assert_eq";
+  if (expect == actual) {
+    ss << " fail.";
+  } else {
+    ss << " ok.";
+  }
+  ss << " expect=" << expect << ", actual=" << actual;
+  ss << "\n";
+  cout << ss.str();
+}

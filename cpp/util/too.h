@@ -1,5 +1,9 @@
 #include "util/cpp_lib.h"
 
+struct TrivialInt {
+  int v;
+};
+
 struct Int {
   int v;
   Int(int v_ = 0) : v(v_) {}

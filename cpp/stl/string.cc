@@ -33,4 +33,21 @@ def(dirpath) {
 }
 
 
+def(basic_string_deep_copy) {
+  const int N = 3;
+  TrivialInt arr[N];
+  for (int i = 0; i < N; i++) arr[i].v = 0;
+
+  // arr到s是深拷贝
+  basic_string<TrivialInt> s(arr, arr+3);
+  assert_eq(3, s.size());
+
+  assert_eq(arr[1].v, s[1].v);
+  s[1].v = 10;
+  assert_neq(arr[1].v, s[1].v);
+
+  assert_neq(arr, s.data());
+}
+
+
 main_run;
