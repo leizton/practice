@@ -71,7 +71,7 @@ void _assert_neq(int lineno, const char* expect, const char* actual) {
 template<class T, class U>
 void _assert_neq(int lineno, T expect, U actual) {
   OSS ss;
-  ss << "[" << lineno << "] assert_eq";
+  ss << "[" << lineno << "] assert_neq";
   if (expect == actual) {
     ss << " fail.";
   } else {
