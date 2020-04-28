@@ -38,7 +38,7 @@ def(basic_string_deep_copy) {
   TrivialInt arr[N];
   for (int i = 0; i < N; i++) arr[i].v = 0;
 
-  // arr到s是深拷贝
+  // arr到s是浅拷贝
   basic_string<TrivialInt> s(arr, arr+3);
   assert_eq(3, s.size());
   assert_neq(arr, s.data());
