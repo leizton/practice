@@ -1,7 +1,7 @@
 #! /bin/bash
 rm -f a.out
 
-CPP='g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O3 -I.'
+CPP='g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O2 -I.'
 
 if [ $# -lt 1 ]; then
   $CPP main.cc -pthread

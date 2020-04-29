@@ -4,9 +4,9 @@
 def(find_rfind) {
   string s = "a/b/c/d";
   assert_eq(std::string::npos, s.find('\\'));
-  assert_eq(1, s.find('/'));
-  assert_eq(3, s.find('/', 2));
-  assert_eq(5, s.rfind('/'));
+  assert_eq(1u, s.find('/'));
+  assert_eq(3u, s.find('/', 2));
+  assert_eq(5u, s.rfind('/'));
 }
 
 
@@ -33,19 +33,25 @@ def(dirpath) {
 }
 
 
-def(basic_string_deep_copy) {
+def(string_deep_or_shallow_copy) {
+  // 都是 deep-copy. 不同gcc结果不同
+  char a[10] = "123";
+  string s(a);
+  assert_neq(ptrToInt(a), ptrToInt(s.c_str()));
+  string s1(s);
+  assert_neq(ptrToInt(s.c_str()), ptrToInt(s1.c_str()));
+
   const int N = 3;
   TrivialInt arr[N];
   for (int i = 0; i < N; i++) arr[i].v = 0;
 
-  // arr到s是浅拷贝
-  basic_string<TrivialInt> s(arr, arr+3);
-  assert_eq(3, s.size());
-  assert_neq(arr, s.data());
+  // arr 到 bs 是深拷贝
+  basic_string<TrivialInt> bs(arr, arr+3);
+  assert_neq(ptrToInt(arr), ptrToInt(bs.c_str()));
 
-  assert_eq(arr[1].v, s[1].v);
-  s[1].v = 10;
-  assert_neq(arr[1].v, s[1].v);
+  // bs 到 bs1 是深拷贝
+  basic_string<TrivialInt> bs1(bs);
+  assert_neq(ptrToInt(bs.c_str()), ptrToInt(bs1.c_str()));
 }
 
 

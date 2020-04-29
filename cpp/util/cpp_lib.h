@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstdlib>
 #include <cstdarg>
 
@@ -33,10 +35,16 @@
 #include <ctime>
 #include <chrono>
 
+/*
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/uuid_generators.hpp>
+//*/
 
 using namespace std;
 
 #define reload_os_out(type) friend std::ostream& operator<<(std::ostream& out, const type& obj)
+
+inline uint64_t ptrToInt(const void* p) {
+  return reinterpret_cast<uint64_t>(p);
+}
