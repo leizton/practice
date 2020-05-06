@@ -39,4 +39,26 @@ def(emplace_insert) {
 }
 
 
+def(erase) {
+  unordered_map<string, int> a;
+  a["a"] = 97;
+  a["b"] = 98;
+  a["c"] = 99;
+  a["d"] = 100;
+
+  a.erase(a.find("d"));
+  assert_T(a.find("d") == a.end());
+
+  assert_F(a.find("b") == a.end());
+  for (auto iter = a.begin(); iter != a.end(); ) {
+    if (iter->first == "b")
+      iter = a.erase(iter);
+    else
+      ++iter;
+  }
+  assert_T(a.find("b") == a.end());
+  assert_eq(2, a.size());
+}
+
+
 main_run;
