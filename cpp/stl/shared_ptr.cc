@@ -10,7 +10,7 @@ def(construct_shared_ptr) {
 }
 
 
-run(reset) {
+def(reset) {
   int flag = 0;
   shared_ptr<int> p(new int, [&flag](int*) { flag = 1; });
   assert_T(p);
@@ -24,6 +24,30 @@ run(reset) {
   assert_T(p);
   p.reset(new int);
   assert_eq(2, flag);
+}
+
+
+def(assign) {
+  auto b = std::make_shared<TestB>(1, 2);
+
+  shared_ptr<TestA> a;
+  a = b;
+  assert_eq(2, a.use_count());
+  assert_eq(2, b.use_count());
+
+  b.reset();
+  assert_eq(1, a.use_count());
+  assert_eq(0, b.use_count());
+
+  shared_ptr<void> p;
+  p = a;
+  assert_eq(2, a.use_count());
+  assert_eq(2, p.use_count());
+
+  a.reset();
+  assert_eq(0, a.use_count());
+  assert_eq(1, p.use_count());
+  print("end");
 }
 
 

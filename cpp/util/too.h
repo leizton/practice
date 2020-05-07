@@ -54,3 +54,17 @@ struct Coo {
 private:
   static atomic<uint32_t> id_;
 };
+
+struct TestA {
+  int a;
+  TestA(int _a = 0) : a(_a) { print("TestA-con-" + to_string(a)); }
+  virtual ~TestA() { print("TestA-decon-" + to_string(a)); }
+};
+
+struct TestB : public TestA {
+  int b;
+  TestB(int _b = 0, int _a = 0) : TestA(_a), b(_b) {
+    print("TestB-con-" + to_string(b));
+  }
+  virtual ~TestB() { print("TestB-decon-" + to_string(b)); }
+};
