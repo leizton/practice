@@ -25,6 +25,7 @@
 #include <condition_variable>
 #include <future>
 
+#include <cstdlib>
 #include <utility>
 #include <exception>
 #include <type_traits>

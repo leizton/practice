@@ -40,4 +40,26 @@ def(sort) {
 }
 
 
+def(find) {
+  vector<Int> v{2, 1, 3, 1, 3, 3};
+
+  auto iter1 = std::find_if(v.cbegin(), v.cend(), [] (const Int& i) {
+    return i.v == 1;
+  });
+  assert_T(iter1 != v.end());
+  assert_eq(1, iter1 - v.cbegin());
+
+  auto iter2 = std::find_if(v.rbegin(), v.rend(), [] (Int& i) {
+    return i.v == 1;
+  });
+  assert_T(iter2 != v.rend());
+  assert_eq(3, (v.size() - 1) - (iter2 - v.rbegin()));
+
+  vector<int> iv{2, 1, 3, 1, 3, 3};
+  auto iter3 = std::find(iv.begin(), iv.end(), 3);
+  assert_T(iter3 != iv.end());
+  assert_eq(2, iter3 - iv.begin());
+}
+
+
 main_run;
