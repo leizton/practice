@@ -10,16 +10,28 @@ def(find_rfind) {
 }
 
 
-run(starts_with) {
+def(starts_with_ends_with) {
   auto starts_with = [](const string& s, const string& prefix) {
     if (s.length() < prefix.length()) return false;
     return strncmp(s.c_str(), prefix.c_str(), prefix.length()) == 0;
   };
+
+  auto ends_with = [](const string& s, const string& prefix) {
+    const size_t n = prefix.length();
+    if (s.length() < n) return false;
+    return strncmp(s.c_str() + (s.length() - n), prefix.c_str(), n) == 0;
+  };
+
   string s = "12345";
   assert_T(starts_with(s, "123"));
   assert_T(starts_with(s, ""));
   assert_F(starts_with(s, "abc"));
   assert_F(starts_with(s, "123456"));
+
+  assert_T(ends_with(s, "345"));
+  assert_T(ends_with(s, ""));
+  assert_F(ends_with(s, "abc"));
+  assert_F(ends_with(s, "012345"));
 }
 
 
