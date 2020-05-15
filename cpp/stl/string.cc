@@ -10,9 +10,10 @@ def(find_rfind) {
 }
 
 
-def(starts_with) {
+run(starts_with) {
   auto starts_with = [](const string& s, const string& prefix) {
-    return s.find(prefix) == 0u;
+    if (s.length() < prefix.length()) return false;
+    return strncmp(s.c_str(), prefix.c_str(), prefix.length()) == 0;
   };
   string s = "12345";
   assert_T(starts_with(s, "123"));
