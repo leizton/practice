@@ -23,15 +23,21 @@ def(get_or_create) {
 def(emplace_insert) {
   const std::string key = "a";
   map<string, string> a;
+  std::pair<decltype(a)::iterator, bool> ret;
+
   string s = "123";
-  a.emplace(key, s);
+  ret = a.emplace(key, s);
+  assert_T(ret.second);
   assert_eq("123", a[key]);
 
   // emplace insert 重复插入时不会覆盖
   s = "456";
-  a.emplace(key, s);
+  ret = a.emplace(key, s);
+  assert_F(ret.second);
   assert_eq("123", a[key]);
-  a.insert({key, s});
+
+  ret = a.insert({key, s});
+  assert_F(ret.second);
   assert_eq("123", a[key]);
 
   // operator[] 会覆盖
