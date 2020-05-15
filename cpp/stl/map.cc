@@ -21,8 +21,9 @@ def(get_or_create) {
 
 
 def(emplace_insert) {
+  const std::string key = "a";
   map<string, string> a;
-  string s = "123", key = "a";
+  string s = "123";
   a.emplace(key, s);
   assert_eq("123", a[key]);
 
