@@ -20,9 +20,9 @@ inline uint64_t nowUs() {
  */
 std::string currTimeStr() {
   time_t ts = nowSec();
-  char ch[64];
-	::strftime(ch, sizeof(ch) - 1, "%Y-%m-%d %H:%M:%S", localtime(&ts));
-	return ch;
+  char time_str[64];
+	::strftime(time_str, sizeof(time_str) - 1, "%Y-%m-%d %H:%M:%S", localtime(&ts));
+	return time_str;
 }
 
 inline std::chrono::duration<int, std::ratio<1LL, 1LL>> buildDurationSec(int sec) {
