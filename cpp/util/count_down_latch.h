@@ -4,9 +4,6 @@
 #include <mutex>
 #include <condition_variable>
 
-namespace reco {
-namespace model_server {
-
 class CountDownLatch {
 public:
   CountDownLatch(int32_t n) : num_(n) {}
@@ -33,6 +30,3 @@ private:
   std::mutex mtx_;
   std::condition_variable cond_;
 };
-
-}
-}
