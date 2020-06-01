@@ -15,7 +15,7 @@ template<true, class T> struct enable_if { typedef T type; };
 #endif
 struct EnableIfTest {
   template<class T>
-  static typename enable_if<is_integral<T>::value>::type  // void
+  static typename enable_if<is_integral<T>::value>::type  // 'type' is void. enable_if<B, T=void>
   test(const string& s) {
     cout << "i" << std::stoi(s) << endl;
   }
