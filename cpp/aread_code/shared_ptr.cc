@@ -8,12 +8,12 @@ class shared_ptr<T> : SharedPtr<T> {  // shared_ptr.h
   shared_ptr() {
     SharedPtr<T>()
   }
-  shared_ptr<Y, typename=Constructible<Y*>>  // 保证可以用 (Y*) 构造 SharedPtr<T>
-  (Y* p) {
+  shared_ptr<Y, typename=Constructible<Y*>>(Y* p) {
+    // 保证可以用 (Y*) 构造 SharedPtr<T>
+    // 可能 T是void, Y是某个类
     SharedPtr<T>(p)
   }
-  shared_ptr<Y, Del, typename=Constructible<Y,Del>>
-  (Y* p, Del d) {
+  shared_ptr<Y, Del, typename=Constructible<Y,Del>>(Y* p, Del d) {
     SharedPtr<Y>(p, move(d))
   }
 
@@ -89,7 +89,9 @@ class SharedPtr<T> : SharedPtrAccess<T> {
   SharedPtr(nullptr) {
     SharedPtr()
   }
-  SharedPtr<Y, typename=SafeConv<Y>>(Y* p) {  // 检查 Y* 可以转成 T*
+  SharedPtr<Y, typename=SafeConv<Y>>(Y* p) {
+    // 检查 Y* 可以转成 T*
+    // 类型 Y 保留到了 `SharedCount ref_cnt_` 的 `SpCountedPtr pi_`
     ptr_(p)
     ref_cnt_(p, typename is_array<_Tp>::type())
   }
@@ -132,7 +134,7 @@ class SharedCount {
   // @class __shared_count
 
   fields() {
-    pi_    SpCountedBase*
+    pi_    SpCountedBase*    // pointer with type_info
   }
 
   // constructor ==============================================================
