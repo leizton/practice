@@ -32,4 +32,20 @@ def(enable_if) {
 }
 
 
+template<class T>
+struct NestVecElemType {
+  using EType = T;
+};
+template<class T>
+struct NestVecElemType<std::vector<T>> {
+  using EType = typename NestVecElemType<T>::EType;
+};
+def(nest_vec_elem_type) {
+  vector<vector<vector<int>>> v1;
+  vector<vector<vector<float>>> v2;
+  assert_T(std::is_integral<NestVecElemType<decltype(v1)>::EType>::value);
+  assert_T(std::is_floating_point<NestVecElemType<decltype(v2)>::EType>::value);
+}
+
+
 main_run;
