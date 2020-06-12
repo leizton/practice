@@ -1,5 +1,10 @@
 #pragma once
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
 #include "cpp_lib.h"
 #include "singleton.h"
 #include "any.h"
