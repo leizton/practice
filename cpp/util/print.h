@@ -19,6 +19,10 @@ void _printfmt(const char* file, const int line, const char* func, const char* f
 
 void println(int n=1) { while (n-- > 0) std::cout << std::endl; }
 
+#define CERR std::cerr << "[" << __FILE__ \
+  << ":" << __LINE__ << ", " << __FUNCTION__ << "] "
+#define ENDL std::endl
+
 template<class T>
 string to_str(T v) {
   ostringstream ss;
