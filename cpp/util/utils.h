@@ -45,9 +45,14 @@ Bufcout&& operator <<(Bufcout&& out, Bufcout* bc) {
 }
 
 #define main_run \
-atomic<uint32_t> Aoo::id_;\
-atomic<uint32_t> Boo::id_;\
-atomic<uint32_t> Coo::id_;\
+atomic<uint32_t> Aoo::id_(0);\
+atomic<uint32_t> Boo::id_(0);\
+atomic<uint32_t> Coo::id_(0);\
+atomic<uint32_t> Aoo::con_num_(0);\
+atomic<uint32_t> Aoo::decon_num_(0);\
+atomic<uint32_t> Aoo::copy_con_num_(0);\
+atomic<uint32_t> Aoo::move_copy_con_num_(0);\
+atomic<bool>     Aoo::log(true);\
 int main() {\
   using namespace std;\
   cout << std::boolalpha;\

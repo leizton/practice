@@ -46,6 +46,51 @@ def(emplace_insert) {
 }
 
 
+def(emplace_insert_2) {
+  Aoo::log = false;
+
+  // emplace: 1次构造 1次析构
+  {
+    map<int, Aoo> a;
+    a.emplace(1, "");
+    assert_eq(1, Aoo::con());
+    assert_eq(0, Aoo::copy_con());
+    assert_eq(0, Aoo::move_con());
+  }
+  assert_eq(1, Aoo::decon());
+  Aoo::reset();
+
+  // insert: 1次构造 2次移动构造 3次析构
+  {
+    map<int, Aoo> a;
+    a.insert({1, Aoo()});
+    assert_eq(1, Aoo::con());
+    assert_eq(0, Aoo::copy_con());
+    assert_eq(2, Aoo::move_con());
+  }
+  assert_eq(3, Aoo::decon());
+  Aoo::reset();
+
+  // insert by pair: 1次构造 1次拷贝构造 1次移动构造 3次析构
+  {
+    // 创建pair: 1次构造 1次移动构造
+    pair<int, Aoo> p{1, Aoo()};
+    assert_eq(1, Aoo::con());
+    assert_eq(0, Aoo::copy_con());
+    assert_eq(1, Aoo::move_con());
+
+    // 增加 1次拷贝构造
+    map<int, Aoo> a;
+    a.insert(p);
+    assert_eq(1, Aoo::con());
+    assert_eq(1, Aoo::copy_con());
+    assert_eq(1, Aoo::move_con());
+  }
+  assert_eq(3, Aoo::decon());
+  Aoo::reset();
+}
+
+
 def(erase) {
   unordered_map<string, int> a;
   a["a"] = 97;

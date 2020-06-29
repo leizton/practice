@@ -52,7 +52,7 @@ def(assign) {
 
 
 def(shared_ptr_void) {
-  AooPtr pa1(new Aoo("321"));
+  AooPtr pa1(new Aoo);
   shared_ptr<void> p1 = pa1;
   assert_eq(2, pa1.use_count());
   pa1.reset();

@@ -19,15 +19,45 @@ typedef shared_ptr<Boo> BooPtr;
 typedef shared_ptr<Coo> CooPtr;
 
 struct Aoo {
-  Aoo(string s="") : id(++id_), v(s) { cout << "Aoo-con-" << id << "-" << v << endl; }
-  Aoo(const Aoo& x) : id(++id_), v(x.v) { cout << "Aoo-con&-" << id << "-" << v << endl; }
-  Aoo(const Aoo&& x) : id(++id_), v(x.v) { cout << "Aoo-con&&-" << id << "-" << v << endl; }
-  ~Aoo() { cout << "Aoo-decon-" << id << "-" << v << endl; }
+public:
+  Aoo()
+    : id(++id_), v(std::to_string(id))
+    { if(log) cout << "Aoo-con-" << id << endl; con_num_++; }
+
+  Aoo(string s)
+    : id(++id_), v(s)
+    { if(log) cout << "Aoo-con-" << id << endl; con_num_++; }
+
+  ~Aoo()
+    { if(log) cout << "Aoo-decon-" << id << endl; decon_num_++; }
+
+  Aoo(const Aoo& x)
+    : id(++id_), v(x.v)
+    { if(log) cout << "Aoo-con&-" << id << endl; copy_con_num_++; }
+
+  Aoo(const Aoo&& x)
+    : id(++id_), v(x.v)
+    { if(log) cout << "Aoo-con&&-" << id << endl; move_copy_con_num_++; }
+
   const uint32_t id;
   string v;
   BooPtr pb;
+
+public:
+  static int con() { return (int)con_num_.load(); }
+  static int decon() { return (int)decon_num_.load(); }
+  static int copy_con() { return (int)copy_con_num_.load(); }
+  static int move_con() { return (int)move_copy_con_num_.load(); }
+  static void reset() { id_ = con_num_ = decon_num_ = copy_con_num_ = move_copy_con_num_ = 0; }
+
+  static atomic<bool> log;
+
 private:
   static atomic<uint32_t> id_;
+  static atomic<uint32_t> con_num_;
+  static atomic<uint32_t> decon_num_;
+  static atomic<uint32_t> copy_con_num_;
+  static atomic<uint32_t> move_copy_con_num_;
 };
 
 struct Boo {
@@ -38,7 +68,6 @@ struct Boo {
   const uint32_t id;
   string v;
   AooPtr pa;
-private:
   static atomic<uint32_t> id_;
 };
 
@@ -51,7 +80,6 @@ struct Coo {
   string v;
   AooPtr pa;
   BooPtr pb;
-private:
   static atomic<uint32_t> id_;
 };
 
