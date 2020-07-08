@@ -1,24 +1,5 @@
 #include "util/cpp_lib.h"
 
-#define FMTSTR_SIZE 1024
-#define FMTSTR\
-  char fmtstrtmp[FMTSTR_SIZE]; {va_list ap; va_start(ap, fmt);\
-  vsnprintf(fmtstrtmp, FMTSTR_SIZE, fmt, ap); va_end(ap);}
-
-void _printfmt(const char* file, const int line, const char* func, const char* fmt, ...) {
-  FMTSTR;
-  std::ostringstream ss;
-  ss << "[" << file << ":" << line << " " << func << "] ";
-  ss << fmtstrtmp;
-  std::cout << ss.str() << std::endl;
-}
-
-#define printfmt(fmt, args...) _printfmt(__FILE__, __LINE__, __FUNCTION__, fmt, ##args);
-
-#define print(expr) std::cout << std::boolalpha << (expr) << std::endl;
-
-void println(int n=1) { while (n-- > 0) std::cout << std::endl; }
-
 #define CERR std::cerr << "[" << __FILE__ \
   << ":" << __LINE__ << ", " << __FUNCTION__ << "] "
 #define ENDL std::endl
@@ -57,7 +38,7 @@ ostream& operator<<(ostream& out, map<K,V> m) {
 }
 
 template<class K, class V>
-ostream& operator <<(ostream& out, const unordered_map<K,V>& m) {
+ostream& operator<<(ostream& out, const unordered_map<K,V>& m) {
   out << "[";
   bool first = true;
   for (auto& p : m) {
@@ -67,4 +48,56 @@ ostream& operator <<(ostream& out, const unordered_map<K,V>& m) {
   }
   out << "]";
   return out;
+}
+
+
+/**
+ * Bufcout
+ */
+class Bufcout {
+public:
+  Bufcout() {}
+  ostringstream out_;
+  constexpr static Bufcout* endl = nullptr;
+};
+
+template <class T>
+Bufcout&& operator<<(Bufcout&& out, T v) {
+  out.out_ << std::boolalpha << v;
+  return std::move(out);
+}
+
+Bufcout&& operator<<(Bufcout&& out, Bufcout* bc) {
+  if (bc != Bufcout::endl) {
+    return std::move(out);  // 必须加move, move作用是转成右值引用
+  }
+  out.out_ << "\n";
+  cout << out.out_.str();
+  return std::move(out);
+}
+
+
+/**
+ * void print(Args... args)
+ */
+void __print(std::ostringstream& out, bool is_begin) {
+}
+
+template<class First, class... Args>
+void __print(std::ostringstream& out, bool is_begin, First first, Args... left) {
+  if (!is_begin) out << ", ";
+  out << first;
+  __print(out, false, left...);
+}
+
+template<class... Args>
+void print(Args... args) {
+  std::ostringstream out;
+  __print(out, true, args...);
+  out << "\n";
+  cout << out.str();
+}
+
+void println(int n=1) {
+  while (n-- > 0) std::cout << std::endl;
 }

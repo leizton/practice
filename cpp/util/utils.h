@@ -23,27 +23,6 @@ int lengthOfOstringstream(const ostringstream& ss) {
   return (int)(uint32_t)end;
 }
 
-class Bufcout {
-public:
-  Bufcout() {}
-  ostringstream out_;
-  constexpr static Bufcout* endl = nullptr;
-};
-
-template <class T>
-Bufcout&& operator <<(Bufcout&& out, T v) {
-  out.out_ << v;
-  return std::move(out);
-}
-
-Bufcout&& operator <<(Bufcout&& out, Bufcout* bc) {
-  if (bc != Bufcout::endl) {
-    return std::move(out);  // 必须加move, move作用是转成右值引用
-  }
-  cout << out.out_.str() << endl;
-  return std::move(out);
-}
-
 #define main_run \
 atomic<uint32_t> Aoo::id_(0);\
 atomic<uint32_t> Boo::id_(0);\

@@ -2,7 +2,7 @@
 
 
 #if comment(SFINAE)
-SFINAE: substitution failure is not a error, 替换失败未必是一个错误
+SFINAE: substitution failure is not an error, 替换失败未必是一个错误
 当将 模板形参 替换为某个 显式指定或推导出的类型 失败时, 从重载集中丢弃这个特化, 而非导致编译失败, 因为还可能命中其他重载
 #endif
 
