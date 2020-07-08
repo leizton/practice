@@ -7,6 +7,7 @@
 
 #include "cpp_lib.h"
 #include "singleton.h"
+#include "template_utils.h"
 #include "any.h"
 #include "time_utils.h"
 #include "print.h"
