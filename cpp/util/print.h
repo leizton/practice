@@ -80,20 +80,28 @@ Bufcout&& operator<<(Bufcout&& out, Bufcout* bc) {
 /**
  * void print(Args... args)
  */
-void __print(std::ostringstream& out, bool is_begin) {
+void __print(std::ostringstream& out, std::string sep, bool is_begin) {
 }
 
 template<class First, class... Args>
-void __print(std::ostringstream& out, bool is_begin, First first, Args... left) {
-  if (!is_begin) out << ", ";
+void __print(std::ostringstream& out, std::string sep, bool is_begin, First first, Args... left) {
+  if (!is_begin) out << sep;
   out << first;
-  __print(out, false, left...);
+  __print(out, sep, false, left...);
 }
 
 template<class... Args>
 void print(Args... args) {
   std::ostringstream out;
-  __print(out, true, args...);
+  __print(out, ", ", true, args...);
+  out << "\n";
+  cout << out.str();
+}
+
+template<class... Args>
+void prints(Args... args) {
+  std::ostringstream out;
+  __print(out, "", true, args...);
   out << "\n";
   cout << out.str();
 }

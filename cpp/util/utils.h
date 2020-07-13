@@ -25,13 +25,14 @@ int lengthOfOstringstream(const ostringstream& ss) {
 
 #define main_run \
 atomic<uint32_t> Aoo::id_(0);\
-atomic<uint32_t> Boo::id_(0);\
-atomic<uint32_t> Coo::id_(0);\
 atomic<uint32_t> Aoo::con_num_(0);\
 atomic<uint32_t> Aoo::decon_num_(0);\
 atomic<uint32_t> Aoo::copy_con_num_(0);\
 atomic<uint32_t> Aoo::move_copy_con_num_(0);\
+atomic<uint32_t> Aoo::assign_con_num_(0);\
+atomic<uint32_t> Aoo::move_assign_con_num_(0);\
 atomic<bool>     Aoo::log(true);\
+atomic<uint32_t> DAoo::id_(0);\
 int main() {\
   using namespace std;\
   cout << std::boolalpha;\

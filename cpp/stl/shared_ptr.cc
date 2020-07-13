@@ -26,11 +26,11 @@ def(reset) {
   assert_eq(2, flag);
 }
 
-
 def(assign) {
-  auto b = std::make_shared<TestB>(1, 2);
+  auto b = std::make_shared<DAoo>();
+  print("----------");
 
-  shared_ptr<TestA> a;
+  shared_ptr<Aoo> a;
   a = b;
   assert_eq(2, a.use_count());
   assert_eq(2, b.use_count());
@@ -47,7 +47,7 @@ def(assign) {
   a.reset();
   assert_eq(0, a.use_count());
   assert_eq(1, p.use_count());
-  print("end");
+  print("----------");
 }
 
 
