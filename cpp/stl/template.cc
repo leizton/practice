@@ -3,6 +3,7 @@
 
 def(get_name_from_template_type) {
   assert_eq("int", getTypeName<int>());
+  assert_eq("int", getTypeName<int32_t>());
   assert_eq("unsigned int", getTypeName<uint32_t>());
   assert_eq("Aoo", getTypeName<Aoo>());
   assert_eq("void", getTypeName<void>());
