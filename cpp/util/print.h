@@ -99,13 +99,9 @@ void print(Args... args) {
 }
 
 template<class... Args>
-void prints(Args... args) {
+void println(Args... args) {
   std::ostringstream out;
   __print(out, "", true, args...);
   out << "\n";
   cout << out.str();
-}
-
-void println(int n=1) {
-  while (n-- > 0) std::cout << std::endl;
 }

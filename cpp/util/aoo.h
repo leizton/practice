@@ -11,7 +11,7 @@ struct Int {
   friend bool operator<(const Int& x, const Int& y) { return x.v < y.v; }
 };
 
-#define PRINT if(Aoo::log) prints
+#define PRINT if(Aoo::log) println
 
 struct Aoo {
 
