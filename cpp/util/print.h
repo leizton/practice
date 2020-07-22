@@ -80,7 +80,7 @@ Bufcout&& operator<<(Bufcout&& out, Bufcout* bc) {
 /**
  * void print(Args... args)
  */
-void __print(std::ostringstream& out, std::string sep, bool is_begin) {
+inline void __print(std::ostringstream& out, std::string sep, bool is_begin) {
 }
 
 template<class First, class... Args>
