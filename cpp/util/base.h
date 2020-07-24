@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include "cpp_lib.h"
+#include "base64.h"
 #include "singleton.h"
 #include "template_utils.h"
 #include "any.h"

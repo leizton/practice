@@ -67,7 +67,7 @@ Bufcout&& operator<<(Bufcout&& out, T v) {
   return std::move(out);
 }
 
-Bufcout&& operator<<(Bufcout&& out, Bufcout* bc) {
+inline Bufcout&& operator<<(Bufcout&& out, Bufcout* bc) {
   if (bc != Bufcout::endl) {
     return std::move(out);  // 必须加move, move作用是转成右值引用
   }

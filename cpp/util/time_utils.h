@@ -18,7 +18,7 @@ inline uint64_t nowUs() {
 /**
  * timestamp string
  */
-std::string currTimeStr() {
+inline std::string currTimeStr() {
   time_t ts = nowSec();
   char time_str[64];
 	::strftime(time_str, sizeof(time_str) - 1, "%Y-%m-%d %H:%M:%S", localtime(&ts));

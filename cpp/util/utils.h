@@ -5,11 +5,11 @@ void operator +=(vector<T>& x, vector<T> y) {
   x.insert(x.end(), y.begin(), y.end());
 }
 
-uint64_t currThreadId() {
+inline uint64_t currThreadId() {
   return std::hash<std::thread::id>{}(std::this_thread::get_id());
 }
 
-int lengthOfOstringstream(const ostringstream& ss) {
+inline int lengthOfOstringstream(const ostringstream& ss) {
   /**
    * pubseekoff(off, dir, which):pos_type
    * off:相对位置, dir:基位置, 实际位置=dir+off
