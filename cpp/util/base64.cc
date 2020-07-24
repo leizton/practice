@@ -7,7 +7,7 @@ uint8_t g_encode_mapping[256];
 uint8_t g_decode_mapping[256];
 uint8_t g_encode_onebyte_mapping[256];
 uint8_t g_decode_onebyte_mapping[256];
-const uint8_t g_end_char = '%';
+const uint8_t g_end_char = '~';
 
 bool g_mapping_inited = []() {
   memset(g_encode_mapping, 255, sizeof(g_encode_mapping));
@@ -34,13 +34,13 @@ bool g_mapping_inited = []() {
   memset(g_encode_onebyte_mapping, 255, sizeof(g_encode_onebyte_mapping));
   memset(g_decode_onebyte_mapping, 255, sizeof(g_decode_onebyte_mapping));
   j = 0;
-  encodev = g_encode_onebyte_mapping[j] = '!';
+  encodev = g_encode_onebyte_mapping[j] = '0';
   g_decode_onebyte_mapping[encodev] = j++;
-  encodev = g_encode_onebyte_mapping[j] = '@';
+  encodev = g_encode_onebyte_mapping[j] = '1';
   g_decode_onebyte_mapping[encodev] = j++;
-  encodev = g_encode_onebyte_mapping[j] = '#';
+  encodev = g_encode_onebyte_mapping[j] = '2';
   g_decode_onebyte_mapping[encodev] = j++;
-  encodev = g_encode_onebyte_mapping[j] = '$';
+  encodev = g_encode_onebyte_mapping[j] = '3';
   g_decode_onebyte_mapping[encodev] = j++;
 
   return true;

@@ -34,9 +34,9 @@ void test(const int text_size) {
 }
 
 run() {
-  test(3*1024);
-  test(3*1024+1);
-  test(3*1024+2);
+  for (int i = 0; i < 700; i++) {
+    test(3*1024+i);
+  }
 }
 
 main_run;
