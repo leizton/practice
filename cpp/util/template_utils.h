@@ -1,9 +1,8 @@
 #include <string>
-#include <string_view>
 
 template <typename T>
 const std::string& getTypeName() {
-  static auto build_ = [](const std::string_view& name) {
+  static auto build_ = [](const std::string& name) {
     auto idx = name.rfind('[');
     if (idx == std::string::npos) {
       return std::string(typeid(T).name());
