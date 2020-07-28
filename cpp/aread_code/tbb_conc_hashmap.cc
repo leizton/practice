@@ -76,10 +76,10 @@ class concurrent_hash_map<Key, T, HashCompare, Allocator> : hash_map_base {
 
   // 在bucket里查找key
   search_bucket(const Key& key, Bucket* b):node* {
-    auto* p = (node*)b->node_list
-    while p && !my_hash_cmp.equal(key, p->value().first)
-      p = (node*)p->next
-    return p
+    node* pn = (node*)b->node_list
+    while pn && !my_hash_cmp.equal(key, pn->value().first)
+      pn = (node*)pn->next
+    return pn
   }
 
   insert(const pair_type& kv):bool {
