@@ -3,14 +3,18 @@ class tbb_hash_compare<Key> {
   equal(Key& a, Key& b):bool static { a == b }
 }
 
-class NodeBase {
+class hash_map_node_base {
+  static_const() {
+    rehash_req = reinterpret_cast<hash_map_node_base*>(size_t(3));
+  }
+
+  next   hash_map_node_base*
   mutex  spin_rw_mutex
-  next   node_base*
 }
 
-class Bucket {
+class bucket {
   // 拉链法
-  node_list  NodeBase*
+  node_list  hash_map_node_base* volatile
   mutex      spin_rw_mutex
 }
 
@@ -21,23 +25,49 @@ class hash_map_base {
     embedded_buckets_n = (1<<embedded_block)
   }
   typedef() {
-    segment_ptr_t = Bucket*
+    segment_ptr_t = bucket*
   }
 
-  segment_base(size_t seg_i) { (1 << seg_i) & (~1) }  // 0->0 1->2 2->4 3->8
-  segment_size(size_t seg_i) { (1 << seg_i) }         // 0->1 1->2 2->4 3->8
+  /*
+     idx:    {0 1}  {2 3}  {4 5 6 7}  {8 9 10 11 12 13 14 15}  {16 ...}
+     seg_i:   0      1      2          3                        4
+
+     假想 二维数组my_table 展成 连续的一维数组是 my_raw
+
+     segment_base(seg_i) 计算第seg_i个段在 my_raw 展开成的起始下标(基地址)
+     segment_idx(idx)    把 my_raw 的下标转成段索引
+  */
+  segment_base(size_t seg_i) { (1 << seg_i) & (~1) }  // 0=0 1=2 2=4 3=8 ...
+  segment_size(size_t seg_i) { (1 << seg_i) }         // 0=1 1=2 2=4 3=8 ...
+
+  /*
+    __builtin_clz(x)
+      作用：count x 的前置 0 bit 的个数
+      __builtin_clzll(x) 用于 sizeof(x) 是 8 bytes
+    segment_idx(i)
+      等于 floor(log2(i))
+      0=0 1=0 2=1 3=1 4=2 5=2 6=2 7=2 8=3 ...
+  */
+  segment_idx(size_t idx) {
+    sizeof(idx)*8 - 1 - __builtin_clzll(idx|1)
+  }
+  segment_idx(int idx) {
+    sizeof(idx)*8 - 1 - __builtin_clz(idx|1)
+  }
+
+  // segment 和 bucket 是同一个东西
 
   fields() {
-    my_table             segment_ptr_t[pointers_per_table]
-    my_embedded_segment  Bucket[embedded_buckets_n]
+    my_table             segment_ptr_t[pointers_per_table=64]  // 共64个seg，每段长度呈2的幂次增长
+    my_embedded_segment  bucket[embedded_buckets_n]
     //
     for i = 0:embedded_block
       my_table[i] = my_embedded_segment + segment_base(i)
   }
 }
 
-class MapNode<T> : NodeBase {
-  data_ T*
+class MapNode<T> : hash_map_node_base {
+  data_ T*  // data_ is kv_pair
   storage():T* { data_ }
   value():T& { *storage() }
 }
@@ -74,8 +104,15 @@ class concurrent_hash_map<Key, T, HashCompare, Allocator> : hash_map_base {
     node_allocator_traits::deallocate(my_allocator, n, 1)
   }
 
+  get_bucket(size_t hash):bucket* {
+    size_t seg_i = segment_idx(hash)
+    hash -= segment_base(seg_i)
+    auto seg = my_table[seg_i]
+    return &seg[hash]
+  }
+
   // 在bucket里查找key
-  search_bucket(const Key& key, Bucket* b):node* {
+  search_bucket(const Key& key, bucket* b):node* {
     node* pn = (node*)b->node_list
     while pn && !my_hash_cmp.equal(key, pn->value().first)
       pn = (node*)pn->next
@@ -83,9 +120,36 @@ class concurrent_hash_map<Key, T, HashCompare, Allocator> : hash_map_base {
   }
 
   insert(const pair_type& kv):bool {
-    return lookup(true, kv.first, &kv.second, nullptr, false, &allocate_node_copy_construct)
+    Key& key, T* val, node* tmp_n = kv.first, kv.second, nullptr
+    size_t hash = my_hash_cmp.hash(key)
+    bucket_accessor pb(this, hash)
+    node* pn = search_bucket(key, pb())
+    if pn == nullptr
+      tmp_n = create_node(key, val)
+      if !pb.is_writer() && !pb.upgrade_to_writer()
+  }
+}
+
+class bucket_accessor {
+  fields() {
+    my_b  bucket*
   }
 
-  lookup(bool op_insert, const Key& key, const T* val, const_accessor* result, bool write, node* tmp):bool {
+  bucket_accessor(concurrent_hash_map* hm, size_t hash, bool writer) {
+    acquire(hm, hash, writer)
   }
+
+  acquire(concurrent_hash_map* hm, size_t hash, bool writer) {
+    my_b = hm.get_bucket(hash)
+    if my_b->node_list == hash_map_node_base::rehash_req
+       && try_acquire(my_b->mutex, write=true)               // 加写锁
+       && my_b->node_list == hash_map_node_base::rehash_req  // double-check
+      hm->rehash_bucket(my_b, hash)
+    else
+      acquire(my_b->mutex, writer)
+  }
+`
+  is_writer():bool { my_b->mutex.is_w_locked }
+
+  operator():bucket* { my_b }
 }
