@@ -1,6 +1,6 @@
 class tbb_hash_compare<Key> {
-  hash(Key& a):size_t static { tbb_hasher(a) }
-  equal(Key& a, Key& b):bool static { a == b }
+  hash(Key& a) size_t static { tbb_hasher(a) }
+  equal(Key& a, Key& b) bool static { a == b }
 }
 
 class hash_map_node_base {
@@ -60,21 +60,23 @@ class hash_map_base {
   fields() {
     my_table             segment_ptr_t[pointers_per_table=64]  // 共64个seg，每段长度呈2的幂次增长
     my_embedded_segment  bucket[embedded_buckets_n]
+    my_mask              atomic<size_t>
     //
     for i = 0:embedded_block
       my_table[i] = my_embedded_segment + segment_base(i)
+    my_mask.store(embedded_buckets_n-1)
   }
 }
 
 class MapNode<T> : hash_map_node_base {
   data_ T*  // data_ is kv_pair
-  storage():T* { data_ }
-  value():T& { *storage() }
+  storage() T* { data_ }
+  value() T& { *storage() }
 }
 
-class concurrent_hash_map<Key, T, HashCompare, Allocator> : hash_map_base {
+class concurrent_hash_map<Key, Value, HashCompare, Allocator> : hash_map_base {
   typedef() {
-    pair_type = std::pair<Key, T>
+    pair_type = std::pair<Key, Value>
     node = MapNode<pair_type>
 
     node_allocator_type = tbb::internal::allocator_rebind<Allocator, node>::type
@@ -91,7 +93,7 @@ class concurrent_hash_map<Key, T, HashCompare, Allocator> : hash_map_base {
     internal_copy(lst.begin(), lst.end(), lst.size())
   }
 
-  create_node<...Args>(Args&&... args):node* {
+  create_node<...Args>(Args&&... args) node* {
     node* pn = node_allocator_traits::allocate(my_allocator, 1)
     node_allocator_traits::construct(my_allocator, pn)
     node_allocator_traits::construct(my_allocator, pn->storage(), std::forward<Args>(args)...)
@@ -104,7 +106,7 @@ class concurrent_hash_map<Key, T, HashCompare, Allocator> : hash_map_base {
     node_allocator_traits::deallocate(my_allocator, n, 1)
   }
 
-  get_bucket(size_t hash):bucket* {
+  get_bucket(size_t hash) bucket* {
     size_t seg_i = segment_idx(hash)
     hash -= segment_base(seg_i)
     auto seg = my_table[seg_i]
@@ -112,27 +114,52 @@ class concurrent_hash_map<Key, T, HashCompare, Allocator> : hash_map_base {
   }
 
   // 在bucket里查找key
-  search_bucket(const Key& key, bucket* b):node* {
+  search_bucket(const Key& key, bucket* b) node* {
     node* pn = (node*)b->node_list
     while pn && !my_hash_cmp.equal(key, pn->value().first)
       pn = (node*)pn->next
     return pn
   }
 
-  insert(const pair_type& kv):bool {
-    Key& key, T* val, node* tmp_n = kv.first, kv.second, nullptr
-    size_t hash = my_hash_cmp.hash(key)
-    bucket_accessor pb(this, hash)
-    node* pn = search_bucket(key, pb())
-    if pn == nullptr
-      tmp_n = create_node(key, val)
-      if !pb.is_writer() && !pb.upgrade_to_writer()
+  // @param result: 新插入或已存在的节点的迭代器
+  insert(const pair_type& kv, accessor& result) bool {
+    const size_t hash = my_hash_cmp.hash(key)
+    size_t mask = my_mask.load()
+    bool is_inserted = false
+    Key& key, Value* val = kv.first, kv.second
+    size_t grow_segment_idx = 0
+
+    while true {
+      is_inserted = false
+      bucket_accessor pb(this, hash & mask, writer=false)
+      node* pn = search_bucket(key, pb.my_b)
+      if pn, break
+      if !pb.upgrade_to_writer() {
+        // 此时有另一个线程在写这个bucket, 所以加写锁失败
+        if pn = search_bucket(key, pb.my_b); pn
+          pb.downgrade_to_reader()
+          break
+      }
+      else {
+        if check_mask_race(hash, &mask), continue
+        pn = create_node(key, val)
+        grow_segment_idx = insert_new_node(pb.my_b, pn, mask)
+        is_inserted = true
+        result.my_node = pb
+        result.my_hash = hash
+        break
+      }
+    }
+
+    if grow_segment_idx, enable_segment(grow_segment_idx)
+    return is_inserted
   }
 }
 
-class bucket_accessor {
+// scoped_t析构时会release锁
+class bucket_accessor : scoped_t {
   fields() {
-    my_b  bucket*
+    my_b(nullptr)  bucket*
   }
 
   bucket_accessor(concurrent_hash_map* hm, size_t hash, bool writer) {
@@ -148,8 +175,33 @@ class bucket_accessor {
     else
       acquire(my_b->mutex, writer)
   }
-`
-  is_writer():bool { my_b->mutex.is_w_locked }
 
-  operator():bucket* { my_b }
+  is_writer() bool { my_b->mutex.is_w_locked }
+}
+
+// concurrent_hash_map的常量迭代器
+class const_accessor<Value> : scoped_t {
+  fields() {
+    my_node(nullptr)  node*   // node: MapNode<Value>
+    my_hash           size_t
+  }
+
+  operator*() const Value& { my_node->value() }
+  operator->() const Value* { &operator*() }
+
+  empty() bool { my_node == nullptr }
+
+  // scoped_t析构时会被调用
+  release() override {
+    my_node->mutex.release()
+    my_node = nullptr
+  }
+
+  is_writer() bool { my_node->mutex.is_w_locked }
+}
+
+// concurrent_hash_map的迭代器
+class accessor<Value> : const_accessor<Value> {
+  operator*() Value& { my_node->value() }
+  operator->() Value* { &operator*() }
 }
