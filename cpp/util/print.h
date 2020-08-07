@@ -11,6 +11,12 @@ string to_str(T v) {
   return ss.str();
 }
 
+template<class K, class V>
+ostream& operator<<(ostream& out, pair<K,V> p) {
+  out << "<" << p.first << "," << p.second << ">";
+  return out;
+}
+
 template<class T>
 ostream& operator<<(ostream& out, vector<T> v) {
   out << "[";
