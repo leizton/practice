@@ -61,10 +61,14 @@ class hash_map_base {
     my_table             segment_ptr_t[pointers_per_table=64]  // 共64个seg，每段长度呈2的幂次增长
     my_embedded_segment  bucket[embedded_buckets_n]
     my_mask              atomic<size_t>
+    my_size              atomic<size_t>
     //
     for i = 0:embedded_block
       my_table[i] = my_embedded_segment + segment_base(i)
     my_mask.store(embedded_buckets_n-1)
+  }
+
+  insert_new_node(bucket* pb, node_base* pn, size_t mask) {
   }
 }
 
@@ -143,7 +147,7 @@ class concurrent_hash_map<Key, Value, HashCompare, Allocator> : hash_map_base {
       else {
         if check_mask_race(hash, &mask), continue
         pn = create_node(key, val)
-        grow_segment_idx = insert_new_node(pb.my_b, pn, mask)
+        grow_segment_idx = hash_map_base::insert_new_node(pb.my_b, pn, mask)
         is_inserted = true
         result.my_node = pb
         result.my_hash = hash
