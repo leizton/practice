@@ -7,14 +7,13 @@ class hash_map_node_base {
   static_const() {
     rehash_req = reinterpret_cast<hash_map_node_base*>(size_t(3));
   }
-
   next   hash_map_node_base*
   mutex  spin_rw_mutex
 }
 
 class bucket {
   // 拉链法
-  node_list  hash_map_node_base* volatile
+  node_list  hash_map_node_base* volatile  // 头节点
   mutex      spin_rw_mutex
 }
 
@@ -68,7 +67,22 @@ class hash_map_base {
     my_mask.store(embedded_buckets_n-1)
   }
 
-  insert_new_node(bucket* pb, node_base* pn, size_t mask) {
+  insert_new_node(bucket* pb, hash_map_node_base* pn, size_t mask) {
+    size_t sz = ++my_size
+    add_to_bucket(pb, pn)
+    if sz >= mask
+      size_t new_seg = segment_idx(mask+1)
+      static const segment_ptr_t is_allocating = (segment_ptr_t)2
+      if !as_atomic(my_table[new_seg]).load()
+         && as_atomic(my_table[new_seg]).compare_and_swap(is_allocating, nullptr) == nullptr
+        return new_seg
+    return 0
+  }
+
+  add_to_bucket(bucket* pb, hash_map_node_base* pn) {
+    // 头部插入
+    pn.next = pb.node_list
+    pb.node_list = pn
   }
 }
 
@@ -155,7 +169,8 @@ class concurrent_hash_map<Key, Value, HashCompare, Allocator> : hash_map_base {
       }
     }
 
-    if grow_segment_idx, enable_segment(grow_segment_idx)
+    if grow_segment_idx != 0
+      enable_segment(grow_segment_idx)
     return is_inserted
   }
 }
@@ -175,7 +190,7 @@ class bucket_accessor : scoped_t {
     if my_b->node_list == hash_map_node_base::rehash_req
        && try_acquire(my_b->mutex, write=true)               // 加写锁
        && my_b->node_list == hash_map_node_base::rehash_req  // double-check
-      hm->rehash_bucket(my_b, hash)
+      hm.rehash_bucket(my_b, hash)
     else
       acquire(my_b->mutex, writer)
   }
