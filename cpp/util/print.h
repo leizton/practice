@@ -18,10 +18,23 @@ ostream& operator<<(ostream& out, pair<K,V> p) {
 }
 
 template<class T>
-ostream& operator<<(ostream& out, vector<T> v) {
+ostream& operator<<(ostream& out, const vector<T>& v) {
   out << "[";
   bool first = true;
-  for (T& e : v) {
+  for (const T& e : v) {
+    if (!first) out << ",";
+    first = false;
+    out << e;
+  }
+  out << "]";
+  return out;
+}
+
+template<class T>
+ostream& operator<<(ostream& out, const set<T>& s) {
+  out << "[";
+  bool first = true;
+  for (const T& e : s) {
     if (!first) out << ",";
     first = false;
     out << e;
@@ -31,10 +44,10 @@ ostream& operator<<(ostream& out, vector<T> v) {
 }
 
 template<class K, class V>
-ostream& operator<<(ostream& out, map<K,V> m) {
+ostream& operator<<(ostream& out, const map<K,V>& m) {
   out << "[";
   bool first = true;
-  for (auto& p : m) {
+  for (const auto& p : m) {
     if (!first) out << ",";
     first = false;
     out << p.first << "=" << p.second;
