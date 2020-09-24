@@ -4,13 +4,6 @@
   << ":" << __LINE__ << ", " << __FUNCTION__ << "] "
 #define ENDL std::endl
 
-template<class T>
-string to_str(T v) {
-  ostringstream ss;
-  ss << v;
-  return ss.str();
-}
-
 template<class K, class V>
 ostream& operator<<(ostream& out, pair<K,V> p) {
   out << "<" << p.first << "," << p.second << ">";
@@ -67,6 +60,13 @@ ostream& operator<<(ostream& out, const unordered_map<K,V>& m) {
   }
   out << "]";
   return out;
+}
+
+template<class T>
+string to_str(T v) {
+  ostringstream ss;
+  ss << v;
+  return ss.str();
 }
 
 

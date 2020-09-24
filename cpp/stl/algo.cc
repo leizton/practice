@@ -25,8 +25,8 @@ def(lower_upper_bound) {
 
 
 #if comment(sort)
-sort<RandomIter>(RandomIter begin, RandomIter end)  // operator<
-sort<RandomIter, Compare>(RandomIter begin, RandomIter end, Compare cmp)
+  sort<RandomIter>(RandomIter begin, RandomIter end)  // operator<
+  sort<RandomIter, Compare>(RandomIter begin, RandomIter end, Compare cmp)
 #endif
 def(sort) {
   vector<Int> v{2, 1, 3};

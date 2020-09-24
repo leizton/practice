@@ -47,3 +47,7 @@ int main() {\
 #define run(func) void RUN()
 
 #define comment(x) 0
+
+#define COMMENT_STUFF
+#define comment_begin(x) /COMMENT_STUFF*  // 因为注释先于宏处理，所以需要借助空宏COMMENT_STUFF
+#define comment_end *COMMENT_STUFF/
