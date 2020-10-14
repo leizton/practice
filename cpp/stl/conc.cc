@@ -1,23 +1,27 @@
 #include "util/base.h"
 
 
-def(mutex_lock) {
-  const int64_t total = 10000;
-  int64_t cnt = 0;
-
-  std::mutex mtx;
-  auto add = [&cnt, &mtx](int64_t n) {
-    while (--n >= 0) {
-      std::lock_guard<std::mutex> lk(mtx);
-      cnt++;
-    }
+def(thread__) {
+  auto square = [](int x) {
+    print(x * x);
   };
-
-  const int64_t th_num = 1000;
   vector<thread> ths;
-  for (int64_t i = 0; i < th_num; i++) ths.emplace_back(add, total);
-  for (auto& th : ths) th.join();
-  assert_eq(total*th_num, cnt);
+  for (int i = 1; i <= 3; i++) {
+    ths.emplace_back(square, i);
+  }
+  for (auto& th : ths) {
+    th.join();
+  }
+}
+
+
+def(mutex__) {
+  std::mutex mtx;
+  int n = 0;
+  {
+    std::lock_guard<std::mutex> lk(mtx);
+    n++;
+  }
 }
 
 
