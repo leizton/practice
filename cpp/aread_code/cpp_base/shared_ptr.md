@@ -38,6 +38,7 @@ class shared_ptr<Tp> {
 class shared_count {
   _Sp_counted_base*  _pi
 
+  // 实际 new 的是 _Sp_counted_ptr_inplace
   shared_count<T, Alloc, ...Args>(T*& ptr, Alloc& ac, Args&&... args) {
     using sp_cnt_type = _Sp_counted_ptr_inplace<_Tp, _Alloc>
     sp_cnt_type* mem = ac.allocate(1)  // 略去萃取 allocate_type 的过程
