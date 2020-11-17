@@ -64,3 +64,20 @@ class _Sp_counted_base {
 // atomic_word.h
 typedef int _Atomic_word
 ```
+
+
+# pointer cast
+```c++
+// 使用时, U 是有实参自动推导出来
+shared_ptr<T> static_pointer_cast<T,U>(const shared_ptr<U>& ptr) {
+  auto* p = static_cast<T*>(ptr.get())
+  return shared_ptr<T>(ptr, p)
+}
+
+shared_ptr<T> dynamic_pointer_cast<T,U>(const shared_ptr<U>& ptr) {
+  if (auto* p = dynamic_cast<T*>(ptr.get()))
+    return shared_ptr<T>(ptr, p)
+  else
+    return shared_ptr<T>()
+}
+```
