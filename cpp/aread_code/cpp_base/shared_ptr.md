@@ -49,11 +49,8 @@ class shared_count {
 }
 
 class _Sp_counted_ptr_inplace<T, Alloc> : _Sp_counted_base {
-  Impl  _impl  // 计数器和对象数据在一起
-
-  class Impl {
-    __gnu_cxx::__aligned_buffer<T>  _storage
-  }
+  // 成员变量 _storage 是 T对象 的实际内存空间
+  typename std::aligned_storage<sizeof(T), alignof(T)>::type _storage;
 }
 
 class _Sp_counted_base {
