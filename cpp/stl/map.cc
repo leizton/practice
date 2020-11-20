@@ -52,7 +52,7 @@ def(emplace_insert_2) {
   // emplace: 1次构造 1次析构
   {
     map<int, Aoo> a;
-    a.emplace(1, "");
+    a.emplace(1, 0);
     assert_eq(1, Aoo::con());
     assert_eq(0, Aoo::copy_con());
     assert_eq(0, Aoo::move_con());

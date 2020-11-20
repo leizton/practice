@@ -22,6 +22,10 @@ struct Aoo {
     : id(++id_)
     { con_num_++; PRINT("Aoo_con_", id); }
 
+  Aoo(int)
+    : id(++id_)
+    { con_num_++; PRINT("Aoo_con_", id); }
+
   Aoo(const Aoo& x)
     : id(++id_)
     { copy_con_num_++; PRINT("Aoo_copy_con_", id); }
