@@ -9,7 +9,7 @@
 
 # make_shared
 make_shared 创建的智能指针, 其计数器和对象数据封装在同一个结构体里
-因此在内存上是在同一个地方, 调用reset()后对象空间并没有释放
+由于在内存上是在同一个地方, 所以调用reset()后对象空间并没有释放
 
 
 # src_code
@@ -27,7 +27,7 @@ class shared_ptr<Tp> {
   using T = typename remove_extent<Tp>::type
 
   T*            _ptr
-  shared_count  _refcount
+  shared_count  _refcount  // 由于是共享的, 所以内部存引用计数器的指针
 
   shared_ptr<Alloc, ...Args>(Alloc& ac, Args&&... args) {
     _ptr(nullptr)

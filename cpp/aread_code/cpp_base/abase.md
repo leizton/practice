@@ -33,7 +33,8 @@ TestPtr test = &A::test;
 A a;
 (a.*test)();
 ```
-## 4 为了方便使用, 类成员函数转成std::function
+## 4 类成员函数和普通函数有本质上的区别
+## 5 为了方便使用, 类成员函数转成std::function
 ```c++
 A a;
 std::function<void()> test = std::bind(&A::test, &a);
