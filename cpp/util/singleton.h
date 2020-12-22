@@ -43,12 +43,11 @@ Test& t = TestSingleton::instance();
 
 */
 
-
-template<class T>
+template <class T>
 class Singleton {
 public:
   static T& instance() {
-    static const std::unique_ptr<T> instance_{new T};
+    static const std::unique_ptr<T> instance_{new T}; // 进程退出时会析构
     return *instance_;
   }
 

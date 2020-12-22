@@ -9,6 +9,10 @@ inline uint64_t currThreadId() {
   return std::hash<std::thread::id>{}(std::this_thread::get_id());
 }
 
+inline uint64_t getThreadId(const std::thread& th) {
+  return std::hash<std::thread::id>{}(th.get_id());
+}
+
 inline int lengthOfOstringstream(const ostringstream& ss) {
   /**
    * pubseekoff(off, dir, which):pos_type
