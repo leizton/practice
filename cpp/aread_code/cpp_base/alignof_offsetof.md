@@ -33,8 +33,8 @@ struct A {
 };
 
 int main() {
-  print(sizeof(A));
-  print(alignof(A));
+  print(sizeof(A));   // 80
+  print(alignof(A));  // 8
   print(offsetof(A, a1));
   print(offsetof(A, a2));
   print(offsetof(A, a3));

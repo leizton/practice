@@ -40,3 +40,18 @@ A a;
 std::function<void()> test = std::bind(&A::test, &a);
 test();
 ```
+
+
+# 类拷贝构造和赋值运算符的区别
+```c++
+struct A {
+  A() : data(nullptr) {}
+  void* data;
+};
+A a;
+A a1(a);  // 拷贝构造
+A a2 = a; // 拷贝构造, !!!不是赋值运算符!!!
+          // 进入拷贝构造时, data是野指针
+A a3;     // 默认构造
+a3 = a;   // 赋值运算符。进入operator=时, data已被初始化成nullptr
+```
