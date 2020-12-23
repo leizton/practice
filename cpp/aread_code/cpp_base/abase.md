@@ -55,3 +55,7 @@ A a2 = a; // 拷贝构造, !!!不是赋值运算符!!!
 A a3;     // 默认构造
 a3 = a;   // 赋值运算符。进入operator=时, data已被初始化成nullptr
 ```
+
+
+# 各种callable的性能比较
+[@ref callable_perf](../../stl/functional.cc)
