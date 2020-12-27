@@ -15,9 +15,9 @@ bool AssertLog = false;
 }
 
 #define assert_F(expr) if (expr) {\
-  if (unit_test::AssertLog) {OSS ss; ss << "[" << __LINE__ << "] assert_F fail\n"; cout << ss.str();}\
+  OSS ss; ss << "[" << __LINE__ << "] assert_F fail\n"; cout << ss.str();\
 } else { \
-  OSS ss; ss << "[" << __LINE__ << "] assert_F ok\n"; cout << ss.str();\
+  if (unit_test::AssertLog) {OSS ss; ss << "[" << __LINE__ << "] assert_F ok\n"; cout << ss.str();}\
 }
 
 #define assert_eq(expect, actual) {\

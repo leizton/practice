@@ -1,7 +1,7 @@
 #! /bin/bash
 rm -f a.out
 
-CPP='g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O2 -I.'
+CPP="$gcc_home/bin/g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O2 -I."
 
 SRCS='util/base64.cc'
 

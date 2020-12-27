@@ -2,3 +2,4 @@
 .idea/**
 tmp/**
 testdata*
+test.h
