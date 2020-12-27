@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include <algorithm>
+#include <bitset>
 #include <string>
 #include <vector>
 #include <list>
