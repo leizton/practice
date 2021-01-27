@@ -9,6 +9,7 @@ struct Int {
   Int(int v_ = 0) : v(v_) {}
   reload_os_out(Int) { out << obj.v; return out; }
   friend bool operator<(const Int& x, const Int& y) { return x.v < y.v; }
+  friend bool operator>(const Int& x, const Int& y) { return x.v > y.v; }
 };
 
 #define PRINT if(Aoo::log) println
