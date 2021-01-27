@@ -74,7 +74,7 @@ std::ostream& operator<<(std::ostream& out, const std::unordered_map<K, V>& m) {
 }
 
 template <class T>
-string to_str(T v) {
+string to_str(const T& v) {
   ostringstream ss;
   ss << v;
   return ss.str();
@@ -112,14 +112,14 @@ inline void __print(std::ostringstream& out, std::string sep, bool is_begin) {
 }
 
 template <class First, class... Args>
-void __print(std::ostringstream& out, std::string sep, bool is_begin, First first, Args... left) {
+void __print(std::ostringstream& out, std::string sep, bool is_begin, const First& first, const Args&... left) {
   if (!is_begin) out << sep;
   out << first;
   __print(out, sep, false, left...);
 }
 
 template <class... Args>
-void print(Args... args) {
+void print(const Args&... args) {
   std::ostringstream out;
   __print(out, ", ", true, args...);
   out << "\n";
@@ -127,9 +127,9 @@ void print(Args... args) {
 }
 
 template <class... Args>
-void println(Args... args) {
+void println(const Args&... args) {
   std::ostringstream out;
-  __print(out, "", true, args...);
+  __print(out, " ", true, args...);
   out << "\n";
   cout << out.str();
 }
