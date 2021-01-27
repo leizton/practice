@@ -49,7 +49,18 @@ def(swap) {
   std::swap(o1, o2);
 }
 
-run(vector_swap) {
+#if commend(vector::swap implement)
+
+void vector<T>::swap(vector<T>& rhs) {
+  this->_M_impl._M_swap_data(rhs._M_impl);
+}
+
+_M_impl里存了三个指针:  _M_start  _M_finish  _M_end_of_storage
+仅swap三个指针
+
+#endif
+
+def(vector_swap) {
   vector<Obj> v1, v2;
   v1.reserve(8);
   v2.reserve(8);
