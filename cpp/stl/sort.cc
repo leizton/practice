@@ -28,17 +28,41 @@ ostream& operator<<(ostream& os, const Obj& o) {
   return os;
 }
 
-#define ENABLE_STABLE_QSORT 1
+#if comment(stl里的partition)
+RandomIter _unguarded_partition<RandomIter, T>(RandomIter first, RandomIter last, T pivot, Compare less) {
+  // [first, last)中包含pivot
+  while (true) {
+    while (less(*first, pivot)) // 可能出现越界core的循环
+      ++first;
+    --last;
+    while (less(pivot, *last))
+      --last;
+    if (! (first < last))
+      return first;
+    swap(*first, *last);
+    ++first;
+  }
+}
+#endif
 
 template <class T>
 int qsortPart(vector<T>& vec, int begin, int end) {
   const auto& ref = vec[begin];
   int i = begin + 1, j = end - 1;
   while (i < j) {
+    /*
+     * 在stl的实现中没有 i<j 的检查
+     * 因此, 如果 operator< 在相等时返回true, 那么i++会越界
+     */
     if (vec[i] < ref) {
       i++;
     } else {
-#if ENABLE_STABLE_QSORT
+      /*
+        非稳定排序
+        std::swap(vec[i], vec[j]);
+        j--;
+      */
+      // 稳定排序
       while (i < j) {
         if (vec[j] < ref) {
           std::swap(vec[i], vec[j]);
@@ -46,10 +70,6 @@ int qsortPart(vector<T>& vec, int begin, int end) {
         }
         j--;
       }
-#else
-      std::swap(vec[i], vec[j]);
-      j--;
-#endif
     }
   }
   if (vec[i] < ref) {
