@@ -1,6 +1,5 @@
 #include "util/base.h"
 
-
 def(find_rfind) {
   string s = "a/b/c/d";
   assert_eq(std::string::npos, s.find('\\'));
@@ -8,7 +7,6 @@ def(find_rfind) {
   assert_eq(3u, s.find('/', 2));
   assert_eq(5u, s.rfind('/'));
 }
-
 
 def(starts_with_ends_with) {
   auto starts_with = [](const string& s, const string& prefix) {
@@ -34,17 +32,15 @@ def(starts_with_ends_with) {
   assert_F(ends_with(s, "012345"));
 }
 
-
 def(dirpath) {
-  auto getDirpath = [] (const string& path) -> string {
+  auto getDirpath = [](const string& path) -> string {
     auto idx = path.rfind('/');
-    return (idx == std::string::npos) ? "" : path.substr(0, idx+1);
+    return (idx == std::string::npos) ? "" : path.substr(0, idx + 1);
   };
   assert_eq("/home/", getDirpath("/home/a.txt"));
   assert_eq("/home/lz/", getDirpath("/home/lz/a.txt"));
   assert_eq("", getDirpath("a.txt"));
 }
-
 
 def(string_deep_or_shallow_copy) {
   // 都是 deep-copy. 不同gcc结果不同
@@ -56,16 +52,16 @@ def(string_deep_or_shallow_copy) {
 
   const int N = 3;
   TrivialInt arr[N];
-  for (int i = 0; i < N; i++) arr[i].v = 0;
+  for (int i = 0; i < N; i++)
+    arr[i].v = 0;
 
   // arr 到 bs 是深拷贝
-  basic_string<TrivialInt> bs(arr, arr+3);
+  basic_string<TrivialInt> bs(arr, arr + 3);
   assert_neq(ptrToInt(arr), ptrToInt(bs.c_str()));
 
   // bs 到 bs1 是深拷贝
   basic_string<TrivialInt> bs1(bs);
   assert_neq(ptrToInt(bs.c_str()), ptrToInt(bs1.c_str()));
 }
-
 
 main_run;
