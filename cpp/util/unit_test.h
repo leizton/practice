@@ -25,22 +25,6 @@ bool AssertLog = false;
   _assert_eq(__LINE__, expect, actual_v);\
 }
 
-template<class T=const char*, class U=const char*>
-void _assert_eq(int lineno, const char* expect, const char* actual) {
-  bool log = unit_test::AssertLog;
-  OSS ss;
-  ss << "[" << lineno << "] assert_eq";
-  if (strcmp(expect, actual) == 0) {
-    ss << " ok";
-  } else {
-    log = true;
-    ss << " fail.";
-    ss << " expect=\"" << expect << "\", actual=\"" << actual << "\"";
-  }
-  ss << "\n";
-  if (log) cout << ss.str();
-}
-
 template<class T, class U>
 void _assert_eq(int lineno, T expect, U actual) {
   bool log = unit_test::AssertLog;
@@ -52,6 +36,22 @@ void _assert_eq(int lineno, T expect, U actual) {
     log = true;
     ss << " fail.";
     ss << " expect=" << expect << ", actual=" << actual;
+  }
+  ss << "\n";
+  if (log) cout << ss.str();
+}
+
+template<>
+void _assert_eq(int lineno, const char* expect, const char* actual) {
+  bool log = unit_test::AssertLog;
+  OSS ss;
+  ss << "[" << lineno << "] assert_eq";
+  if (strcmp(expect, actual) == 0) {
+    ss << " ok";
+  } else {
+    log = true;
+    ss << " fail.";
+    ss << " expect=\"" << expect << "\", actual=\"" << actual << "\"";
   }
   ss << "\n";
   if (log) cout << ss.str();
