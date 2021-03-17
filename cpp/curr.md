@@ -17,3 +17,7 @@ tensor, https://www.cnblogs.com/jicanghai/p/9537282.html
 缺页中断
 
 AtomicSharedPtr, https://github.com/facebook/folly/blob/0deef031cb8aab76dc7e736f8b7c22d701d5f36b/folly/concurrency/AtomicSharedPtr.h
+
+https://stackoverflow.com/questions/397075/what-is-the-difference-between-exit-and-abort
+
+lucene: http://www.nosqlnotes.com/technotes/searchengine/lucene-invertedindex/
