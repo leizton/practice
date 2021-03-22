@@ -21,3 +21,5 @@ AtomicSharedPtr, https://github.com/facebook/folly/blob/0deef031cb8aab76dc7e736f
 https://stackoverflow.com/questions/397075/what-is-the-difference-between-exit-and-abort
 
 lucene: http://www.nosqlnotes.com/technotes/searchengine/lucene-invertedindex/
+
+lucene FST: https://www.shenyanchao.cn/blog/2018/12/04/lucene-fst/
