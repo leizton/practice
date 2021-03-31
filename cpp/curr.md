@@ -23,3 +23,10 @@ https://stackoverflow.com/questions/397075/what-is-the-difference-between-exit-a
 lucene: http://www.nosqlnotes.com/technotes/searchengine/lucene-invertedindex/
 
 lucene FST: https://www.shenyanchao.cn/blog/2018/12/04/lucene-fst/
+
+kaggle outbrain: https://www.kaggle.com/c/outbrain-click-prediction/data
+
+函数调用树，非局部变量
+查找函数调用
+
+drools: https://www.jianshu.com/p/d136a76e1c0d

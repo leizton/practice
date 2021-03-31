@@ -4,6 +4,7 @@ tmp/*
 
 *.out
 *.out.dSYM
+core
 main.cc
 
 build/*
