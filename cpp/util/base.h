@@ -16,4 +16,5 @@
 #include "aoo.h"
 #include "unit_test.h"
 
+#include "double_buffer.h"
 #include "lru_cache.h"
