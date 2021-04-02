@@ -1,0 +1,1 @@
+https://wizardforcel.gitbooks.io/100-gcc-tips/content/index.html
