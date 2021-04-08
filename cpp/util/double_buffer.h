@@ -73,6 +73,7 @@ void DoubleBuffer<DataType>::switchObj() {
   uint32_t expect = active_idx_.load() & Mask;
   const uint32_t val = expect ^ Mask;
   while (!active_idx_.compare_exchange_strong(expect, val)) {
+    // TODO: 此处有活锁
     expect = active_idx_.load() & Mask;
     std::this_thread::sleep_for(std::chrono::duration<int, std::micro>(switch_sleep_us_));
   }
