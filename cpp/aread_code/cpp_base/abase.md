@@ -59,3 +59,7 @@ a3 = a;   // 赋值运算符。进入operator=时, data已被初始化成nullptr
 
 # 各种callable的性能比较
 [@ref callable_perf](../../stl/functional.cc)
+
+
+# static_assert(bool_expr, [message])
+编译期检查
