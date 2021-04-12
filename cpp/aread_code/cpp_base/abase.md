@@ -63,3 +63,8 @@ a3 = a;   // 赋值运算符。进入operator=时, data已被初始化成nullptr
 
 # static_assert(bool_expr, [message])
 编译期检查
+
+# 全局变量(global-var) 和 静态变量(static-var)
+.cc文件中用static修饰的是静态变量, 否则是全局变量
+静态变量只能在当前文件中访问, 就像类/函数的静态变量只能在类/函数里访问
+全局变量在其他文件中通过extern声明后可以被访问
