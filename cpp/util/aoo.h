@@ -1,3 +1,5 @@
+#pragma once
+
 #include "util/cpp_lib.h"
 
 struct TrivialInt {
@@ -15,7 +17,7 @@ struct Int {
 #define PRINT if(Aoo::log) println
 
 struct Aoo {
-
+public:
   virtual ~Aoo()
     { decon_num_++; PRINT("Aoo_decon_", id); }
 
@@ -66,7 +68,6 @@ private:
   static atomic<uint32_t> move_copy_con_num_;
   static atomic<uint32_t> assign_con_num_;
   static atomic<uint32_t> move_assign_con_num_;
-
 };
 
 typedef shared_ptr<Aoo> AooPtr;
