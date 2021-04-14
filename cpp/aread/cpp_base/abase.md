@@ -69,3 +69,21 @@ a3 = a;   // 赋值运算符。进入operator=时, data已被初始化成nullptr
 .cc文件中用static修饰的是静态变量, 否则是全局变量
 静态变量只能在当前文件中访问, 就像类/函数的静态变量只能在类/函数里访问
 全局变量在其他文件中通过extern声明后可以被访问
+
+
+# map的3种插入方式
+```c++
+map<int, Aoo> d;
+//
+d.insert({1, a}); // or d.insert(make_pair(1, a));
+  1  make_pair call copy_construct(a) 创建临时对象 a1
+  2  d.insert call move_copy_construct(a1) 创建map内的元素
+  3  deconstruct(a1)
+//
+d[2] = a;
+  1  call default construct() 创建map内的元素
+  2  call operator=(a) 初始化map内的元素
+//
+d.emplace(3, a);
+  1  call copy_construct(a) 创建map内的元素
+```
