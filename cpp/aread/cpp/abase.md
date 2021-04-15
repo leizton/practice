@@ -12,18 +12,19 @@ numeric_limits<int>::max()
 ```
 
 
-# (函数名 函数指针) 和 (类成员函数 std::function)
-## 1 函数名可以隐式转成函数指针
+# 函数名 函数指针 类成员函数 std::function
+① 函数名可以隐式转成函数指针, 就像数组名可以隐式转成元素类型的指针
 ```c++
 void func() {}
 void (*pf)() = func;
+pf = &func; // 也可以加上&
 (*pf)();
 printf("%p, %p, %p", func, &func, pf);
 ```
 printf打印的3个值是相等的
 `pf = func;` 也可以写成 `pf = &func;`;
-## 2 类静态成员函数和普通函数没有区别也可以隐式转成函数指针
-## 3 类成员函数转成函数指针需要带类名作用域
+② 类静态成员函数和普通函数没有区别也可以隐式转成函数指针
+③ 类普通成员函数转成函数指针需要带类名作用域
 ```c++
 struct A {
   void test();
@@ -33,8 +34,7 @@ TestPtr test = &A::test;
 A a;
 (a.*test)();
 ```
-## 4 类成员函数和普通函数有本质上的区别
-## 5 为了方便使用, 类成员函数转成std::function
+④ 为了方便使用, 把类成员函数转成std::function
 ```c++
 A a;
 std::function<void()> test = std::bind(&A::test, &a);
@@ -87,3 +87,26 @@ d[2] = a;
 d.emplace(3, a);
   1  call copy_construct(a) 创建map内的元素
 ```
+
+
+# vector的插入
+```c++
+vector<Aoo> v;
+v.push_back(a);    // call copy_construct(a)
+v.emplace_back(a); // call copy_construct(a)
+v.emplace_back(std::move(a)); // call move_copy_construct(a)
+```
+
+
+# 引用和指针
+引用的好处: ①不会指向空对象 ②所指不会改变,避免指向混乱 ③语法比指针简单,代码更干净
+所以尽最大可能用引用
+--
+返回类型是引用
+  A& mutableA()
+  const A& getA()
+返回类型是指针, 表示可能返回nullptr
+  A* a()
+--
+可被修改的形参可以是引用
+例如, void std::swap(T& a, T& b);
