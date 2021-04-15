@@ -27,11 +27,23 @@ std::shared_ptr<Cond> buildCond() {
 
 def(callable_perf) {
   /*
-      code_eq     80
-      raw_eq      80
-      bind_eq     2200
-      clz_eq      80
-      virtual_eq  1400
+      # g++ -O3
+      code_eq                 1
+      lambda_eq               1
+      class_eq                1
+      virtual_eq              3
+      function_eq             10
+      bind_lambda_eq          12
+      bind_function_eq        16
+
+      # g++ -O2
+      code_eq                 3
+      lambda_eq               3
+      class_eq                3
+      virtual_eq              10
+      function_eq             10
+      bind_lambda_eq          12
+      bind_function_eq        16
   */
 
   int64_t begin_tm, end_tm;
@@ -48,20 +60,28 @@ def(callable_perf) {
     print(#COMM, ret, end_tm - begin_tm);  \
   }
 
-#define code_eq_run 10 == i
-  TEST(code_eq, code_eq_run);
+  TEST(code_eq, 10 == i);
 
-  auto raw_eq = [](int data, void* v) -> bool {
+  auto lambda_eq = [](int data, void* v) -> bool {
     return data == *static_cast<int*>(v);
   };
-#define raw_eq_run raw_eq(10, &i)
-  TEST(raw_eq, raw_eq_run);
+#define lambda_eq_run lambda_eq(10, &i)
+  TEST(lambda_eq, lambda_eq_run);
 
-  std::function<bool(void*)> bind_eq = std::bind(raw_eq, 10, std::placeholders::_1);
-  TEST(bind_eq, bind_eq(&i));
+  std::function<bool(int,void*)> function_eq = [](int data, void* v) -> bool {
+    return data == *static_cast<int*>(v);
+  };
+#define function_eq_run function_eq(10, &i)
+  TEST(function_eq, function_eq_run);
 
-  IntEq clz_eq(10);
-  TEST(clz_eq, clz_eq.isTrue(&i));
+  std::function<bool(void*)> bind_lambda_eq = std::bind(lambda_eq, 10, std::placeholders::_1);
+  TEST(bind_lambda_eq, bind_lambda_eq(&i));
+
+  std::function<bool(void*)> bind_function_eq = std::bind(function_eq, 10, std::placeholders::_1);
+  TEST(bind_function_eq, bind_function_eq(&i));
+
+  IntEq class_eq(10);
+  TEST(class_eq, class_eq.isTrue(&i));
 
   auto cond = buildCond();
   TEST(virtual_eq, cond->isTrue(&i));
