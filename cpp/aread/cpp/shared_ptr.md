@@ -9,7 +9,12 @@
 
 # make_shared
 make_shared 创建的智能指针, 其计数器和对象数据封装在同一个结构体里
-由于在内存上是在同一个地方, 所以调用reset()后对象空间并没有释放
+计数器和对象在堆内存上是连续的
+优点:
+  创建和释放只需一次alloc和free, 性能更好
+  `shared_ptr<A> p(new A)` 创建时有两次alloc, ⒈ new A; ⒉ 分配计数器空间
+缺点:
+  调用reset()后对象空间不会及时释放
 
 
 # src_code
@@ -33,36 +38,54 @@ class shared_ptr<Tp> {
     _ptr(nullptr)
     _refcount(_ptr, ac, args)
   }
-}
 
-class shared_count {
-  _Sp_counted_base*  _pi
-
-  // 实际 new 的是 _Sp_counted_ptr_inplace
-  shared_count<T, Alloc, ...Args>(T*& ptr, Alloc& ac, Args&&... args) {
-    using sp_cnt_type = _Sp_counted_ptr_inplace<_Tp, _Alloc>
-    sp_cnt_type* mem = ac.allocate(1)  // 略去萃取 allocate_type 的过程
-    sp_cnt_type* cnt_ptr = new (mem) sp_cnt_type(ac, std::forward<Args>(args)...)
-    _pi = cnt_ptr
-    ptr = cnt_ptr->_impl._storage._M_ptr()
+  shared_ptr<T>(T* p) {
+    _ptr(p)
+    _refcount(p)
+    __enable_shared_from_this_helper(_refcount, __p, __p)
   }
 }
 
-class _Sp_counted_ptr_inplace<T, Alloc> : _Sp_counted_base {
+class shared_count {
+  Sp_counted_base*  _pi
+
+  // 实际 new 的是 _Sp_counted_ptr_inplace
+  shared_count<T, Alloc, ...Args>(T*& ptr, Alloc& ac, Args&&... args) {
+    using sp_cnt_type = Sp_counted_ptr_inplace<T, Alloc>
+    sp_cnt_type* mem = ac.allocate(1)  // 略去萃取 allocate_type 的过程
+    sp_cnt_type* cnt_ptr = new (mem) sp_cnt_type(ac, std::forward<Args>(args)...)
+    ptr = cnt_ptr->_impl._storage._M_ptr()
+    _pi = cnt_ptr
+  }
+
+  shared_count<T>(T* p) {
+    _pi = new Sp_counted_ptr<T>(p)
+  }
+}
+
+class Sp_counted_ptr_inplace<T, Alloc> : Sp_counted_base {
   // 成员变量 _storage 是 T对象 的实际内存空间
   typename std::aligned_storage<sizeof(T), alignof(T)>::type _storage;
 }
 
-class _Sp_counted_base {
-  _Atomic_word  _use_count = 1
-  _Atomic_word  _weak_count = 1
+class Sp_counted_ptr<T> : Sp_counted_base {
+  T* _ptr
 
-  long _get_use_count() = __atomic_load_n(&_use_count, __ATOMIC_RELAXED)
-  void _add_ref_copy() = __atomic_add_dispatch(&_use_count, 1)
+  Sp_counted_ptr(T* p) {
+    _ptr(p)
+  }
+}
+
+class Sp_counted_base {
+  Atomic_word  _use_count = 1
+  Atomic_word  _weak_count = 1
+
+  long get_use_count() = atomic_load_n(&_use_count, __ATOMIC_RELAXED)
+  void add_ref_copy() = atomic_add_dispatch(&_use_count, 1)
 }
 
 // atomic_word.h
-typedef int _Atomic_word
+typedef int Atomic_word
 ```
 
 
