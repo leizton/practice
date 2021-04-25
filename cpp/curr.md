@@ -30,5 +30,14 @@ gcc 异常回溯
 
 分布式 unique_id
 
-AtomicSharedPtr, https://github.com/leizton/folly/blob/master/folly/concurrency/AtomicSharedPtr.h
+shared_ptr assign 线程不安全分析
+
+AtomicSharedPtr
+
 string内部实现
+
+序列化中间件
+- 支持易用且高性能的反射
+- 压缩比和压缩性能和protobuf差距不大
+- 有自定义的DSL语言, 便于数据管理
+- 可以统一服务中的各类数据，如 UserInfo(profile,history), Doc, Request/Response

@@ -3,15 +3,16 @@ rm -f a.out
 rm -rf a.out.dSYM
 rm -f core
 
-CPP="$gcc_home/bin/g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O3 -I."
+cpp="$gcc_home/bin/g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O3 -I."
 
-SRCS='util/base64.cc'
+srcs='util/base64.cc'
 
 if [ $# -lt 1 ]; then
-  $CPP main.cc $SRCS -pthread
+  srcs="main.cc $srcs"
 else
-  $CPP "$1" $SRCS -pthread
+  srcs="$1 $srcs"
 fi
+$cpp $srcs -pthread 2>&1 | grep -v 'libstdc++.dylib'
 
 if [ -f a.out ]; then
   ./a.out

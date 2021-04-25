@@ -18,3 +18,4 @@
 
 #include "double_buffer.h"
 #include "lru_cache.h"
+#include "spin_lock.h"
