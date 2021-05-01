@@ -3,7 +3,9 @@ rm -f a.out
 rm -rf a.out.dSYM
 rm -f core
 
-cpp="$gcc_home/bin/g++ -std=c++11 -Werror -Wall -Wno-unused-variable -g -O3 -I."
+cpp="$gcc_home/bin/g++ -std=c++11 \
+    -Werror -Wall -Wno-unused-variable -g -O3 \
+    -I. -I/usr/local/include"
 
 srcs='util/base64.cc'
 

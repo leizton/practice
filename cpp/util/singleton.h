@@ -36,6 +36,9 @@ typename Singleton<T>::InstanceHolder Singleton<T>::holder_;  // 因为是模板
 # example
 
 // test.h
+class Test {
+  ...
+};
 typedef Singleton<Test> TestSingleton;
 
 // main.cc

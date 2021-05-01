@@ -1,25 +1,25 @@
 架构的基本面
+  易用性(对业务开发友好, 有助于保持高的业务生产力)
+  可扩展(数据容量、请求处理能力可水平扩展)
   高可用(极少的请求处理失败)
   高性能(并发性能)
-  可扩展(数据容量、请求处理能力可水平扩展)
-  易用性(对业务开发友好)
 
-开源中间件
+基础服务和中间件
   -- storage
   redis
   mysql
   hbase
   ES
   etcd
-  -- communication
-  protobuf/flatbuf
-  brpc
-  kafka
   -- compute
   mapReduce
   spark
   flink
-  -- tools
+  -- communication
+  protobuf/flatbuf
+  brpc
+  kafka
+  -- codelib
   disruptor
   tcmalloc
 

@@ -1,3 +1,6 @@
+#pragma once
+
+#include <iomanip>
 #include <iostream>
 #include <list>
 #include <map>
@@ -121,6 +124,7 @@ void __print(std::ostringstream& out, std::string sep, bool is_begin, const Firs
 template <class... Args>
 void print(const Args&... args) {
   std::ostringstream out;
+  out << boolalpha;
   __print(out, ", ", true, args...);
   out << "\n";
   cout << out.str();
@@ -129,6 +133,7 @@ void print(const Args&... args) {
 template <class... Args>
 void println(const Args&... args) {
   std::ostringstream out;
+  out << boolalpha;
   __print(out, " ", true, args...);
   out << "\n";
   cout << out.str();

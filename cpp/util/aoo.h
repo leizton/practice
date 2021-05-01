@@ -1,6 +1,7 @@
 #pragma once
 
-#include "util/cpp_lib.h"
+#include "cpp_lib.h"
+#include "print.h"
 
 struct TrivialInt {
   int v;
@@ -19,23 +20,23 @@ struct Int {
 struct Aoo {
 public:
   virtual ~Aoo()
-    { decon_num_++; PRINT("Aoo_decon_", id); }
+    { decon_num_++; PRINT("Aoo_destruct_", id); }
 
   Aoo()
     : id(++id_)
-    { con_num_++; PRINT("Aoo_con_", id); }
+    { con_num_++; PRINT("Aoo_ctor_", id); }
 
   Aoo(int)
     : id(++id_)
-    { con_num_++; PRINT("Aoo_con_", id); }
+    { con_num_++; PRINT("Aoo_ctor_", id); }
 
   Aoo(const Aoo& x)
     : id(++id_)
-    { copy_con_num_++; PRINT("Aoo_copy_con_", id); }
+    { copy_con_num_++; PRINT("Aoo_copy_ctor_", id); }
 
   Aoo(const Aoo&& x)
     : id(++id_)
-    { move_copy_con_num_++; PRINT("Aoo_move_copy_con_", id); }
+    { move_copy_con_num_++; PRINT("Aoo_move_copy_ctor_", id); }
 
   void operator=(const Aoo& x) 
     { assign_con_num_++; PRINT("Aoo_assign_", id); }
