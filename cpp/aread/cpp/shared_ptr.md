@@ -1,12 +1,13 @@
 无需手动delete, 避免内存泄漏
 出现异常时也会执行delete
   example
-  ```c++
+  ~~~c++
   auto ptr = std::make_shared<Aoo>()
   funcMayThrowException()
-  ```
+  ~~~
 
 
+--------------------------------------------------------------------------------------------------------------
 # make_shared
 make_shared 创建的智能指针, 其计数器和对象数据封装在同一个结构体里
 计数器和对象在堆内存上是连续的
@@ -17,12 +18,40 @@ make_shared 创建的智能指针, 其计数器和对象数据封装在同一个
   调用reset()后对象空间不会及时释放
 
 
+--------------------------------------------------------------------------------------------------------------
+# pointer cast
+~~~c++
+// 使用时, U 是有实参自动推导出来
+shared_ptr<T> static_pointer_cast<T,U>(const shared_ptr<U>& ptr) {
+  auto* p = static_cast<T*>(ptr.get())
+  return shared_ptr<T>(ptr, p)
+}
+
+shared_ptr<T> dynamic_pointer_cast<T,U>(const shared_ptr<U>& ptr) {
+  if (auto* p = dynamic_cast<T*>(ptr.get()))
+    return shared_ptr<T>(ptr, p)
+  else
+    return shared_ptr<T>()
+}
+~~~
+
+
+--------------------------------------------------------------------------------------------------------------
+# enable_shared_from_this<T>
+~~~c++
+class Coo : public std::enable_shared_from_this<Coo> {};
+auto* c = new Coo;
+shared_ptr<Coo> p1(c);
+shared_ptr<Coo> p2 = c->shared_from_this();
+LOG() << p1.use_count() << ", " << p2.use_count(); // 2, 2
+~~~
+enable_shared_from_this 内部有一个`weak_ptr<T>`, shared_from_this()是通过weak_ptr创建出来
+@ref https://zhiqiang.org/coding/std-make-shared-enable-shared-from-this.html#toc-h3-2
+
+
+--------------------------------------------------------------------------------------------------------------
 # src_code
-
-https://zhiqiang.org/coding/std-make-shared-enable-shared-from-this.html
-
-
-```c++
+~~~c++
 shared_ptr<T> make_shared<typename T, typename... Args>(Args&&... args) {
   return shared_ptr<T>(std::allocator<T>(), std::forward<Args>(args)...)
 }
@@ -86,21 +115,4 @@ class Sp_counted_base {
 
 // atomic_word.h
 typedef int Atomic_word
-```
-
-
-# pointer cast
-```c++
-// 使用时, U 是有实参自动推导出来
-shared_ptr<T> static_pointer_cast<T,U>(const shared_ptr<U>& ptr) {
-  auto* p = static_cast<T*>(ptr.get())
-  return shared_ptr<T>(ptr, p)
-}
-
-shared_ptr<T> dynamic_pointer_cast<T,U>(const shared_ptr<U>& ptr) {
-  if (auto* p = dynamic_cast<T*>(ptr.get()))
-    return shared_ptr<T>(ptr, p)
-  else
-    return shared_ptr<T>()
-}
-```
+~~~
