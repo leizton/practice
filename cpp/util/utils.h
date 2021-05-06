@@ -1,11 +1,14 @@
 #include "util/cpp_lib.h"
 
+// #include <pthread.h>
+
 template<class T>
 void operator +=(vector<T>& x, vector<T> y) {
   x.insert(x.end(), y.begin(), y.end());
 }
 
 inline uint64_t currThreadId() {
+  // return (uint64_t)pthread_self();
   return std::hash<std::thread::id>{}(std::this_thread::get_id());
 }
 
