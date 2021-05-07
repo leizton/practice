@@ -1,7 +1,5 @@
 #include "util/cpp_lib.h"
 
-// #include <pthread.h>
-
 template<class T>
 void operator +=(vector<T>& x, vector<T> y) {
   x.insert(x.end(), y.begin(), y.end());
@@ -19,14 +17,6 @@ inline int lengthOfOstringstream(const std::ostringstream& ss) {
   stringstream::pos_type end = buf->pubseekoff(0, ss.end, ios_base::out);
   buf->pubseekpos(cur, ios_base::out);  // 恢复
   return (int)end;
-}
-
-inline uint64_t currentThreadId() {
-  return (uint64_t)pthread_self();
-}
-
-inline uint64_t getThreadId(const std::thread& th) {
-  return (uint64_t)const_cast<std::thread&>(th).native_handle();
 }
 
 #define main_run \

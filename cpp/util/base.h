@@ -11,6 +11,7 @@
 #include "blocking_queue.h"
 #include "double_buffer.h"
 #include "lru_cache.h"
+#include "reentrant_lock.h"
 #include "singleton.h"
 #include "spin_lock.h"
 
@@ -18,6 +19,7 @@
 #include "logger.h"
 #include "print.h"
 #include "template_utils.h"
+#include "thread_utils.h"
 #include "time_utils.h"
 #include "unit_test.h"
 
