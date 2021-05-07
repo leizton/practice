@@ -3,7 +3,7 @@
 struct Sleeper {
   Sleeper(int sec) {
     sleepSec(sec);
-    create_thread_id = currThreadId();
+    create_thread_id = currentThreadId();
   }
 
   ~Sleeper() {
@@ -34,7 +34,7 @@ def(static_instance_in_func) {
   }
   sleepSec(1);
 
-  println("main thread: ", currThreadId());
+  println("main thread: ", currentThreadId());
   println("create sleeper thread: ", instance().create_thread_id);
   println("create sleeper thread: ", instance().create_thread_id);
   println(thread_ids.find(instance().create_thread_id) != thread_ids.end());

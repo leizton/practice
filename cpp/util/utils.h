@@ -7,16 +7,7 @@ void operator +=(vector<T>& x, vector<T> y) {
   x.insert(x.end(), y.begin(), y.end());
 }
 
-inline uint64_t currThreadId() {
-  // return (uint64_t)pthread_self();
-  return std::hash<std::thread::id>{}(std::this_thread::get_id());
-}
-
-inline uint64_t getThreadId(const std::thread& th) {
-  return std::hash<std::thread::id>{}(th.get_id());
-}
-
-inline int lengthOfOstringstream(const ostringstream& ss) {
+inline int lengthOfOstringstream(const std::ostringstream& ss) {
   /**
    * pubseekoff(off, dir, which):pos_type
    * off:相对位置, dir:基位置, 实际位置=dir+off
@@ -27,7 +18,15 @@ inline int lengthOfOstringstream(const ostringstream& ss) {
   stringstream::pos_type cur = buf->pubseekoff(0, ss.cur, ios_base::out);  // 记录当前位置, 用于后面恢复
   stringstream::pos_type end = buf->pubseekoff(0, ss.end, ios_base::out);
   buf->pubseekpos(cur, ios_base::out);  // 恢复
-  return (int)(uint32_t)end;
+  return (int)end;
+}
+
+inline uint64_t currentThreadId() {
+  return (uint64_t)pthread_self();
+}
+
+inline uint64_t getThreadId(const std::thread& th) {
+  return (uint64_t)const_cast<std::thread&>(th).native_handle();
 }
 
 #define main_run \

@@ -261,14 +261,16 @@ void testSnprintfAndStringStream() {
 }
 
 
-// #define RUN testCurrThreadId
-void testCurrThreadId() {
-  cout << "main: " << currThreadId() << endl;
-  auto th = thread([] {
-    cout << "th: " << currThreadId() << endl;
+// #define RUN testCurrentThreadId
+void testCurrentThreadId() {
+  std::thread th([]() {
+    LOG() << currentThreadId();
+    sleepSec(3);
   });
+  LOG() << getThreadId(th);
   th.join();
-  cout << "main: " << currThreadId() << endl;
+  LOG() << getThreadId(th); // 0
+  LOG() << currentThreadId();
 }
 
 
