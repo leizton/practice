@@ -3,3 +3,6 @@
 tmp/**
 testdata*
 test.h
+
+*.pb.h
+*.pb.cc

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package reco;
+
+message User {
+  uint64 id = 1;
+  string name = 2;
+  repeated string tags = 3;
+}
+
+message UserVer1 {
+  uint64 id = 1;
+  string name = 2;
+  repeated string tags = 3;
+  repeated string cates = 4;
+}
