@@ -4,8 +4,10 @@
 
 class LogStream {
  public:
+  LogStream() {
+  }
   LogStream(const char* file, int line) {
-    // sout_ << "[" << file << ":" << line << "] ";
+    sout_ << "[" << file << ":" << line << "] ";
   }
 
   ~LogStream() {
@@ -23,4 +25,5 @@ class LogStream {
   std::ostringstream sout_;
 };
 
-#define LOG() LogStream(__FILE__, __LINE__)
+#define LOG() LogStream()
+#define LOGF() LogStream(__FILE__, __LINE__)

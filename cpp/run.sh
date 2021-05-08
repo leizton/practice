@@ -5,7 +5,10 @@ rm -f core
 
 cpp="$gcc_home/bin/g++ -std=c++11 \
     -Werror -Wall -Wno-unused-variable -g -O3 \
-    -I. -I/usr/local/include"
+    -I. -I/usr/local/include \
+    -L/usr/local/lib"
+
+libs="-lpthread"
 
 srcs='util/base64.cc'
 
@@ -14,7 +17,7 @@ if [ $# -lt 1 ]; then
 else
   srcs="$1 $srcs"
 fi
-$cpp $srcs -pthread 2>&1 | grep -v 'libstdc++.dylib'
+$cpp $srcs $libs 2>&1 | grep -v 'libstdc++.dylib'
 
 if [ -f a.out ]; then
   ./a.out

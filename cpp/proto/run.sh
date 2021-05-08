@@ -8,9 +8,13 @@ rm -f a.out
 rm -rf a.out.dSYM
 rm -f core
 
-cpp="$gcc_home/bin/g++ -std=c++11 \
+ulimit -c unlimited
+
+cpp="g++ -std=c++11 \
     -Werror -Wall -Wno-unused-variable -g -O3 \
     -I. -I.. -I/usr/local/include"
+
+libs="-lprotobuf -lpthread"
 
 srcs='../util/base64.cc *.pb.cc'
 
@@ -19,7 +23,7 @@ if [ $# -lt 1 ]; then
 else
   srcs="$1 $srcs"
 fi
-$cpp $srcs -lprotobuf -pthread 2>&1
+$cpp $srcs $libs 2>&1
 
 if [ -f a.out ]; then
   ./a.out

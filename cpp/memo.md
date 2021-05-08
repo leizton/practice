@@ -1,3 +1,5 @@
+关注数据，核心流转数据的修改即是核心流程
+
 可计算问题 图灵机 图灵完备
 https://www.zhihu.com/question/20115374
 
@@ -14,3 +16,17 @@ https://blog.csdn.net/qq_38622229/article/details/81840516
     kv_list 是一个 kv pair 的数组, key value 的类型都是string
 3. 通过消息队列发送出去, 如 kafka
 4. 用实时流计算框架做OLAP, 如 flink-sql
+
+
+# plot
+FusionCharts
+Highcharts
+Plotly
+
+
+# sign
+㈠㈡㈢㈣㈤㈥㈦㈧㈨㈩
+①②③④⑤⑥⑦⑧⑨⑩
+⑴⑵⑶⑷⑸⑹⑺⑻⑼⑽
+⒈⒉⒊⒋⒌⒍⒎⒏⒐⒑
+☆ ★ ☉ ⊕ □ ■ ○ ●

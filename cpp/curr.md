@@ -34,10 +34,13 @@ shared_ptr assign 线程不安全分析
 
 AtomicSharedPtr
 
-string内部实现
+string vector list AND-SO-ON 内部字段
 
 序列化中间件
 - 支持易用且高性能的反射
 - 压缩比和压缩性能和protobuf差距不大
 - 有自定义的DSL语言, 便于数据管理
 - 可以统一服务中的各类数据，如 UserInfo(profile,history), RecoItem, Request/Response
+
+jvm
+https://kkewwei.github.io/elasticsearch_learning/2018/11/10/LockSupport%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/
