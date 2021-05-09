@@ -21,8 +21,8 @@ inline uint64_t nowUs() {
 inline std::string currTimeStr() {
   time_t ts = nowSec();
   char time_str[64];
-	::strftime(time_str, sizeof(time_str) - 1, "%Y-%m-%d %H:%M:%S", localtime(&ts));
-	return time_str;
+  ::strftime(time_str, sizeof(time_str) - 1, "%Y-%m-%d %H:%M:%S", localtime(&ts));
+  return time_str;
 }
 
 inline std::chrono::duration<int, std::ratio<1LL, 1LL>> buildDurationSec(int sec) {
@@ -47,3 +47,51 @@ inline void sleepMs(int ms) {
 inline void sleepUs(int us) {
   std::this_thread::sleep_for(buildDurationUs(us));
 }
+
+/**
+ * Timer
+ */
+enum class TimeUnit {
+  SECOND,
+  MILLISECOND,
+  MICROSECOND,
+};
+
+class Timer {
+public:
+  Timer(TimeUnit tu)
+      : start_(nowUs())
+      , last_(start_) {
+    switch (tu) {
+    case TimeUnit::SECOND:
+      ratio_ = 1000000;
+      break;
+    case TimeUnit::MILLISECOND:
+      ratio_ = 1000;
+      break;
+    default:
+      ratio_ = 1;
+      break;
+    }
+  }
+
+  uint64_t interval() {
+    uint64_t ts = last_;
+    flush();
+    return (last_ - ts) / ratio_;
+  }
+
+  uint64_t stop() {
+    flush();
+    return (last_ - start_) / ratio_;
+  }
+
+  void flush() {
+    last_ = nowUs();
+  }
+
+private:
+  uint64_t ratio_;
+  const uint64_t start_;
+  uint64_t last_;
+};
