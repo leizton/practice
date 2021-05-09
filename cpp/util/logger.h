@@ -21,9 +21,14 @@ class LogStream {
     return *this;
   }
 
+  LogStream& write(const char* s, int len) {
+    sout_.write(s, len);
+    return *this;
+  }
+
  private:
   std::ostringstream sout_;
 };
 
 #define LOG() LogStream()
-#define LOGF() LogStream(__FILE__, __LINE__)
+#define LOG_INFO() LogStream(__FILE__, __LINE__)
