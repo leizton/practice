@@ -23,6 +23,7 @@ https://blog.csdn.net/qq_38622229/article/details/81840516
   - 偏于关注数据处理
     接口命令式: 面向接口编程
     数据流声明式: java8 stream; 针对某一种数据类型的迭代操作, 数据类型 List<T>
+      [flink 数据流编程模型](./app/Flink_Dataflow_Programming_Model.pdf)
       批数据声明式: 接口参数是list型
     响应式函数编程: 数据流声明式的异步化; 事件(数据)驱动式
 数据模型
@@ -43,10 +44,6 @@ https://blog.csdn.net/qq_38622229/article/details/81840516
   一个节点也可以创建出多个列族, 节点内通过 group.column 取得具体的列数据
   配置构图: 仅需配置节点的 inputs 和 outputs, 框架自动推导节点依赖关系变成图运行, 所以表的列数在运行前也是确定的
   对于list数据, 如果设置multi-record模式, 则表示这个list是多行; 否则是一行
-
-flink模型
-  https://jiezhi.github.io/2019/03/04/flink-concepts-programming-model/
-  https://ci.apache.org/projects/flink/flink-docs-release-1.9/zh/concepts/programming-model.html
 
 AI算法发展
   专家系统: 手动配置规则; 规则式逻辑
