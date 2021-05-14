@@ -1,8 +1,8 @@
 架构的基本面
-  易用性(对业务开发友好, 有助于保持高的业务生产力)
-  可扩展(数据容量、请求处理能力可水平扩展)
-  高可用(极少的请求处理失败)
-  高性能(并发性能)
+  易用性(对业务开发友好, 有助于保持高的业务生产力; 易于排查问题, 监控和trace易用)
+  可扩展(数据容量、计算处理量可水平扩展)
+  高可用(极少的处理失败)
+  高性能(处理时间足够短)
 
 基础服务和中间件
   -- storage
@@ -16,9 +16,11 @@
   spark
   flink
   -- communication
-  protobuf/flatbuf
+  protobuf/flatbuf/arrow
   brpc
   kafka
+  -- monitor
+  opentsdb/prometheus
   -- codelib
   disruptor
   tcmalloc
