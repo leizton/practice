@@ -1,1 +1,0 @@
-class -> field -> 核心method
