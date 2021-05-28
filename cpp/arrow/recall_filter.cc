@@ -26,12 +26,8 @@ struct GhStatItem {
   uint64_t reco_num = 0u;
 };
 
-int main(int argc, const char* argv[]) {
-  if (argc < 2) {
-    LOG() << "lost argv: csv filepath";
-    return 1;
-  }
-  const char* csv_filepath = argv[1];
+int main() {
+  const char* csv_filepath = "data/recall_filter.csv";
   LOG() << "csv file: " << csv_filepath;
 
   auto table = loadCsv(csv_filepath);
@@ -70,10 +66,10 @@ int main(int argc, const char* argv[]) {
     gh_st.second.out_num_avg /= gh_st.second.reco_num;
   }
   for (auto& gh_st : gh_stat) {
-    LOG().write(gh_st.first.data, gh_st.first.len)
-        << ", recall_num=[" << gh_st.second.recall_num_avg << ", " << gh_st.second.recall_num_max << "]"
-        << ", out_num=[" << gh_st.second.out_num_avg << ", " << gh_st.second.out_num_max << "]"
-        << ", reco_num=" << gh_st.second.reco_num;
+    LOG() << std::string(gh_st.first.data, gh_st.first.len)
+          << ", recall_num=[" << gh_st.second.recall_num_avg << ", " << gh_st.second.recall_num_max << "]"
+          << ", out_num=[" << gh_st.second.out_num_avg << ", " << gh_st.second.out_num_max << "]"
+          << ", reco_num=" << gh_st.second.reco_num;
   }
   /*
   ChannelFeed, recall_num=[5400, 12987], out_num=[1345, 3198], reco_num=259

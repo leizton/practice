@@ -25,8 +25,8 @@ $cpp $srcs $libs 2>&1
 
 if [ -f a.out ]; then
   if [ $# -lt 1 ]; then
-    ./a.out data/recall_filter.csv
+    ./a.out
   else
-    ./a.out $@
+    ./a.out
   fi
 fi
