@@ -45,5 +45,14 @@ string vector list AND-SO-ON 内部字段
 jvm
 https://kkewwei.github.io/elasticsearch_learning/2018/11/10/LockSupport%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/
 
+epoll
+
 dpp
 https://zhuanlan.zhihu.com/p/95607668
+
+rcu_rw_lock
+https://zhuanlan.zhihu.com/p/89439043
+
+全链路日志
+https://juejin.cn/post/6965178897629462564
+span的作用: 形成多层树状结构
