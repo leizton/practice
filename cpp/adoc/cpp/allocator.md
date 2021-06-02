@@ -1,6 +1,7 @@
 ~~~c++
 
-@header bits/allocator.h
+// @header bits/allocator.h
+// 空结构体
 class allocator<T>: public __allocator_base<T> {
   template <T1>
   class rebind {
@@ -8,7 +9,7 @@ class allocator<T>: public __allocator_base<T> {
   };
 }
 
-@header bits/c++allocator.h
+// @header bits/c++allocator.h
 using __allocator_base<T> = new_allocator<T>
 
 // 对 new/delete 封装

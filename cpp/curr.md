@@ -36,6 +36,8 @@ AtomicSharedPtr
 
 string vector list AND-SO-ON 内部字段
 
+vector iterator 比较
+
 序列化中间件
 - 支持易用且高性能的反射
 - 压缩比和压缩性能和protobuf差距不大
@@ -56,3 +58,6 @@ https://zhuanlan.zhihu.com/p/89439043
 全链路日志
 https://juejin.cn/post/6965178897629462564
 span的作用: 形成多层树状结构
+
+mvp
+https://juejin.cn/post/6844903448412946445
