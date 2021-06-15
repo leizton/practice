@@ -71,15 +71,16 @@ int main() {
           << ", out_num=[" << gh_st.second.out_num_avg << ", " << gh_st.second.out_num_max << "]"
           << ", reco_num=" << gh_st.second.reco_num;
   }
+
   /*
-  ChannelFeed, recall_num=[5400, 12987], out_num=[1345, 3198], reco_num=259
-  FullScreenFeed, recall_num=[31748, 88339], out_num=[1808, 3262], reco_num=1141
-  ZLeaf, recall_num=[28578, 41771], out_num=[3742, 4854], reco_num=1787
-  Radio, recall_num=[13819, 49118], out_num=[2993, 8841], reco_num=76
-  CommunityFeed, recall_num=[4329, 4332], out_num=[1845, 1858], reco_num=21
-  VideoOffline, recall_num=[28549, 60074], out_num=[3289, 6141], reco_num=3197
-  Immersive, recall_num=[27784, 51619], out_num=[2052, 3344], reco_num=190
-  VideoFeed, recall_num=[14283, 30281], out_num=[3077, 6807], reco_num=105
+  Immersive, recall_num=[30740, 75614], out_num=[2301, 3615], reco_num=334
+  VideoFeed, recall_num=[11923, 33344], out_num=[2531, 7407], reco_num=563
+  VideoOffline, recall_num=[29990, 56547], out_num=[4251, 9001], reco_num=2689
+  Radio, recall_num=[3631, 31775], out_num=[2057, 5954], reco_num=168
+  CommunityFeed, recall_num=[6909, 6914], out_num=[1830, 2166], reco_num=42
+  ZLeaf, recall_num=[18320, 51148], out_num=[3676, 10048], reco_num=2689
+  ChannelFeed, recall_num=[3790, 9489], out_num=[1537, 2880], reco_num=277
+  FullScreenFeed, recall_num=[30238, 82537], out_num=[2042, 4110], reco_num=1281
   */
 
   return 0;
