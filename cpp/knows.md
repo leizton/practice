@@ -5,22 +5,20 @@
   高性能(处理时间足够短)
 
 基础服务和中间件
+  -- distribute
   -- storage
-  redis
-  mysql
-  hbase
-  ES
-  etcd
+  KV: redis etcd
+  Relation: mysql
+  NoSql: hbase
+  Search: ES
+  -- middle-ware
+  RPC: brpc pb/fb/arrow
+  MQ: kafka rocketmq
+  TSDB: openTsdb prometheus
   -- compute
-  mapReduce
+  MapReduce
   spark
   flink
-  -- communication
-  protobuf/flatbuf/arrow
-  brpc
-  kafka
-  -- monitor
-  opentsdb/prometheus
   -- codelib
   disruptor
   tcmalloc

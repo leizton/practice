@@ -1,3 +1,7 @@
+algo & recommend
+
+tensorflow brpc tcmalloc
+
 linux多线程编程，https://www.codenong.com/cs105103411/
 
 linux应用程序性能调试工具，https://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/pstack.html
@@ -19,12 +23,8 @@ lucene: http://www.nosqlnotes.com/technotes/searchengine/lucene-invertedindex/
 
 lucene FST: https://www.shenyanchao.cn/blog/2018/12/04/lucene-fst/
 
-kaggle outbrain: https://www.kaggle.com/c/outbrain-click-prediction/data
-
 函数调用树，非局部变量
 查找函数调用
-
-drools: https://www.jianshu.com/p/d136a76e1c0d
 
 gcc 异常回溯
 
@@ -49,9 +49,6 @@ https://kkewwei.github.io/elasticsearch_learning/2018/11/10/LockSupport%E6%BA%90
 
 epoll
 
-dpp
-https://zhuanlan.zhihu.com/p/95607668
-
 rcu_rw_lock
 https://zhuanlan.zhihu.com/p/89439043
 
@@ -61,3 +58,25 @@ span的作用: 形成多层树状结构
 
 mvp
 https://juejin.cn/post/6844903448412946445
+
+ELF
+![01](./adoc/base/ELF文件格式.pdf)
+
+MQ
+rocketmq -> kafka, 存储模型 大量topic
+mq -> kafka, 消费模型 P/C无缝扩缩容
+有序消费, 有用 难实现
+
+多样性
+https://zhuanlan.zhihu.com/p/264652162
+https://zhuanlan.zhihu.com/p/95607668, dpp
+
+brpc
+https://zhuanlan.zhihu.com/p/120493593
+https://github.com/apache/incubator-brpc/blob/master/docs/cn/atomic_instructions.md
+https://github.com/apache/incubator-brpc/blob/master/docs/cn/bvar.md
+
+https://www.tensorflow.org/recommenders/examples/basic_retrieval?hl=zh-cn
+
+recommend
+https://www.tensorflow.org/recommenders/examples/basic_retrieval?hl=zh-cn

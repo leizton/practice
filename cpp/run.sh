@@ -1,10 +1,12 @@
 #! /bin/bash
 rm -f a.out
 rm -rf a.out.dSYM
-rm -f core
+rm -f core*
+
+ulimit -c unlimited
 
 cpp="$gcc_home/bin/g++ -std=c++11 \
-    -Werror -Wall -Wno-unused-variable -g -O3 \
+    -Werror -Wall -Wno-unused-variable -g -O3 -rdynamic \
     -I. -I/usr/local/include \
     -L/usr/local/lib"
 
