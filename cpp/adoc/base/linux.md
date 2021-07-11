@@ -17,9 +17,12 @@ SIGCHLD      17                                         子进程退出
 
 --------------------------------------------------------------------------------------------------------------
 # perf & gdb
-sudo perf top -p $PID -g
-编译时加上 -fno-omit-frame-pointer
 
+① perf
+sudo perf top -p $PID -g
+编译时加上 -fno-omit-frame-pointer 可以使perf栈是完整的
+
+② gdb
 为了防止 `value has been optimized out`
 测试时加上 -g -O0 -DSF_VISIBILITY -fvisibility=hidden -fno-strict-aliasing
 

@@ -1,6 +1,4 @@
-algo & recommend
-
-tensorflow brpc tcmalloc
+algo recommend tensorflow brpc tcmalloc
 
 linux多线程编程，https://www.codenong.com/cs105103411/
 
@@ -14,8 +12,6 @@ Disruptor，https://tech.meituan.com/2016/11/18/disruptor.html
 mutex & lock, http://hengyunabc.github.io/cpp11-mutex-lock-condition/
 
 posix::ucontext用户级线程实现原理分析, https://segmentfault.com/p/1210000009166339/read
-
-tensor, https://www.cnblogs.com/jicanghai/p/9537282.html
 
 缺页中断
 
@@ -43,9 +39,6 @@ vector iterator 比较
 - 压缩比和压缩性能和protobuf差距不大
 - 有自定义的DSL语言, 便于数据管理
 - 可以统一服务中的各类数据，如 UserInfo(profile,history), RecoItem, Request/Response
-
-jvm
-https://kkewwei.github.io/elasticsearch_learning/2018/11/10/LockSupport%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/
 
 epoll
 
@@ -76,7 +69,10 @@ https://zhuanlan.zhihu.com/p/120493593
 https://github.com/apache/incubator-brpc/blob/master/docs/cn/atomic_instructions.md
 https://github.com/apache/incubator-brpc/blob/master/docs/cn/bvar.md
 
-https://www.tensorflow.org/recommenders/examples/basic_retrieval?hl=zh-cn
+tensorflow
+https://www.cnblogs.com/jicanghai/p/9537282.html
+https://zhuanlan.zhihu.com/p/25646408
 
 recommend
+https://zhuanlan.zhihu.com/p/115690499
 https://www.tensorflow.org/recommenders/examples/basic_retrieval?hl=zh-cn

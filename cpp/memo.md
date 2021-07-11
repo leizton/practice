@@ -93,6 +93,54 @@ uri (identifier) {
 过度设计的架构会让业务开发冗余代码，违背易用性的简洁原则
 @ref https://juejin.cn/post/6844903639195074574
 
+# 设计模式
+设计模式本质是围绕类的`继承派生 组合聚合 依赖调用`来做的, 因为类与类之间的关系只有这三种
+  派生: 自己作为项目组接口人, 和其他项目组(软件里的模块)交互, 把具体工作(具体实现)派发给后面的同事完成
+  继承: 从接口人那里认领需求, 完成具体实现
+  组合的形式只有两种: 链式(含集合) 和 映射式, 这也是容器种类、数据结构种类
+举例
+  行为型
+    责任链模式   链式组合+依赖调用+派生
+    命令模式     依赖调用+派生; 命令类依赖实现类
+    访问者模式   依赖调用+派生; 访问者依赖数据元素
+    迭代器模式   聚合+依赖调用; 容器类聚合数据元素, 迭代器依赖数据元素
+    观察者模式   依赖调用+派生; Subject类(被观察者)状态变化时调用Observer(观察者)的接口;
+                实际中通过异步消息队列、事件总线组件来解耦这个依赖
+  结构型
+    (以下省略依赖调用)
+    代理模式     组合; 代理类组合一个实现类; client依赖代理类; 代理类起到保护实现类的作用
+    装饰器模式   组合+派生; 装饰器组合一个实现类; 装饰器派生出子类扩展原实现的功能; client依赖装饰器
+                装饰器和代理的区别在于多了一个派生, 使得他们的功能不同
+    外观模式     集合式组合; 外观类组合多个不同实现类, 对外提供不同接口对应不同实现; client依赖外观类
+    中介者模式   依赖调用; 类之间不直接交互, 而是通过中介者, 从而将网状依赖关系简化成星形
+    桥接模式     依赖调用; client依赖原接口, 原接口依赖桥接接口;
+                原本是桥接接口继承原接口, 自己再扩展新接口, 让具体类实现;
+                因此会出现多层继承, 为了简化把桥接继承原接口的关系变成依赖关系
+  创建型
+    依赖构造方法
+    抽象工厂就是在工厂模式上增加了派生
+    对象的创建和管理最佳实践是用Spring的IoC思想(控制反转-依赖注入)
+    控制指管理对象的生命周期, 甚至包括创建对象;
+    反转指client不自己new实现对象, 而是从IoC容器获取接口的实现, 这样client不需要知道具体实现是谁
+@ref https://www.runoob.com/design-pattern/design-pattern-intro.html
+
+# jvm LockSupport 原理
+https://kkewwei.github.io/elasticsearch_learning/2018/11/10/LockSupport%E6%BA%90%E7%A0%81%E8%A7%A3%E8%AF%BB/
+~~~cpp
+pthread_mutex_t mtx
+pthread_cond_t cond
+
+pthread_mutex_init(mtx, NULL)
+pthread_cond_init(cond, NULL)
+
+pthread_mutex_lock(mtx)
+pthread_mutex_trylock(mtx)
+pthread_mutex_unlock(mtx)
+~~~
+
+# scala
+https://twitter.github.io/scala_school/zh_cn/collections.html
+
 # 变量名参考
 opaque
 
