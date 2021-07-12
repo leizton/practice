@@ -21,7 +21,7 @@
 #include "thread_utils.h"
 #include "time_utils.h"
 #include "unit_test.h"
-#include "unwind_stack_trace.h"
+#include "backtrace.h"
 
 #include "base64.h"
 
