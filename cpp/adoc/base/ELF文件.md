@@ -5,4 +5,3 @@ ELF文件指连接好的可执行文件
 1. 可重定位文件(relocatable file), 用于与其它目标文件进行连接以构建可执行文件或动态链接库
 2. 共享目标文件(shared object file)
 3. 可执行文件(executable file)
-
