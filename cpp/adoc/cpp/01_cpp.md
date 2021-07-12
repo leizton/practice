@@ -206,7 +206,28 @@ boost lock free queue(MPMC): https://www.boost.org/doc/libs/1_54_0/doc/html/boos
 
 --------------------------------------------------------------------------------------------------------------
 # 多重继承和虚继承
+虚继承的作用是解决多重继承中的二义性
+第一层的多个子类继承了基类的数据成员
+第二层子类从不同的第一层子类中继承了多个同名的基类数据成员, 访问时就会出现二义性
+所以, 让第一层子类虚继承基类, 使得数据只有一份
+
+当第一层子类实现了基类的同一个虚函数时, 第二层子类必须重写这个虚函数, 否则会出现歧义(编译失败)
+~~~c++
+class A { virtual void fn() {} };
+class B : virtual public A { virtual void fn() override {} };
+class C : virtual public A { virtual void fn() override {} };
+class D : public B, public C { virtual void fn() override {} };
+~~~
+
+当基类没有定义数据成员时, 第一层子类依然需要虚继承, 因为会默认插入一个字节
 
 
 --------------------------------------------------------------------------------------------------------------
 # type-cast
+① static_cast      :  隐式类型转换, 如 int 2 float, `A* 2 void*`
+                       强制类型转换, 非多态的基类和子类转换
+② const_cast       :  去const修饰
+③ dynamic_cast     :  只能用于多态场景, 基类至少有一个virtual函数, 虚析构也行, 否则就用static_cast
+                       向下(子类)或向上(基类)转型失败时, 返回nullptr
+                       如果是转成引用 dynamic_cast<Base&>, 则抛std::bad_cast异常
+④ reinterpret_cast :  dangerous cast, 如 `void* 2 A*`, A* 2 uint64_t, char* 2 int*
