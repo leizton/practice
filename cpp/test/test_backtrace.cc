@@ -1,8 +1,8 @@
 #include "util/base.h"
 
 void printStackTrace() {
-  StackTraceRecord record;
-  backtraceByUnwind(&record);
+  btrace::StackTrace record;
+  btrace::unwindBacktrace(&record);
   LOG() << record.toString();
 }
 

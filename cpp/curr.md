@@ -45,10 +45,6 @@ epoll
 rcu_rw_lock
 https://zhuanlan.zhihu.com/p/89439043
 
-全链路日志
-https://juejin.cn/post/6965178897629462564
-span的作用: 形成多层树状结构
-
 mvp
 https://juejin.cn/post/6844903448412946445
 
@@ -76,3 +72,13 @@ https://zhuanlan.zhihu.com/p/25646408
 recommend
 https://zhuanlan.zhihu.com/p/115690499
 https://www.tensorflow.org/recommenders/examples/basic_retrieval?hl=zh-cn
+
+ConcurrentExpireMap
+
+用户多兴趣
+https://blog.csdn.net/EdmundYan/article/details/117754084
+
+static_cast vs reinterpret_cast
+
+限流: 漏桶、令牌桶
+https://cloud.tencent.com/developer/article/1408819

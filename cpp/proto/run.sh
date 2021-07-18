@@ -16,7 +16,7 @@ cpp="g++ -std=c++11 \
 
 libs="-lprotobuf -lpthread"
 
-srcs='../util/base64.cc *.pb.cc'
+srcs='../util/base64.cc util/backtrace.cc *.pb.cc'
 
 if [ $# -lt 1 ]; then
   srcs="test_user.cc $srcs"

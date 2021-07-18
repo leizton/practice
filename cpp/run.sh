@@ -12,7 +12,7 @@ cpp="$gcc_home/bin/g++ -std=c++11 \
 
 libs="-lpthread"
 
-srcs='util/base64.cc'
+srcs='util/base64.cc util/backtrace.cc'
 
 if [ $# -lt 1 ]; then
   srcs="main.cc $srcs"

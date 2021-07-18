@@ -16,6 +16,20 @@ SIGCHLD      17                                         子进程退出
 
 
 --------------------------------------------------------------------------------------------------------------
+# 常用命令
+~~~sh
+ls -l | awk -F ' ' '{print $9}' | xargs du -hs  # 查看当前目录下各文件(或目录)的大小
+awk -F '' '{sum+=$1}END{print sum/NR}'          # 统计平均值
+awk -F '' '$1 > 400{print $1}'                  # 过滤出大于400
+
+sort -n  # 数值
+sort -v  # 逆序
+
+uniq -c  # 去重
+~~~
+
+
+--------------------------------------------------------------------------------------------------------------
 # perf & gdb
 
 ① perf
@@ -54,41 +68,28 @@ EOF
 
 
 --------------------------------------------------------------------------------------------------------------
-# 代码里统计机器cpu使用率
-~~~c++
-/**
- * 采样周期至少是2秒, 否则不准
- */
-class CpuStatus {
-public:
-  CpuStatus() {
-    prev_total_ = prev_idle_ = 0;
-    getCpuStatus();
-  }
+# /proc
+/proc
+  操作系统mount进程空间出来的伪文件, 用于向用户程序提供访问内核数据结构的接口, 大多数文件是只读
+  @ref https://man7.org/linux/man-pages/man5/proc.5.html
 
-  int getCpuStatus() {
-    std::ifstream proc_stat_in("/proc/stat");
-    std::string line, cpu_name;
-    std::getline(proc_stat, line);
-    std::istringstream line_in(line);
-    line_in >> cpu_name;
-    int64_t v = 0, total = 0, idle = 0;
-    for (int i = 0; line_in >> v; i++) {
-      total += v;
-      if (i == 3) idle = v;
-    }
+/proc/self: /proc/$pid 的符号链接
 
-    int64_t total_delta = std::max<int64_t>(1, total - prev_total_);
-    int64_t idle_delta = std::max<int64_t>(1, idle - prev_idle_);
-    prev_total_ = total;
-    prev_idle_ = idle;
+/proc/self/maps: 记录映射式内存空间的信息
+  文件格式
+  ~~~py
+    address("起始和结束地址")   perms  offset    device  inode   pathname
+    00e03000-00e24000          rw-p   00000000  00:00   0       [heap]
+    00e24000-011f7000          rw-p   00000000  00:00   0       [heap]
+    35b1800000-35b1820000      r-xp   00000000  08:02   135522  /usr/lib64/ld-2.15.so
+    f2c6ff8c000-7f2c7078c000   rw-p   00000000  00:00   0       [stack:105]  # tid是105的线程的栈空间
+    7fffb2c0d000-7fffb2c2e000  rw-p   00000000  00:00   0       [stack]      # main线程的栈空间
+  ~~~
+  内存映射(mapped memory)
+    一段虚拟内存, 把其他内容逐字节映射到当前进程的内存空间
+    场景如磁盘文件、网络设备、共享内存(shared_memory_object 进程间通信)
+  虚拟内存(VM)
+    os给用户进程的是虚拟地址, 通过硬件转成物理地址, 目的是隔离各进程的内存空间, 从而起到保护作用
+    另一个目的是实现共享, 包括进程间、用户空间和内核空间, 从而减少拷贝提高性能
 
-    int64_t res = 100 * (total_delta - idle_delta) / total_delta;
-    return std::min(100, static_cast<int>(res));
-  }
-
-private:
-  int64_t prev_total_ = 0;
-  int64_t prev_idle_ = 0;
-};
-~~~
+/proc/self/mem: 进程的内存
