@@ -14,7 +14,7 @@ libs="-larrow -larrow_dataset \
       -larrow_bundled_dependencies \
       -lpthread"
 
-srcs='../util/base64.cc util/backtrace.cc'
+srcs=`ls ../util/*.cc`
 
 if [ $# -lt 1 ]; then
   srcs="recall_filter.cc $srcs"

@@ -231,3 +231,20 @@ class D : public B, public C { virtual void fn() override {} };
                        向下(子类)或向上(基类)转型失败时, 返回nullptr
                        如果是转成引用 dynamic_cast<Base&>, 则抛std::bad_cast异常
 ④ reinterpret_cast :  dangerous cast, 如 `void* 2 A*`, A* 2 uint64_t, char* 2 int*
+
+
+--------------------------------------------------------------------------------------------------------------
+# 类之间的函数只有继承和隐藏, 没有重载
+~~~c++
+struct Base {
+  void fn(int x);
+  void fn(double x);
+};
+struct Aoo : public Base {
+  void fn(const std::string& s) {
+    Base::fn(1.0);
+  }
+};
+~~~
+Aoo::fn 隐藏了 Base::fn, 因此 Aoo::fn 与 Base::fn 不构成重载
+Aoo 中调用 Base::fn 时必须加作用域名

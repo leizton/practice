@@ -18,14 +18,21 @@ SIGCHLD      17                                         子进程退出
 --------------------------------------------------------------------------------------------------------------
 # 常用命令
 ~~~sh
-ls -l | awk -F ' ' '{print $9}' | xargs du -hs  # 查看当前目录下各文件(或目录)的大小
-awk -F '' '{sum+=$1}END{print sum/NR}'          # 统计平均值
-awk -F '' '$1 > 400{print $1}'                  # 过滤出大于400
+du -s                           # sum 只显示总和
+du -h -m -k -b                  # 单位是 人类友好 MB KB byte
+du -h --max-depth=1             # 当前目录下各文件的大小, 即 ls -l | awk -F ' ' '{print $9}' | xargs du -hs
+du -m --max-depth=1 | sort -n   # 加上排序
 
-sort -n  # 数值
-sort -v  # 逆序
+awk -F ' ' '{sum+=$1}END{print sum/NR}'   # 统计平均值
+awk -F ' ' '$1 > 400{print $1}'           # 过滤出大于400
 
-uniq -c  # 去重
+sort -n         # 数值
+sort -r         # 逆序
+sort -nk2 -n5   # 对第2列做数值排序排序, 再对第5列排序
+sort -t ","     # 按,分割
+sort -u         # 排序后去重
+
+uniq -c   # 去重
 ~~~
 
 
