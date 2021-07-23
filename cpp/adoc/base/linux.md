@@ -41,7 +41,12 @@ uniq -c   # 去重
 
 ① perf
 sudo perf top -p $PID -g
-编译时加上 -fno-omit-frame-pointer 可以使perf栈是完整的
+编译选项: -O2 -fno-omit-frame-pointer, -fno-omit-frame-pointer使perf栈是完整的
+生成火焰图
+  perf record -F 99 -p $pid -m 4 -g -a sleep 5
+  perf script > out.perf
+  ./FlameGraph-master/stackcollapse-perf.pl out.perf >out.folded
+  ./FlameGraph-master/flamegraph.pl out.folded > pmCount.svg
 
 ② gdb
 为了防止 `value has been optimized out`

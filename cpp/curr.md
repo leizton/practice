@@ -82,3 +82,21 @@ static_cast vs reinterpret_cast
 
 限流: 漏桶、令牌桶
 https://cloud.tencent.com/developer/article/1408819
+
+Tendis 网络线程池
+https://www.bookstack.cn/read/tendis-2.1-zh/0e7591d47faad11b.md
+
+brpc
+https://github.com/apache/incubator-brpc/blob/master/README_cn.md
+
+Linux/Darwin系统的reactor模式
+windows系统的proactor模式
+asio库: https://zhuanlan.zhihu.com/p/37590580
+Tendis把asio从boost剥离出来
+
+facebook-folly中的fbstring使用了boyer_moore算法, 平均查找性能比std::string快30倍
+
+dssm中如何计算embedding向量
+https://zhuanlan.zhihu.com/p/37082976
+
+交叉特征，如分类+tag, "体育_林丹", 形成新的特征, 把两个老的特征绑定在一起
