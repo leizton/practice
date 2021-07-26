@@ -23,6 +23,7 @@ du -h -m -k -b                  # 单位是 人类友好 MB KB byte
 du -h --max-depth=1             # 当前目录下各文件的大小, 即 ls -l | awk -F ' ' '{print $9}' | xargs du -hs
 du -m --max-depth=1 | sort -n   # 加上排序
 
+awk -F ' ' '{print $NF}'                  # 最后一列
 awk -F ' ' '{sum+=$1}END{print sum/NR}'   # 统计平均值
 awk -F ' ' '$1 > 400{print $1}'           # 过滤出大于400
 
