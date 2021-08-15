@@ -79,16 +79,16 @@ a3 = a;   // 赋值运算符。进入operator=时, data已被初始化成nullptr
 map<int, Aoo> d;
 //
 d.insert({1, a}); // or d.insert(make_pair(1, a));
-  ⒈  make_pair call copy_construct(a) 创建临时对象 a1
-  ⒉  d.insert call move_copy_construct(a1) 创建map内的元素
-  ⒊  destruct(a1)
+  ①  make_pair call copy_construct(a) 创建临时对象 a1
+  ②  d.insert call move_copy_construct(a1) 创建map内的元素
+  ③  destruct(a1)
 //
 d[2] = a;
-  ⒈  call default construct() 创建map内的元素
-  ⒉  call operator=(a) 初始化map内的元素
+  ①  call default construct() 创建map内的元素
+  ②  call operator=(a) 初始化map内的元素
 //
 d.emplace(3, a);
-  ⒈  call copy_construct(a) 创建map内的元素
+  ①  call copy_construct(a) 创建map内的元素
 ~~~
 
 
@@ -143,11 +143,11 @@ std::atomic 默认用 memory_order_seq_cst
   release: release前代码的读写不会晚于release执行, 且前面代码的写在release后可见
   acquire: acquire后代码的读写不会早于acquire执行
 ② Release-Acquire memory order
-RA内存序模型的使用方法
-  store用release, load用acquire
-RA模型的happens-before
-  前面的写在store后可见
-  load后的读写不会在load前执行
+  RA内存序模型的使用方法
+    store用release, load用acquire
+  RA模型的happens-before
+    前面的写在store后可见
+    load后的读写不会在load前执行
 例子
 ~~~c++
   int ret;  // 最终结果
@@ -248,3 +248,51 @@ struct Aoo : public Base {
 ~~~
 Aoo::fn 隐藏了 Base::fn, 因此 Aoo::fn 与 Base::fn 不构成重载
 Aoo 中调用 Base::fn 时必须加作用域名
+
+
+--------------------------------------------------------------------------------------------------------------
+# double check lock (DCL) 的问题
+https://www.infoworld.com/article/2074979/double-checked-locking--clever--but-broken.html
+~~~java
+Resource get() {
+  if (res == null)
+    synchronized
+      if (res == null) res = new Resource();
+  return res;
+}
+~~~
+res = new Resource(); 实际是两步, synchronized保证这两步的互斥
+  1. res = malloc(sizeof(Resource));
+  2. new (res) Resource();
+  执行完第1步后, 对于另一个线程来说, res`可能`已经不是null, 这就导致另一个线程返回没有经过构造的res
+解决方法:
+  通过内存屏障保证构造函数调用先于(happens-before)检查成立
+  @ref guava::MemoizingSupplier
+  ~~~java
+  volatile bool inited = false;
+  Resource get()
+    if (!inited)
+      synchronized
+        if (!inited)
+          var tmp = new Resource();
+          res = tmp;
+          inited = true; // 后于构造函数调用
+          return tmp;
+    return res;
+  }
+  ~~~
+PS:
+  synchronized、mutex除了有排他执行功能外, 还有就是进入的读屏障、出去的写屏障
+  保证进入后读到main-memory的最新值, 出去后写回main-memory
+
+
+--------------------------------------------------------------------------------------------------------------
+~~~cpp
+#define likely(cond)   __builtin_expect((cond), 1)
+#define unlikely(cond) __builtin_expect((cond), 0)
+
+static uint32_t log_cnt = 0;
+if (likely(++log_cnt % 100 == 0)) {
+  LOG(INFO) << "print";
+}
+~~~

@@ -34,6 +34,8 @@ sort -t ","     # 按,分割
 sort -u         # 排序后去重
 
 uniq -c   # 去重
+
+diff -qr $dir1 $dir2  # 比较两个目录, -q 仅显示有无diff 不显示详细, -r 递归子文件
 ~~~
 
 
