@@ -40,16 +40,8 @@ vector iterator 比较
 - 有自定义的DSL语言, 便于数据管理
 - 可以统一服务中的各类数据，如 UserInfo(profile,history), RecoItem, Request/Response
 
-epoll
-
 rcu_rw_lock
 https://zhuanlan.zhihu.com/p/89439043
-
-mvp
-https://juejin.cn/post/6844903448412946445
-
-ELF
-![01](./adoc/base/ELF文件格式.pdf)
 
 MQ
 rocketmq -> kafka, 存储模型 大量topic
@@ -64,6 +56,7 @@ brpc
 https://zhuanlan.zhihu.com/p/120493593
 https://github.com/apache/incubator-brpc/blob/master/docs/cn/atomic_instructions.md
 https://github.com/apache/incubator-brpc/blob/master/docs/cn/bvar.md
+https://github.com/apache/incubator-brpc/blob/master/README_cn.md
 
 tensorflow
 https://www.cnblogs.com/jicanghai/p/9537282.html
@@ -86,9 +79,6 @@ https://cloud.tencent.com/developer/article/1408819
 Tendis 网络线程池
 https://www.bookstack.cn/read/tendis-2.1-zh/0e7591d47faad11b.md
 
-brpc
-https://github.com/apache/incubator-brpc/blob/master/README_cn.md
-
 Linux/Darwin系统的reactor模式
 windows系统的proactor模式
 asio库: https://zhuanlan.zhihu.com/p/37590580
@@ -100,3 +90,8 @@ dssm中如何计算embedding向量
 https://zhuanlan.zhihu.com/p/37082976
 
 交叉特征，如分类+tag, "体育_林丹", 形成新的特征, 把两个老的特征绑定在一起
+
+ConcurrentHashMap & java cache (caffine)
+
+mvp
+https://juejin.cn/post/6844903448412946445

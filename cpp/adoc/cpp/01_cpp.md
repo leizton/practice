@@ -129,42 +129,72 @@ std::terminate()调用abort()
 ~~~c++
 // 内存访问序种类
 enum memory_order {
-    memory_order_relaxed, // no sync of side effects
-    memory_order_consume, // sync the visible side effects on values carrying dependencies from the last release or seq_cst
-    memory_order_acquire, // sync all visible side effects from the last release or seq_cst
-    memory_order_release, // sync side effects with the next consume or acquire
-    memory_order_acq_rel, // read as acquire and write as release
-    memory_order_seq_cst, // sequentially consistent
+    memory_order_relaxed,
+    memory_order_consume,
+    memory_order_acquire,
+    memory_order_release,
+    memory_order_acq_rel,
+    memory_order_seq_cst,
 };
 ~~~
 std::atomic 默认用 memory_order_seq_cst
 未经同步的并行程序运行结果不可预期(无一致性保证), 同步的方式有atomic和mutex
-① 各类内存序的happens-before
-  release: release前代码的读写不会晚于release执行, 且前面代码的写在release后可见
-  acquire: acquire后代码的读写不会早于acquire执行
-② Release-Acquire memory order
-  RA内存序模型的使用方法
-    store用release, load用acquire
-  RA模型的happens-before
-    前面的写在store后可见
-    load后的读写不会在load前执行
-例子
-~~~c++
-  int ret;  // 最终结果
-  int data; // 中间计算的数据
-  std::atomic<bool> ready{false}; // 用于同步的变量
-  th1() {
-    data = 100;
-    ready.store(true, std::memory_order_release); // 保证data的可见性
-  }
-  th2() {
-    while (ready.load(std::memory_order_acquire) == false); // 和store同步
-    ret = data;
-  }
-~~~
-③ SpinLock
-[spin_lock.h](../../util/spin_lock.h)
-④ double check
+@ref https://en.cppreference.com/w/cpp/atomic/memory_order
+relaxed
+  对其他读写操作没有同步和执行顺序的约束, no synchronization or ordering constraints
+consume
+  ① 用于load. 当前线程中依赖于load变量的读写操作不能重排到load前
+     No reads or writes in the current thread dependent on the loaded value can be reordered before this load
+  ② 其他正在release这个load变量的线程中, 往当前线程依赖的变量的写结果在当前线程可见
+     Writes to data-dependent variables in other threads that release the same atomic variable are visible in the current thread
+  > example
+    ~~~c++
+    std::atomic<int*> guard(nullptr);
+    int payload;
+    // produce thread A
+    payload = 15;
+    guard.store(&payload, memory_order_release);
+    // consume thread B
+    int* p = guard.load(memory_order_consume);
+    if (p != nullptr)
+      data = *p;
+    // 原则① p的读 data的写 不会重排到load前
+    // 原则② 线程A(release guard的其他线程)中payload的写结果对线程B可见, 即*p是更新后的值
+    ~~~
+acquire
+  ① 用于load. 当前线程中, 读写不能重排到load前 (在RA模型中保证读晚于load)
+     No reads or writes in the current thread can be reordered before this load
+  ② 其他release这个load变量的线程的所有写结果在当前线程可见 (保证能读到其他线程的写)
+     从 writes to data-dependent vars 扩大到 all writes
+     All writes in other threads that release the same atomic variable are visible in the current thread
+release
+  ① 用于store. 当前线程中, 读写不能重排到release后 (在RA模型中保证写早于release)
+     No reads or writes in the current thread can be reordered after this store
+  ② 当前线程的所有写结果, 在其他acquire这个release变量的线程中可见 (保证写对其他线程可见)
+     All writes in the current thread are visible in other threads that acquire the same atomic variable
+acq_rel
+  ① 用于read-modify-write操作(RMW). 同时具有acq和rel, 即当前线程中, 读写不能重排到acq_rel的前面和后面
+     No reads or writes in the current thread can be reordered before or after this store
+     RMW: 读同时写, 如 fetch_add exchange(交换) compare_exchange_strong(比较后交换)
+  ② All writes in other threads that release the same atomic variable are visible before the modification
+     The modification is visible in other threads that acquire the same atomic variable
+seq_cst
+  所有线程以同一个顺序看到所有的修改结果
+  plus a single total order exists in which all threads observe all modifications in the same order
+Release-Acquire memory order, RA内存序模型
+  store用release, load用acquire
+c++11的内存屏障
+  ~~~c++
+  // RA模型中的 guard.store(&payload, memory_order_release) 等价于
+  std::atomic_thread_fence(std::memory_order_release);
+  guard.store(&payload, memory_order_relaxed);
+  // int* p = guard.load(memory_order_acquire) 等价于
+  std::atomic_thread_fence(std::memory_order_acquire);
+  int* p = guard.load(memory_order_relaxed)
+  ~~~
+SpinLock
+  [spin_lock.h](../../util/spin_lock.h)
+double check
 ~~~c++
 class Aoo {
  public:
