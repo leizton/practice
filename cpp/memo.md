@@ -225,5 +225,9 @@ Highcharts
 ＋ －  ×  ÷  ·  ±
 ㏒ ㏑  ∑  ∏
 ∈  ∉  ≌  ∅  Φ
+∂  ┆
 
-上下角标 ¹  ²  ³  https://unicode-table.com/cn/sets/superscript-and-subscript-letters/
+α β γ ω δ η ζ φ λ μ σ π
+
+上标  ⁰ ¹ ² ³ ⁴ ⁵ ⁶ ⁷ ⁸ ⁹ ⁺ ⁻ ⁼ ⁽ ⁾ º ˙ ᶺ ᵃ ᵇ ᶜ ᵈ ᵉ ᵍ ʰ ⁱ ʲ ᵏ ˡ ᵐ ⁿ ᵒ ᵖ ʳ ˢ ᵗ ᵘ ᵛ ʷ ˣ ʸ ᙆ
+下标  ₀ ₁ ₂ ₃ ₄ ₅ ₆ ₇ ₈ ₉ ₊ ₋ ₌ ₍ ₎ ₐ ₑ ₕ ᵢ ₖ ₗ ₘ ₙ ₒ ₚ ᵣ ₛ ₜ ᵤ ᵥ ₓ
