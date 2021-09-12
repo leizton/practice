@@ -108,3 +108,23 @@ EOF
     另一个目的是实现共享, 包括进程间、用户空间和内核空间, 从而减少拷贝提高性能
 
 /proc/self/mem: 进程的内存
+
+
+--------------------------------------------------------------------------------------------------------------
+# nm
+nm libmy.so | grep $Symbol
+输出有3列
+  地址  符号类型  符号名
+符号类型
+  U      Undefined symbol              链接后找不到 地址是全0
+  W      weak symbol           
+  V      weak object
+  N      debug symbol
+  A      global absoulte               该符号的地址是绝对地址，链接过程中不能改变
+  T/t    global/local text symbol      text段上
+  B/b    global/local bss  symbol      bss段上
+  D/d    global/local data symbol      data段上
+  L/l    global/static thread local    线程级变量 TLS
+@ ref
+  https://www.cnblogs.com/baiduboy/p/6048113.html
+  https://www.huaweicloud.com/articles/6547604cf65e2f27964f89f39cd0018c.html
