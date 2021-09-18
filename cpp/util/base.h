@@ -9,6 +9,7 @@
 
 #include "any.h"
 #include "blocking_queue.h"
+#include "count_down_latch.h"
 #include "double_buffer.h"
 #include "lru_cache.h"
 #include "reentrant_lock.h"
