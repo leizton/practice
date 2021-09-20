@@ -1,18 +1,44 @@
 #pragma once
 
 #include <chrono>
+#include <sys/time.h>
+#include <sys/timeb.h>
+#include <time.h>
+#include <unistd.h>
 
 /**
  * now
  */
-inline uint64_t nowSec() {
-  return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+inline int64_t nowSec() {
+  time_t ts;
+  ::time(&ts);
+  return ts;
+  // return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
-inline uint64_t nowMs() {
-  return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+inline int64_t nowMs() {
+  timeb ts;
+  ::ftime(&ts);
+  return int64_t(ts.time) * int64_t(1000) + int64_t(ts.millitm);
+  // return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
-inline uint64_t nowUs() {
-  return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+inline int64_t nowUs() {
+  timeval ts;
+  ::gettimeofday(&ts, 0);
+  return int64_t(ts.tv_sec) * int64_t(1000000) + int64_t(ts.tv_usec);
+  // return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+
+/**
+ * sleep
+ */
+inline void sleepSec(int sec) {
+  ::sleep(sec);
+}
+inline void sleepMs(int ms) {
+  ::usleep(ms * 1000);
+}
+inline void sleepUs(int us) {
+  ::usleep(us);
 }
 
 /**
@@ -36,19 +62,6 @@ inline std::chrono::duration<int, std::micro> buildDurationUs(int us) {
 }
 
 /**
- * sleep
- */
-inline void sleepSec(int sec) {
-  std::this_thread::sleep_for(buildDurationSec(sec));
-}
-inline void sleepMs(int ms) {
-  std::this_thread::sleep_for(buildDurationMs(ms));
-}
-inline void sleepUs(int us) {
-  std::this_thread::sleep_for(buildDurationUs(us));
-}
-
-/**
  * Timer
  */
 enum class TimeUnit {
@@ -59,7 +72,7 @@ enum class TimeUnit {
 
 class Timer {
 public:
-  Timer(TimeUnit tu)
+  Timer(TimeUnit tu = TimeUnit::MILLISECOND)
       : start_(nowUs())
       , last_(start_) {
     switch (tu) {

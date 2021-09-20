@@ -1,4 +1,6 @@
-algo recommend tensorflow brpc tcmalloc
+algo tcmalloc brpc micro_service_arch
+recommend tensorflow ai_algo flink
+distribute
 
 linux多线程编程，https://www.codenong.com/cs105103411/
 
@@ -25,14 +27,6 @@ lucene FST: https://www.shenyanchao.cn/blog/2018/12/04/lucene-fst/
 gcc 异常回溯
 
 分布式 unique_id
-
-shared_ptr assign 线程不安全分析
-
-AtomicSharedPtr
-
-string vector list AND-SO-ON 内部字段
-
-vector iterator 比较
 
 序列化中间件
 - 支持易用且高性能的反射
@@ -79,8 +73,6 @@ https://cloud.tencent.com/developer/article/1408819
 Tendis 网络线程池
 https://www.bookstack.cn/read/tendis-2.1-zh/0e7591d47faad11b.md
 
-Linux/Darwin系统的reactor模式
-windows系统的proactor模式
 asio库: https://zhuanlan.zhihu.com/p/37590580
 Tendis把asio从boost剥离出来
 
@@ -95,3 +87,26 @@ ConcurrentHashMap & java cache (caffine)
 
 mvp
 https://juejin.cn/post/6844903448412946445
+
+任务调度
+
+ps-worker架构
+
+tcmalloc
+
+链接原理
+
+向量化搜索
+https://ata.alibaba-inc.com/articles/171326?spm=ata.23639746.0.0.3b3c423d3uMFQz
+
+向量化执行引擎
+https://ata.alibaba-inc.com/articles/200621?spm=ata.23639746.0.0.3b3c423d3uMFQz
+
+
+○ lambda https://www.jianshu.com/p/923d11151027
+○ string
+○ vector 内部字段
+○ vector iterator 比较
+○ shared_ptr assign 线程不安全分析
+○ AtomicSharedPtr
+

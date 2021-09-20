@@ -12,6 +12,7 @@
 #include "count_down_latch.h"
 #include "double_buffer.h"
 #include "lru_cache.h"
+#include "rate_limiter.h"
 #include "reentrant_lock.h"
 #include "singleton.h"
 #include "spin_lock.h"

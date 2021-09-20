@@ -27,7 +27,7 @@ class LogStream {
   }
 
  private:
-  std::ostringstream sout_;
+  std::ostringstream sout_; // TODO: 替换. std::ostringstream 在多线程场景有锁性能问题
 };
 
 #define LOG() LogStream()
