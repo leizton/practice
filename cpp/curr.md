@@ -1,6 +1,7 @@
-algo tcmalloc brpc micro_service_arch
-recommend tensorflow ai_algo flink
-distribute
+algo tcmalloc
+brpc micro_service_arch distribute
+recommend tensorflow flink
+machine_learning time_series_forecast
 
 linux多线程编程，https://www.codenong.com/cs105103411/
 
@@ -110,3 +111,5 @@ https://ata.alibaba-inc.com/articles/200621?spm=ata.23639746.0.0.3b3c423d3uMFQz
 ○ shared_ptr assign 线程不安全分析
 ○ AtomicSharedPtr
 
+flink
+http://www.zhaoqiansunli.com.cn/view/22115
