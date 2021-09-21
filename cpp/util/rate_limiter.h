@@ -60,6 +60,7 @@ public:
     std::lock_guard<std::mutex> lock(mtx_);
     int64_t now = nowUs();
     if (tryAcq(now, acq_num)) return;
+    // 阻塞到target时间点
     int64_t target = last_permit_ts_ + (acq_num - stored_permit_num_) * permit_interval_us_;
     stored_permit_num_ = 0;
     last_permit_ts_ = target;
@@ -105,6 +106,7 @@ private:
       // 如果整除后 new_permit_num 是 0, 则 last_permit_ts_ 实际上不变
       last_permit_ts_ += new_permit_num * permit_interval_us_;
     }
+
     if (stored_permit_num_ >= acq_num) {
       stored_permit_num_ -= acq_num;
       return true;
@@ -114,11 +116,15 @@ private:
   }
 
 private:
+  // 初始化后不变的字段
   int permit_num_per_span_;
   int span_sec_;
   int max_permit_;
   int64_t permit_interval_us_; // 相邻permit的时间间隔, 控制令牌投放速率
+
+  // 会改变的字段
   int64_t last_permit_ts_; // 上一个permit的时间戳
   int stored_permit_num_; // 蓄水池里的令牌数
+
   std::mutex mtx_;
 };
