@@ -36,6 +36,10 @@ sort -u         # 排序后去重
 uniq -c   # 去重
 
 diff -qr $dir1 $dir2  # 比较两个目录, -q 仅显示有无diff 不显示详细, -r 递归子文件
+
+# nc 收发文件
+dst=`date +"%Y%m%d_%H%M%S"`;dst="ncfile_$dst";nc -4l 65530 > $dst  # 接收端
+nc 11.8.245.195 65530 < $ncfile  # 发送端
 ~~~
 
 
