@@ -1,0 +1,18 @@
+authorName: default
+experimentName: example_sin
+maxExecDuration: 5m
+maxTrialNum: 10
+trialConcurrency: 1
+trainingServicePlatform: local
+searchSpacePath: search_space.json
+useAnnotation: false
+tuner:
+  builtinTunerName: TPE
+  classArgs:
+    optimize_mode: maximize
+    parallel_optimize: True
+    constant_liar_type: min
+trial:
+  command: python3 main.py
+  codeDir: .
+  gpuNum: 0
