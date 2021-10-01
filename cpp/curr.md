@@ -66,11 +66,6 @@ ConcurrentExpireMap
 用户多兴趣
 https://blog.csdn.net/EdmundYan/article/details/117754084
 
-static_cast vs reinterpret_cast
-
-限流: 漏桶、令牌桶
-https://cloud.tencent.com/developer/article/1408819
-
 Tendis 网络线程池
 https://www.bookstack.cn/read/tendis-2.1-zh/0e7591d47faad11b.md
 
@@ -81,8 +76,6 @@ facebook-folly中的fbstring使用了boyer_moore算法, 平均查找性能比std
 
 dssm中如何计算embedding向量
 https://zhuanlan.zhihu.com/p/37082976
-
-交叉特征，如分类+tag, "体育_林丹", 形成新的特征, 把两个老的特征绑定在一起
 
 ConcurrentHashMap & java cache (caffine)
 
@@ -105,10 +98,14 @@ https://ata.alibaba-inc.com/articles/200621?spm=ata.23639746.0.0.3b3c423d3uMFQz
 
 
 ○ lambda https://www.jianshu.com/p/923d11151027
-○ vector 内部字段
-○ vector iterator 比较
+○ any
+○ shared_ptr
 ○ shared_ptr assign 线程不安全分析
 ○ AtomicSharedPtr
+○ vector 内部字段
+○ vector iterator 比较
+○ 粒子群算法
+○ 贝叶斯优化
 
 flink
 http://www.zhaoqiansunli.com.cn/view/22115
