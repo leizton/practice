@@ -82,11 +82,7 @@ ConcurrentHashMap & java cache (caffine)
 mvp
 https://juejin.cn/post/6844903448412946445
 
-任务调度
-
 ps-worker架构
-
-tcmalloc
 
 链接原理
 
@@ -95,7 +91,6 @@ https://ata.alibaba-inc.com/articles/171326?spm=ata.23639746.0.0.3b3c423d3uMFQz
 
 向量化执行引擎
 https://ata.alibaba-inc.com/articles/200621?spm=ata.23639746.0.0.3b3c423d3uMFQz
-
 
 ○ lambda https://www.jianshu.com/p/923d11151027
 ○ any
@@ -106,6 +101,13 @@ https://ata.alibaba-inc.com/articles/200621?spm=ata.23639746.0.0.3b3c423d3uMFQz
 ○ vector iterator 比较
 ○ 粒子群算法
 ○ 贝叶斯优化
+
+tcmalloc
+https://zhuanlan.zhihu.com/p/29216091
+https://zhuanlan.zhihu.com/p/48957114
+
+并行b树
+https://zhuanlan.zhihu.com/b-tree
 
 flink
 http://www.zhaoqiansunli.com.cn/view/22115
