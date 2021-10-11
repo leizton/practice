@@ -105,4 +105,5 @@ ref
   1. "CYK Parsing over Distributed Representations" 3.1节
   2. https://blog.csdn.net/Chase1998/article/details/84504191
 
-# Fast Exact Inference with a Factored Model for Natural Language Parsing
+# todo
+https://nlp.stanford.edu/software/nndep.html
