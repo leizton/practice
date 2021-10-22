@@ -22,5 +22,6 @@ fi
 $cpp $srcs $libs 2>&1 | grep -v 'libstdc++.dylib'
 
 if [ -f a.out ]; then
+  echo '##########'
   ./a.out
 fi

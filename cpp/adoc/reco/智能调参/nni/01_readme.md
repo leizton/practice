@@ -8,3 +8,6 @@ config.yaml        实验配置
 main.py            实验运行脚本
 
 nnictl create --config example/sin/config.yaml
+
+# ref
+搜参算法: https://nni.readthedocs.io/en/stable/Tuner/HyperoptTuner.html

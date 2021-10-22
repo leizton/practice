@@ -3,13 +3,11 @@
 tmp/**
 testdata*
 test.h
-
+main.*
+tmp.py
+*.csv
 *.pb.h
 *.pb.cc
-
-*.csv
-
-tmp.py
 
 ontonotes-release-5.0
 ontonotes

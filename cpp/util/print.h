@@ -1,18 +1,6 @@
 #pragma once
 
-#include <iomanip>
-#include <iostream>
-#include <list>
-#include <map>
-#include <set>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-
-#define CERR std::cerr << "[" << __FILE__ \
-                       << ":" << __LINE__ << ", " << __FUNCTION__ << "] "
-#define ENDL std::endl
+#include <bits/stdc++.h>
 
 template <class K, class V>
 std::ostream& operator<<(std::ostream& out, std::pair<K, V> p) {
@@ -77,35 +65,10 @@ std::ostream& operator<<(std::ostream& out, const std::unordered_map<K, V>& m) {
 }
 
 template <class T>
-string to_str(const T& v) {
-  ostringstream ss;
+std::string to_str(const T& v) {
+  std::ostringstream ss;
   ss << v;
   return ss.str();
-}
-
-/**
- * Bufcout
- */
-class Bufcout {
-public:
-  Bufcout() {}
-  ostringstream out_;
-  constexpr static Bufcout* endl = nullptr;
-};
-
-template <class T>
-Bufcout&& operator<<(Bufcout&& out, T v) {
-  out.out_ << std::boolalpha << v;
-  return std::move(out);
-}
-
-inline Bufcout&& operator<<(Bufcout&& out, Bufcout* bc) {
-  if (bc != Bufcout::endl) {
-    return std::move(out); // 必须加move, move作用是转成右值引用
-  }
-  out.out_ << "\n";
-  cout << out.out_.str();
-  return std::move(out);
 }
 
 /**
@@ -124,17 +87,42 @@ void __print(std::ostringstream& out, std::string sep, bool is_begin, const Firs
 template <class... Args>
 void print(const Args&... args) {
   std::ostringstream out;
-  out << boolalpha;
+  out << std::boolalpha;
   __print(out, ", ", true, args...);
   out << "\n";
-  cout << out.str();
+  std::cout << out.str();
 }
 
 template <class... Args>
 void println(const Args&... args) {
   std::ostringstream out;
-  out << boolalpha;
+  out << std::boolalpha;
   __print(out, " ", true, args...);
   out << "\n";
-  cout << out.str();
+  std::cout << out.str();
+}
+
+/**
+ * Bufcout
+ */
+class Bufcout {
+public:
+  Bufcout() {}
+  std::ostringstream out_;
+  constexpr static Bufcout* endl = nullptr;
+};
+
+template <class T>
+Bufcout&& operator<<(Bufcout&& out, T v) {
+  out.out_ << std::boolalpha << v;
+  return std::move(out);
+}
+
+inline Bufcout&& operator<<(Bufcout&& out, Bufcout* bc) {
+  if (bc != Bufcout::endl) {
+    return std::move(out);
+  }
+  out.out_ << "\n";
+  std::cout << out.out_.str();
+  return std::move(out);
 }
