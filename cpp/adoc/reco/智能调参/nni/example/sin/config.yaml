@@ -1,8 +1,8 @@
 authorName: default
 experimentName: example_sin
 maxExecDuration: 5m
-maxTrialNum: 10
-trialConcurrency: 1
+maxTrialNum: 100
+trialConcurrency: 10
 trainingServicePlatform: local
 searchSpacePath: search_space.json
 useAnnotation: false
@@ -13,6 +13,6 @@ tuner:
     parallel_optimize: True
     constant_liar_type: min
 trial:
-  command: python3 main.py
+  command: python3 study.py
   codeDir: .
   gpuNum: 0
