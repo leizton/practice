@@ -2,6 +2,16 @@
 
 #include <bits/stdc++.h>
 
+template <class T>
+void printHex(T x) {
+  std::cout << std::setbase(16) << x << std::endl;
+}
+
+template <class T>
+void printBin(T x) {
+  std::cout << std::setbase(2) << x << std::endl;
+}
+
 template <class K, class V>
 std::ostream& operator<<(std::ostream& out, std::pair<K, V> p) {
   out << "(" << p.first << "," << p.second << ")";

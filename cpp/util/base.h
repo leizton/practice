@@ -8,6 +8,7 @@
 #include "cpp_lib.h"
 
 #include "any.h"
+#include "bit_op.h"
 #include "blocking_queue.h"
 #include "count_down_latch.h"
 #include "double_buffer.h"
