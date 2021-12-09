@@ -105,5 +105,9 @@ ref
   1. "CYK Parsing over Distributed Representations" 3.1节
   2. https://blog.csdn.net/Chase1998/article/details/84504191
 
+# ontonotes
+ontology node
+  抽象上的本体节点(体)，例如同义词在形相上不同，但都指向同一个体
+
 # todo
 https://nlp.stanford.edu/software/nndep.html

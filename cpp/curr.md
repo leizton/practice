@@ -99,6 +99,7 @@ https://ata.alibaba-inc.com/articles/200621?spm=ata.23639746.0.0.3b3c423d3uMFQz
 ○ AtomicSharedPtr
 ○ vector 内部字段
 ○ vector iterator 比较
+○ sort cmp https://www.cnblogs.com/cswuyg/p/10155017.html
 ○ 粒子群算法
 ○ 贝叶斯优化
 
@@ -112,9 +113,46 @@ https://zhuanlan.zhihu.com/b-tree
 flink
 http://www.zhaoqiansunli.com.cn/view/22115
 
-计量语言学
+ontonotes
 Transitioned-based
 Graphed-based
 neural biLSTM
 
 并查集
+https://leetcode-cn.com/leetbook/detail/disjoint-set/
+
+规则引擎
+https://tech.meituan.com/2017/06/09/maze-framework.html
+
+https://www.zhihu.com/column/c_1288235772122718208
+
+3D模型
+https://syncedreview.com/2020/08/10/tour-the-world-from-your-couch-google-nerf-w-delivers-accurate-3d-scene-reconstruction-of-complex-outdoor-environments/
+
+页面置换算法
+tiny lfu
+https://nan01ab.github.io/2018/04/TinyLFU.html
+https://github.com/mandreyel/w-tinylfu
+https://www.cnblogs.com/rickiyang/p/11074158.html
+https://cloud.tencent.com/developer/article/1520182
+http://highscalability.com/blog/2016/1/25/design-of-a-modern-cache.html
+
+http://highscalability.com/all-time-favorites/
+
+向量检索：https://www.pinecone.io/?utm_medium=link&utm_source=high-scalability&utm_campaign=sponsored
+
+图着色
+
+分析代码生成数据流
+
+nginx netty 内存池设计
+
+拓扑排序
+树状数组
+最小编辑距离
+
+lru lfu
+
+promise https://zhuanlan.zhihu.com/p/58428287
+
+open-source reco-sys with cf lr

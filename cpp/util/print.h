@@ -74,10 +74,28 @@ std::ostream& operator<<(std::ostream& out, const std::unordered_map<K, V>& m) {
   return print_map_container(out, m);
 }
 
+inline void __out_to_stream(std::ostream& out, bool v) {
+  out << std::boolalpha << v;
+}
+
+inline void __out_to_stream(std::ostream& out, double d) {
+  static int precision = 4;
+  out << std::to_string(int64_t(d));
+  if (d != (int64_t)d) {
+    auto s1 = std::to_string(d - (int64_t)d);
+    out << s1.substr(1, std::min(precision + 1, (int)s1.find_last_not_of('0')));
+  }
+}
+
+template <class T>
+void __out_to_stream(std::ostream& out, const T& v) {
+  out << v;
+}
+
 template <class T>
 std::string to_str(const T& v) {
   std::ostringstream ss;
-  ss << v;
+  out_to_stream(ss, v);
   return ss.str();
 }
 
@@ -88,17 +106,16 @@ inline void __print(std::ostringstream& out, std::string sep, bool is_begin) {
 }
 
 template <class First, class... Args>
-void __print(std::ostringstream& out, std::string sep, bool is_begin, const First& first, const Args&... left) {
-  if (!is_begin) out << sep;
-  out << first;
-  __print(out, sep, false, left...);
+void __print(std::ostringstream& out, std::string sep, bool non_first, const First& first, const Args&... left) {
+  if (non_first) out << sep;
+  __out_to_stream(out, first);
+  __print(out, sep, true, left...);
 }
 
 template <class... Args>
 void print(const Args&... args) {
   std::ostringstream out;
-  out << std::boolalpha;
-  __print(out, ", ", true, args...);
+  __print(out, ", ", false, args...);
   out << "\n";
   std::cout << out.str();
 }
@@ -106,8 +123,7 @@ void print(const Args&... args) {
 template <class... Args>
 void println(const Args&... args) {
   std::ostringstream out;
-  out << std::boolalpha;
-  __print(out, " ", true, args...);
+  __print(out, " ", false, args...);
   out << "\n";
   std::cout << out.str();
 }
