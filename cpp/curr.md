@@ -99,6 +99,7 @@ https://ata.alibaba-inc.com/articles/200621?spm=ata.23639746.0.0.3b3c423d3uMFQz
 ○ AtomicSharedPtr
 ○ vector 内部字段
 ○ vector iterator 比较
+○ function
 ○ sort cmp https://www.cnblogs.com/cswuyg/p/10155017.html
 ○ 粒子群算法
 ○ 贝叶斯优化
@@ -156,3 +157,7 @@ lru lfu
 promise https://zhuanlan.zhihu.com/p/58428287
 
 open-source reco-sys with cf lr
+EasyRec
+
+eigen
+http://eigen.tuxfamily.org/dox/group__TutorialLinearAlgebra.html
