@@ -5,7 +5,7 @@
 #define OSS std::ostringstream
 
 namespace unit_test {
-bool AssertLog = false;
+bool AssertLog = true;
 }
 
 #define assert_T(expr) if (expr) {\

@@ -152,8 +152,6 @@ nginx netty 内存池设计
 树状数组
 最小编辑距离
 
-lru lfu
-
 promise https://zhuanlan.zhihu.com/p/58428287
 
 open-source reco-sys with cf lr
@@ -161,3 +159,6 @@ EasyRec
 
 eigen
 http://eigen.tuxfamily.org/dox/group__TutorialLinearAlgebra.html
+
+动态规划
+https://leetcode.com/discuss/general-discussion/458695/dynamic-programming-patterns
