@@ -1,6 +1,38 @@
 #include "util/base.h"
 
 
+def(perf) {
+  std::vector<std::string> cates = {
+    "体育", "国内", "社会", "国际", "科技", "汽车",
+    "教育", "财经", "娱乐", "动漫", "军事", "游戏",
+    "科学探索", "房产", "家居", "旅游", "摄影", "星座"
+  };
+
+  volatile auto t1 = nowMs();
+  std::map<std::string, int> m1;
+  for (int i = 0; i < 10000000; i++) {
+    auto ret = m1.insert({cates[i % cates.size()], 1});
+    if (!ret.second) {
+      ret.first->second += 1;
+    }
+  }
+  t1 = nowMs() - t1;
+
+  volatile auto t2 = nowMs();
+  std::unordered_map<std::string, int> m2;
+  for (int i = 0; i < 10000000; i++) {
+    auto ret = m2.insert({cates[i % cates.size()], 1});
+    if (!ret.second) {
+      ret.first->second += 1;
+    }
+  }
+  t2 = nowMs() - t2;
+
+  print(t1); // 400 ms
+  print(t2); // 800 ms
+}
+
+
 def(get_or_create) {
   map<int, Any> m;
   const int key = 1;
@@ -109,7 +141,7 @@ def(erase) {
       ++iter;
   }
   assert_T(a.find("b") == a.end());
-  assert_eq(2, a.size());
+  assert_eq(2u, a.size());
 }
 
 
