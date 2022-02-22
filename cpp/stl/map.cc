@@ -1,6 +1,5 @@
 #include "util/base.h"
 
-
 def(perf) {
   std::vector<std::string> cates = {
     "体育", "国内", "社会", "国际", "科技", "汽车",
@@ -12,6 +11,7 @@ def(perf) {
   std::map<std::string, int> m1;
   for (int i = 0; i < 10000000; i++) {
     auto ret = m1.insert({cates[i % cates.size()], 1});
+    // auto ret = m1.emplace(cates[i % cates.size()], 1);
     if (!ret.second) {
       ret.first->second += 1;
     }
@@ -22,14 +22,44 @@ def(perf) {
   std::unordered_map<std::string, int> m2;
   for (int i = 0; i < 10000000; i++) {
     auto ret = m2.insert({cates[i % cates.size()], 1});
+    // auto ret = m2.emplace(cates[i % cates.size()], 1);
     if (!ret.second) {
       ret.first->second += 1;
     }
   }
   t2 = nowMs() - t2;
 
-  print(t1); // 400 ms
-  print(t2); // 800 ms
+  m1.clear();
+  m2.clear();
+  for (auto& e : cates) {
+    m1[e] = 0;
+    m2[e] = 0;
+  }
+  volatile auto t3 = nowMs();
+  for (int i = 0; i < 10000000; i++) {
+    auto it = m1.find(cates[i % cates.size()]);
+    if (it != m1.end()) {
+      it->second += 1;
+    }
+  }
+  t3 = nowMs() - t3;
+
+  volatile auto t4 = nowMs();
+  for (int i = 0; i < 10000000; i++) {
+    auto it = m2.find(cates[i % cates.size()]);
+    if (it != m2.end()) {
+      it->second += 1;
+    }
+  }
+  t4 = nowMs() - t4;
+
+  // insert
+  print(t1); //           map 420 ms
+  print(t2); // unordered_map 850 ms
+
+  // find
+  print(t3); //           map 300 ms
+  print(t4); // unordered_map 200 ms
 }
 
 
