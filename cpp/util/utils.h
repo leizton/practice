@@ -1,3 +1,5 @@
+#pragma once
+
 #include "util/cpp_lib.h"
 
 template <class T>

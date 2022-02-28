@@ -7,6 +7,7 @@
 
 #include "cpp_lib.h"
 
+#include "algo.h"
 #include "any.h"
 #include "bit_op.h"
 #include "blocking_queue.h"
