@@ -72,3 +72,30 @@ std::string double2Str(double d, int precision) {
     return std::to_string(int64_t(d)) + s.substr(1, std::min(precision, (int)s.find_last_not_of('0')));
   }
 }
+
+bool startswith(const std::string& s, const std::string& prefix) {
+  size_t n = prefix.length();
+  if (n <= s.length()) {
+    return (n == 0) ? true : (::strncmp(s.c_str(), prefix.c_str(), n) == 0);
+  } else {
+    return false;
+  }
+}
+
+void splitString(const std::string& str, const std::string& delimiter,
+                 std::vector<std::string>& out) {
+  out.clear();
+  size_t i = 0;
+  while (i < str.length()) {
+    size_t j = str.find(delimiter, i);
+    if (j == std::string::npos) {
+      out.push_back(str.substr(i, str.length() - i));
+      break;
+    }
+    out.push_back(str.substr(i, j - i));
+    i = j + delimiter.length();
+    if (i == str.length()) {
+      out.push_back("");
+    }
+  }
+}

@@ -9,3 +9,8 @@ bool str2float(const std::string& s, float& v);
 bool str2double(const std::string& s, double& v);
 
 std::string double2Str(double d, int precision = 4);
+
+bool startswith(const std::string& s, const std::string& prefix);
+
+void splitString(const std::string& str, const std::string& delimiter,
+                 std::vector<std::string>& out);
