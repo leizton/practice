@@ -168,10 +168,14 @@ https://github.com/shenweichen/DeepMatch
 
 目标检测和跟踪 base工作->分割
 句法结构分析 base工作->分词
-形态分析，简笔画风格
+形态分析，简笔画风格，漫画风格
 点云拟合
 能源
 sk置信度控盘，在不同置信度时agent和broker的行为不同，挖掘出其行为原理
 
 分类模型：youtube-dnn deepmatch 输入层包括user_fea和行为数据
 预估模型：输入层包括user和item的feature、行为数据
+
+记忆例子比记忆文字抽象地描述概念更深刻
+
+注意力机制
