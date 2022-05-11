@@ -76,7 +76,7 @@ std::string double2Str(double d, int precision) {
 bool startswith(const std::string& s, const std::string& prefix) {
   size_t n = prefix.length();
   if (n <= s.length()) {
-    return (n == 0) ? true : (::strncmp(s.c_str(), prefix.c_str(), n) == 0);
+    return ::strncmp(s.c_str(), prefix.c_str(), n) == 0;
   } else {
     return false;
   }
@@ -86,7 +86,7 @@ void splitString(const std::string& str, const std::string& delimiter,
                  std::vector<std::string>& out) {
   out.clear();
   size_t i = 0;
-  while (i < str.length()) {
+  while (i <= str.length()) {
     size_t j = str.find(delimiter, i);
     if (j == std::string::npos) {
       out.push_back(str.substr(i, str.length() - i));
@@ -94,8 +94,5 @@ void splitString(const std::string& str, const std::string& delimiter,
     }
     out.push_back(str.substr(i, j - i));
     i = j + delimiter.length();
-    if (i == str.length()) {
-      out.push_back("");
-    }
   }
 }

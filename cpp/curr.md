@@ -61,8 +61,6 @@ recommend
 https://zhuanlan.zhihu.com/p/115690499
 https://www.tensorflow.org/recommenders/examples/basic_retrieval?hl=zh-cn
 
-ConcurrentExpireMap
-
 用户多兴趣
 https://blog.csdn.net/EdmundYan/article/details/117754084
 
@@ -76,8 +74,6 @@ facebook-folly中的fbstring使用了boyer_moore算法, 平均查找性能比std
 
 dssm中如何计算embedding向量
 https://zhuanlan.zhihu.com/p/37082976
-
-ConcurrentHashMap & java cache (caffine)
 
 mvp
 https://juejin.cn/post/6844903448412946445
@@ -176,6 +172,18 @@ sk置信度控盘，在不同置信度时agent和broker的行为不同，挖掘�
 分类模型：youtube-dnn deepmatch 输入层包括user_fea和行为数据
 预估模型：输入层包括user和item的feature、行为数据
 
-记忆例子比记忆文字抽象地描述概念更深刻
-
 注意力机制
+
+mimalloc
+
+flat buffer
+
+hashmap
+  ConcurrentExpireMap
+  ConcurrentHashMap & java cache (caffine)
+  tbb-concurrenthashmap google-densehashmap folly-atomichashmap junction-leapfrog-conchashmap
+  https://github.com/preshing/junction/blob/master/junction/details/Leapfrog.h
+  https://preshing.com/20160201/new-concurrent-hash-maps-for-cpp/
+  https://github.com/sparsehash/sparsehash
+  rocksdb FullFilter 考虑cache-line的bloomfilter
+  https://ilanbiala.github.io/15618-final-project/final-report.pdf
