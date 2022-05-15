@@ -12,6 +12,7 @@
 #include "bit_op.h"
 #include "blocking_queue.h"
 #include "concurrent.h"
+#include "object_pool.h"
 #include "double_buffer.h"
 #include "lru_cache.h"
 #include "rate_limiter.h"
