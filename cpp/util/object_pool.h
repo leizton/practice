@@ -111,13 +111,13 @@ public:
   size_t size() const;
 
   // 返回 false 表示没有空闲
-  bool allocObject(AtomicObjectPool<T>::Object*& obj, int& index);
+  bool allocObject(Object*& obj, int& index);
 
   // 返回 false 表示归还失败, 需要调用方 delete obj
-  bool freeObject(AtomicObjectPool<T>::Object* obj, int index);
+  bool freeObject(Object* obj, int index);
 
 private:
-  std::vector<AtomicObjectPool<T>::Object*> pool_;
+  std::vector<Object*> pool_;
   std::vector<AtomicWrapper<bool>> is_free_;
   std::atomic<uint32_t> next_;
   size_t real_size_;

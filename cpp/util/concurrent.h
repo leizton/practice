@@ -4,6 +4,38 @@
 #include <mutex>
 #include <condition_variable>
 
+class AtomicCountDownLatch {
+public:
+  AtomicCountDownLatch() : count_(0) {}
+  AtomicCountDownLatch(int32_t n) : count_(n) {}
+
+  void wait() {
+    std::unique_lock<std::mutex> lk(mtx_);
+    cond_.wait(lk, [this] { return this->count_.load() <= 0; });
+  }
+
+  void countDown(int32_t n) {
+    n = count_.fetch_sub(n) - n;
+    if (n <= 0) {
+      std::lock_guard<std::mutex> lk(mtx_);
+      cond_.notify_all();
+    }
+  }
+
+  void countUp(int32_t n) {
+    countDown(-n);
+  }
+
+  int32_t getCount() const {
+    return count_.load();
+  }
+
+private:
+  std::atomic<uint32_t> count_;
+  std::mutex mtx_;
+  std::condition_variable cond_;
+};
+
 class CountDownLatch {
 public:
   CountDownLatch() : count_(0) {}
@@ -24,28 +56,17 @@ public:
   void countDown(int32_t n = 1) {
     std::lock_guard<std::mutex> lk(mtx_);
     count_ -= n;
-    tryNotify();
+    if (count_ <= 0) cond_.notify_all();
   }
 
   void countDownToZero() {
-    reset(0);
-  }
-
-  void reset(int32_t n) {
     std::lock_guard<std::mutex> lk(mtx_);
-    count_ = n;
-    tryNotify();
+    count_ = 0;
+    cond_.notify_all();
   }
 
-  int getCount() const {
+  int32_t getCount() const {
     return count_;
-  }
-
-private:
-  void tryNotify() {
-    if (count_ <= 0) {
-      cond_.notify_all();
-    }
   }
 
 private:

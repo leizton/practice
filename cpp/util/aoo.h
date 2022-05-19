@@ -57,16 +57,18 @@ public:
     PRINT("Aoo_move_copy_ctor:", x.toString(), "->", toString());
   }
 
-  void operator=(const Aoo& x) {
+  Aoo& operator=(const Aoo& x) {
     assign_con_num_++;
     PRINT("Aoo_assign:", x.toString(), "->", toString());
     dat = x.dat;
+    return *this;
   }
 
-  void operator=(const Aoo&& x) {
+  Aoo& operator=(const Aoo&& x) {
     move_assign_con_num_++;
     PRINT("Aoo_move_assign:", x.toString(), "->", toString());
     dat = x.dat;
+    return *this;
   }
 
   const uint32_t id;
