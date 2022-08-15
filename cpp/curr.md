@@ -43,10 +43,6 @@ rocketmq -> kafka, 存储模型 大量topic
 mq -> kafka, 消费模型 P/C无缝扩缩容
 有序消费, 有用 难实现
 
-多样性
-https://zhuanlan.zhihu.com/p/264652162
-https://zhuanlan.zhihu.com/p/95607668, dpp
-
 brpc
 https://zhuanlan.zhihu.com/p/120493593
 https://github.com/apache/incubator-brpc/blob/master/docs/cn/atomic_instructions.md
@@ -187,3 +183,20 @@ hashmap
   https://github.com/sparsehash/sparsehash
   rocksdb FullFilter 考虑cache-line的bloomfilter
   https://ilanbiala.github.io/15618-final-project/final-report.pdf
+
+https://yaoguais.github.io/article/jemalloc/structures.html
+
+LIRS cache 缓存淘汰算法
+https://cloud.tencent.com/developer/article/1005742
+
+日本gdp数据
+
+nth, sort cmp 越界
+
+https://zhuanlan.zhihu.com/p/525985268
+
+https://www.oreilly.com/library/view/power-and-performance/9780128007266/B9780128007266000082.xhtml#s0010
+
+多样性
+https://zhuanlan.zhihu.com/p/264652162
+https://zhuanlan.zhihu.com/p/95607668, dpp

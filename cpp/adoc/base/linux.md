@@ -56,8 +56,8 @@ sudo perf top -p $PID -g
 生成火焰图
   perf record -F 99 -p $pid -m 4 -g -a sleep 5
   perf script > out.perf
-  ./FlameGraph-master/stackcollapse-perf.pl out.perf >out.folded
-  ./FlameGraph-master/flamegraph.pl out.folded > pmCount.svg
+  ./FlameGraph/stackcollapse-perf.pl out.perf > out.folded  # https://github.com/brendangregg/FlameGraph
+  ./FlameGraph/flamegraph.pl out.folded > pmCount.svg
 
 ② gdb
 为了防止 `value has been optimized out`
