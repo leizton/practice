@@ -201,3 +201,16 @@ https://zhuanlan.zhihu.com/p/95607668, dpp
 
 tensorflow recommendation
 https://www.tensorflow.org/lite/examples/recommendation/overview
+
+w2v
+https://www.tensorflow.org/tutorials/text/word2vec
+
+开源推荐系统
+https://github.com/NicolasHug/Surprise
+https://github.com/tensorflow/recommenders
+https://github.com/alibaba/Alink
+https://github.com/gorse-io/gorse
+https://github.com/RUCAIBox/RecBole
+
+SVDFeature
+https://www.jmlr.org/papers/v13/chen12a.html
