@@ -111,8 +111,10 @@ Transitioned-based
 Graphed-based
 neural biLSTM
 
-并查集
-https://leetcode-cn.com/leetbook/detail/disjoint-set/
+并查集, https://leetcode-cn.com/leetbook/detail/disjoint-set/
+拓扑排序
+树状数组
+最小编辑距离
 
 规则引擎
 https://tech.meituan.com/2017/06/09/maze-framework.html
@@ -139,10 +141,6 @@ http://highscalability.com/all-time-favorites/
 分析代码生成数据流
 
 nginx netty 内存池设计
-
-拓扑排序
-树状数组
-最小编辑距离
 
 promise https://zhuanlan.zhihu.com/p/58428287
 
@@ -200,3 +198,6 @@ https://www.oreilly.com/library/view/power-and-performance/9780128007266/B978012
 多样性
 https://zhuanlan.zhihu.com/p/264652162
 https://zhuanlan.zhihu.com/p/95607668, dpp
+
+tensorflow recommendation
+https://www.tensorflow.org/lite/examples/recommendation/overview
