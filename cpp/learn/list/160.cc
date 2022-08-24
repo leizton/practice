@@ -31,6 +31,7 @@ ListNode* getIntersectionNodeV1(ListNode* ha, ListNode* hb) {
   return p;
 }
 
+// 两个链表的长度差
 ListNode* getIntersectionNode(ListNode* ha, ListNode* hb) {
   if (ha == nullptr || hb == nullptr) return nullptr;
   int len_a = 0, len_b = 0;
