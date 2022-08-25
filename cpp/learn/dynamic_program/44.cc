@@ -1,5 +1,10 @@
 #include <util/base.h>
 
+/*
+给定一个字符串 (s) 和一个字符模式 (p) ，实现一个支持 '?' 和 '*' 的通配符匹配。
+两个字符串完全匹配才算匹配成功。
+*/
+
 bool is_match_memo(const string& s, size_t s_begin, const string& p, size_t p_begin, vector<vector<int8_t>>& memo) {
   #define memo_match(s, si, p, pj) \
     int8_t tmp = memo[si][pj]; \

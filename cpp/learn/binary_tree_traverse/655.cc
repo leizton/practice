@@ -1,5 +1,10 @@
 #include <util/base.h>
 
+/*
+给你一棵二叉树的根节点 root, 输出格式化布局矩阵
+变成一个完全二叉树, 空节点输出空串
+*/
+
 int calcTreeHeight(TreeNode* root) {
   int h = -1;
   if (root->left) {
