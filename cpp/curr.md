@@ -214,3 +214,7 @@ https://github.com/RUCAIBox/RecBole
 
 SVDFeature
 https://www.jmlr.org/papers/v13/chen12a.html
+
+HaiSQL malloc
+https://www.zhihu.com/column/c_1087370989482070016
+https://gitee.com/wlmqgzm/libhaisqlmalloc

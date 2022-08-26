@@ -23,3 +23,5 @@ threadA的锁保证check和入等待集合的原子性, 即只有在is_ready时�
 # tmp
 /usr/src/kernels/tools/perf
 -g 统计调用栈 call-graph
+
+# realloc 和 malloc
