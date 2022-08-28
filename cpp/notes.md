@@ -25,3 +25,13 @@ threadA的锁保证check和入等待集合的原子性, 即只有在is_ready时�
 -g 统计调用栈 call-graph
 
 # realloc 和 malloc
+realloc相比malloc省去拷贝
+
+# Akka
+配置文件中指定一些节点是种子节点
+种子节点启动后开始创建集群, 通过raft选主
+普通节点可以申请加入集群或退出集群
+数据同步通过gossip协议
+
+# 架构能力
+抽象 分治(分层) 复用 迭代

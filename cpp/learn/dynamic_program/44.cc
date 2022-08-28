@@ -5,115 +5,76 @@
 两个字符串完全匹配才算匹配成功。
 */
 
-bool is_match_memo(const string& s, size_t s_begin, const string& p, size_t p_begin, vector<vector<int8_t>>& memo) {
-  #define memo_match(s, si, p, pj) \
-    int8_t tmp = memo[si][pj]; \
-    { if (tmp == -1) memo[si][pj] = tmp = is_match_memo(s, si, p, pj, memo) ? 1 : 0; }
-  //
-  if (p_begin < p.length()) {
-    if (p[p_begin] == '*') {
-      if (p_begin == p.length() - 1) return true;
-      if (s_begin < s.length()) {
-        for (size_t i = s_begin; i < s.length(); i++) {
-          memo_match(s, i, p, p_begin+1);
-          if (tmp == 1) return true;
-        }
-        return false;
-      } else {
-        for (size_t i = p_begin+1; i < p.length(); i++) {
-          if (p[i] != '*') return false;
-        }
-        return true;
-      }
-    } else {
-      if (s_begin < s.length()) {
-        if (p[p_begin] != '?' && p[p_begin] != s[s_begin]) return false;
-        memo_match(s, s_begin+1, p, p_begin+1);
-        return tmp == 1;
-      } else {
-        return false;
-      }
-    }
-  } else {
-    return s.length() <= s_begin;
-  }
-}
 
-bool isMatchMemo(string s, string p) {
-  if (p.empty()) {
-    return s.empty();
-  }
-  if (s.empty()) {
-    for (size_t i = 0; i < p.length(); i++) {
-      if (p[i] != '*') return false;
-    }
-    return true;
-  }
-  vector<vector<int8_t>> memo;
-  memo.resize(s.length() + 1);
-  for (size_t i = 0; i < memo.size(); i++) {
-    memo[i].resize(p.length() + 1, -1);
-  }
-  return is_match_memo(s, 0, p, 0, memo);
-}
+/*
+  match(p[0..m-1], s[0..n-1])的递归式
+  if p[0] == *
+    match(p[1..], s[0..])
+    or match(p[1..], s[1..])
+    or ...
+    or match(p[1..], s[n-1])
+    or match(p[1..], "")
+  elif p[0] == ? or p[0] == s[0]
+    match(p[1..], s[1..])
+  else
+    false
+
+  ** 把p[0]换成p[i], 从后向前递归 **
+
+  match(p[0..i], s[0..j])的递归如下
+  if p[i] == *
+    match(p[0..i-1], s[0..j])
+    or match(p[0..i-1], s[0..j-1])  ;p[i]匹配s[j]
+    or match(p[0..i-1], s[0..j-2])  ;p[i]匹配s[j-1..j]
+    or ...
+    or match(p[0..i-1], s[0])
+    or match(p[0..i-1], "")
+  elif p[i] == ? or p[i] == s[j]
+    match(p[0..i-1], s[0..j-1])
+  else
+    false
+*/
 
 // DP on Strings
-bool isMatchDP(string s, string p) {
-  if (p.empty()) {
-    return s.empty();
+bool isMatch(string s, string p) {
+  const int M = p.length(), N = s.length();
+  vector<vector<bool>> dp(M+1, vector<bool>(N+1, false));
+  dp[0][0] = true;
+  // p是空串
+  for (int j = 1; j <= N; j++) {
+    dp[0][j] = false;
   }
-  if (s.empty()) {
-    for (size_t i = 0; i < p.length(); i++) {
-      if (p[i] != '*') return false;
-    }
-    return true;
-  }
-  //
-  vector<vector<bool>> dp;
-  dp.resize(p.length());
-  for (size_t i = 0; i < p.length(); i++) {
-    dp[i].resize(s.length(), false);
+  // s是空串
+  for (int i = 1; i <= M; i++) {
+    dp[i][0] = (p[i-1] == '*') && dp[i-1][0];
   }
   //
-  if (p[0] == '*') {
-    for (size_t si = 0; si < s.length(); si++) dp[0][si] = true;
-  } else {
-    dp[0][0] = (p[0] == '?' || p[0] == s[0]);
-  }
-  if (dp[0][0]) {
-    for (size_t pj = 1; pj < p.length(); pj++) {
-      if (p[pj] == '*') {
-        dp[pj][0] = true;
-      } else {
-        dp[pj][0] = (p[0] == '*') && (p[pj] == '?' || p[pj] == s[0]);
-        break;
-      }
-    }
-  }
-  //
-  for (size_t pj = 1; pj < p.length(); pj++) {
-    auto& prev = dp[pj-1];
-    auto& curr = dp[pj];
-    if (p[pj] == '*') {
-      for (size_t si = 0; si < s.length(); si++) {
-        if (prev[si]) {
-          for (; si < s.length(); si++) curr[si] = true;
+  for (int i = 1; i <= M; i++) {
+    if (p[i-1] == '*') {
+      for (int j = 0; j <= N; j++) {
+        if (dp[i-1][j]) {
+          for (; j <= N; j++) dp[i][j] = true;
           break;
         }
       }
+    } else if (p[i-1] == '?') {
+      for (int j = 1; j <= N; j++) {
+        dp[i][j] = dp[i-1][j-1];
+      }
     } else {
-      for (size_t si = 1; si < s.length(); si++) {
-        curr[si] = (p[pj] == '?' || p[pj] == s[si]) && prev[si-1];
+      for (int j = 1; j <= N; j++) {
+        dp[i][j] = (p[i-1] == s[j-1]) && dp[i-1][j-1];
       }
     }
   }
-  return dp[p.length()-1][s.length()-1];
+  return dp[M][N];
 }
 
 int main() {
-  std::function<bool(string,string)> test = isMatchDP;
+  std::function<bool(string,string)> test = isMatch;
   assert_F(test("aa", "a"));
   assert_T(test("aa", "*"));
+  assert_T(test("ab", "?*"));
   assert_F(test("cb", "?a"));
   assert_T(test("adceb", "*a*b"));
   assert_F(test("acdcb", "a*c?b"));
