@@ -49,6 +49,7 @@ int longestValidParentheses(string s) {
   // dp[i] 以i结尾的最长匹配串的长度, `i-dp[i]+1`是起始位置
   vector<int> dp(N, 0);
   int ans = 0;
+  // 结论: 如果存在匹配串, 则至少有一对相邻括号
   // 找到第一对括号
   int i = 1;
   for (; i < N; i++) {

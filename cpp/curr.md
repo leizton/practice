@@ -218,3 +218,10 @@ https://www.jmlr.org/papers/v13/chen12a.html
 HaiSQL malloc
 https://www.zhihu.com/column/c_1087370989482070016
 https://gitee.com/wlmqgzm/libhaisqlmalloc
+
+ann邻近搜索
+https://zhuanlan.zhihu.com/p/266589272
+https://github.com/spotify/annoy
+
+CLucene
+http://clucene.sourceforge.net/
