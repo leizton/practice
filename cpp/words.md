@@ -21,3 +21,8 @@
       例如组织架构(人与人之间的关系), 分布式系统的架构:
         主从架构: 一主多从 多主多从(kafka) 主从两个要素
         去中心化架构: Akka 各actor是对等的
+
+strategy：a comprehensive plan. made to accomplish the goal
+          用于框架
+policy：a guiding principle. helps to take logical decisions
+          用于架构
