@@ -27,8 +27,27 @@ threadA的锁保证check和入等待集合的原子性, 即只有在is_ready时�
 # realloc 和 malloc
 realloc相比malloc省去拷贝
 
+# memcpy 和 memmove
+memmove在有重叠区域时是安全的, memcpy不是
+
 # Akka
 配置文件中指定一些节点是种子节点
 种子节点启动后开始创建集群, 通过raft选主
 普通节点可以申请加入集群或退出集群
 数据同步通过gossip协议
+
+# folly vector的优化
+https://github.com/facebook/folly/blob/main/folly/docs/FBVector.md
+1. 增长率从gcc的2倍变成1.5倍
+    2倍的缺陷是新的capacity比之前capacity和还大, 即 1+2¹+2²+…+2ⁿ⁻¹ < 2ⁿ
+    所以新分配的chunk不用复用之前已分配的chunk
+2. 针对relocated对象的拷贝优化
+## relocated & non-relocated Object
+vector在扩容时先 copy-construct 新对象, 再 deconstruct 旧对象, 是考虑了non-relocated对象
+relocated对象指其值不受内存的绝对地址影响, 无论移动到哪里都是一样的, 例如int 可以用memcpy memmove拷贝
+non-relocated对象如
+struct Eoo {
+  char buf[1024];
+  char* point_to_this_buf;
+  Eoo() point_to_this_buf(buf) {}
+};
