@@ -16,14 +16,6 @@ threadB() {
 threadA的锁保证check和入等待集合的原子性, 即只有在is_ready时才wait, 避免check和wait之间插入set
 对于锁外唤醒, threadB的锁还有一个作用是保证set和notify的happens-before, set先于notify发生
 
-# 性能问题的排查第一工具是perf
-先用perf top看一下cpu消耗在哪些函数上
-容器内perf卡住可以到容器外看
-
-# tmp
-/usr/src/kernels/tools/perf
--g 统计调用栈 call-graph
-
 # realloc 和 malloc
 realloc相比malloc省去拷贝
 
@@ -51,3 +43,9 @@ struct Eoo {
   char* point_to_this_buf;
   Eoo() point_to_this_buf(buf) {}
 };
+
+# perf
+先用perf top看一下cpu消耗在哪些函数上
+容器内perf卡住可以到容器外看
+/usr/src/kernels/tools/perf
+-g 统计调用栈 call-graph
