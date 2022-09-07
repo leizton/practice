@@ -15,7 +15,22 @@ bool checkBST(TreeNode* root, int min_val, int max_val) {
   if (root->right && (root->val == max_val || !checkBST(root->right, root->val+1, max_val))) return false;
   return true;
 }
-bool isValidBST(TreeNode* root) {
+bool isValidBST0(TreeNode* root) {
   if (!root) return true;
   return checkBST(root, INT32_MIN, INT32_MAX);
+}
+
+/*
+  中序遍历二叉搜索树是递增的
+*/
+bool inOrderTraverseTree(TreeNode* node, TreeNode* &prev) {
+  if (node == nullptr) return true;
+  if (!inOrderTraverseTree(node->left, prev)) return false;
+  if (prev && node->val <= prev->val) return false;
+  prev = node;
+  return inOrderTraverseTree(node->right, prev);
+}
+bool isValidBST(TreeNode* root) {
+  TreeNode* prev = nullptr;
+  return inOrderTraverseTree(root, prev);
 }
