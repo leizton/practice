@@ -49,3 +49,7 @@ struct Eoo {
 容器内perf卡住可以到容器外看
 /usr/src/kernels/tools/perf
 -g 统计调用栈 call-graph
+
+# books
+## 同步
+个体包含振子，个体间能通信(gossip)，通过通信调整自身振子的频率
