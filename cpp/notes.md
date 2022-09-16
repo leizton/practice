@@ -50,6 +50,9 @@ struct Eoo {
 /usr/src/kernels/tools/perf
 -g 统计调用栈 call-graph
 
+# gcc sort 比较函数不是严格弱序(严格小于)导致越界
+[测试文件](test/test_sort.cc)
+
 # books
 ## 同步
 个体包含振子，个体间能通信(gossip)，通过通信调整自身振子的频率

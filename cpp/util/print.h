@@ -21,12 +21,10 @@ std::ostream& operator<<(std::ostream& out, std::pair<K, V> p) {
 template <class Container>
 std::ostream& print_seq_container(std::ostream& out, const Container& c) {
   out << "[";
-  bool first = true;
   for (const auto& e : c) {
-    if (!first) out << ",";
-    first = false;
-    out << e;
+    out << e << ",";
   }
+  out.seekp(out.tellp() - 1);
   out << "]";
   return out;
 }
@@ -34,12 +32,10 @@ std::ostream& print_seq_container(std::ostream& out, const Container& c) {
 template <class Container>
 std::ostream& print_map_container(std::ostream& out, const Container& c) {
   out << "[";
-  bool first = true;
   for (const auto& p : c) {
-    if (!first) out << ",";
-    first = false;
-    out << p.first << "=" << p.second;
+    out << p.first << "=" << p.second << ",";
   }
+  out.seekp(out.tellp() - 1);
   out << "]";
   return out;
 }
