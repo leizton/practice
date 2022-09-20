@@ -1,3 +1,5 @@
+#pragma once
+
 #include <util/base.h>
 
 struct TreeNode {
@@ -7,4 +9,28 @@ struct TreeNode {
   TreeNode() : val(0), left(nullptr), right(nullptr) {}
   TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
   TreeNode(int v, TreeNode* l, TreeNode* r) : val(0), left(l), right(r) {}
+};
+
+struct CmdReader {
+public:
+  static TreeNode* readTree(const std::string& cmd) {
+    std::string s = cmd.substr(1, cmd.length() - 2);
+    std::vector<std::string> node_vals;
+    splitString(s, ",", node_vals);
+    auto* root = buildTreeFromArray(node_vals, 0);
+    return root;
+  }
+
+private:
+  static TreeNode* buildTreeFromArray(const std::vector<std::string>& node_vals, int i) {
+    int v;
+    if (i < (int)node_vals.size() && str2int(node_vals[i], v)) {
+      auto* node = new TreeNode(v);
+      i = (i+1) << 1;
+      node->left = buildTreeFromArray(node_vals, i-1);
+      node->right = buildTreeFromArray(node_vals, i);
+      return node;
+    }
+    return nullptr;
+  }
 };
