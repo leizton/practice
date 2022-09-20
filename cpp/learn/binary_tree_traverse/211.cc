@@ -1,5 +1,14 @@
 #include <header>
 
+/*
+实现词典类 WordDictionary ：
+  void addWord(word)
+      将 word 添加到数据结构中，之后可以对它进行匹配
+  bool search(word)
+      如果数据结构中存在字符串与 word 匹配, 则返回true, 否则返回false
+      word 中可能包含 '.' ，每个 . 都可以表示任何一个字母。
+*/
+
 class WordDictionary {
 private:
   struct Node {

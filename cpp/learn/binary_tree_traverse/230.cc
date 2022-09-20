@@ -1,5 +1,9 @@
 #include <header>
 
+/*
+找二叉搜索树中第k小的元素, k从1开始
+*/
+
 bool dfs(TreeNode* node, int k, int& count, int& v) {
   if (!node) return false;
   if (dfs(node->left, k, count, v)) return true;
