@@ -1,19 +1,39 @@
-#pragma once
+#include <header>
 
-#include <util/base.h>
+/*
+  二叉树序列化和反序列化
+  层序遍历
+*/
 
-struct TreeNode {
-  int val;
-  TreeNode* left;
-  TreeNode* right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {}
-  TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
-  TreeNode(int v, TreeNode* l, TreeNode* r) : val(0), left(l), right(r) {}
-};
-
-struct CmdReader {
+class TreeCodec {
 public:
-  static TreeNode* readTree(const std::string& data) {
+  string serialize(TreeNode* root) {
+    // 层序遍历
+    if (!root) return "[]";
+    string result(256, '\0');
+    result.clear();
+    std::queue<TreeNode*> que;
+    que.push(root);
+    while (!que.empty()) {
+      auto* node = que.front();
+      que.pop();
+      if (node) {
+        result += "," + std::to_string(node->val);
+        que.push(node->left);
+        que.push(node->right);
+      } else {
+        result += ",N";
+      }
+    }
+    int p = (int)result.length() - 1;
+    while (result[p] == 'N') p -= 2;
+    result.resize(p+1);
+    result[0] = '[';
+    result += "]";
+    return result;
+  }
+
+  TreeNode* deserialize(string data) {
     const size_t n = data.length();
     if (n <= 2) return nullptr;
     const char* s = data.c_str();
@@ -22,6 +42,7 @@ public:
     while (s[i] != ',' && s[i] != ']') i++;
     i++;
     TreeNode* root = new TreeNode(v);
+    // pair<parent_node, 是否设置过左子节点>
     queue<pair<TreeNode*,bool>> que;
     que.push({root,false});
     while (i < n) {
