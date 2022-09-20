@@ -29,29 +29,40 @@ void insert_sort(vector<int>& a, int begin, int end) {
   }
 }
 int q_partition(vector<int>& a, int begin, int end) {
-  // end - begin > 4
-  int pivot = a[begin];
-  int p = begin+1, q = end-1;
+  // end - begin >= 5
+  int p = a[begin], pivot = a[begin+1], q = a[end-1];
+  if (p <= pivot) {
+    if (pivot <= q) { }
+    else if (p <= q) { std::swap(pivot, q); }
+    else { int t = p; p = q; q = pivot; pivot = t; }
+  } else {
+    if (p < q) { std::swap(p, pivot); }
+    else if (pivot < q) { int t = p; p = pivot; pivot = q; q = t; }
+    else { std::swap(p, q); }
+  }
+  //
+  a[begin+1]=p; a[begin]=pivot; a[end-1]=q;
+  pivot = a[begin], p = begin+2, q = end-2;
   while (true) {
-    while (p < end && a[p] <= pivot) p++;   // begin+1<=p<=end && a[p-1]<=pivot
-    while (q > begin && a[q] > pivot) q--;
+    while (a[p] < pivot) p++;  // [end-1]是哨兵, begin+2<=p<=end-1
+    while (a[q] > pivot) q--;  // [begin+1]是哨兵, begin+1<=q<=end-2
     if (p >= q) break;
     std::swap(a[p], a[q]);
     p++, q--;
   }
-  std::swap(a[begin], a[p-1]);  // 这一步是必要的
+  // begin+2<=p<=end-1 && a[p-1]<pivot && a[0]=pivot
   return p;
 }
-void select_k(vector<int>& a, int k) {
+void select_topk(vector<int>& a, int k) {
   int p = 0, q = (int)a.size();
-  while (q - p > 4) {
+  while (q - p >= 5) {
     int pivot = q_partition(a, p, q);
     if (pivot < k)
       p = pivot;
     else if (pivot == k)
       return;
     else
-      q = pivot-1;
+      q = pivot;
   }
   insert_sort(a, p, q);
 }
@@ -59,17 +70,20 @@ void dfs(TreeNode* node, int k, vector<int>& buf) {
   if (!node) return;
   buf.push_back(node->val);
   if ((int)buf.size() >= (k << 1)) {
-    select_k(buf, k);
+    select_topk(buf, k);
     buf.resize(k);
   }
   dfs(node->left, k, buf);
   dfs(node->right, k, buf);
 }
-int kthSmallestV0(TreeNode* root, int k) {
+int kthSmallest(TreeNode* root, int k) {
   if (!root || k <= 0) return 0;
   vector<int> buf;
   buf.reserve(k * 2);
   dfs(root, k, buf);
-  select_k(buf, k);
-  return buf[k-1];
+  select_topk(buf, k);
+  if (k < (int)buf.size()) buf.resize(k);
+  int ans = buf[0];
+  for (int e : buf) ans = std::max(ans, e);
+  return ans;
 }

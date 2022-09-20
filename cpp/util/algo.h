@@ -1,7 +1,11 @@
 #pragma once
 
-#include "util/cpp_lib.h"
+#include <bits/stdc++.h>
+#include "util/print.h"
 
+/*
+ * string
+ */
 bool str2int(const std::string& s, int& v);
 bool str2int64(const std::string& s, int64_t& v);
 bool str2uint64(const std::string& s, uint64_t& v);
@@ -15,13 +19,15 @@ bool startswith(const std::string& s, const std::string& prefix);
 void splitString(const std::string& str, const std::string& delimiter,
                  std::vector<std::string>& out);
 
-/**
+
+/*
  * sort
  */
 template <typename RandomIter, typename Less>
 void insert_sort(RandomIter begin, RandomIter end, Less less) {
   using Value = typename std::iterator_traits<RandomIter>::value_type;
   auto thre_end = begin + 7;
+  if (thre_end > end) thre_end = end;
   auto p = begin;
   for (auto i = p+1; i < thre_end; ++i) {
     if (!less(*i, *p)) { ++p; continue; }
@@ -39,4 +45,45 @@ void insert_sort(RandomIter begin, RandomIter end, Less less) {
     *p = std::move(v);
     p = i;
   }
+}
+
+// end - begin >= 5
+template <typename RandomIter, typename Less>
+RandomIter q_partition(RandomIter begin, RandomIter end, Less less) {
+  auto pivot = begin, p = begin+1, q = end-1;
+  if (less(*p, *pivot)) {
+    if (less(*pivot, *q)) { }
+    else if (less(*p, *q)) { std::iter_swap(pivot, q); }
+    else { std::iter_swap(pivot, q); std::iter_swap(p, pivot); }
+  } else {
+    if (less(*p, *q)) { std::iter_swap(p, pivot); }
+    else if (less(*pivot, *q)) { std::iter_swap(p, pivot); std::iter_swap(pivot, q); }
+    else { std::iter_swap(p, q); }
+  }
+  //
+  pivot = begin, p = begin+2, q = end-2;
+  while (true) {
+    while (less(*p, *pivot)) p++;  // [end-1]是哨兵, begin+2<=p<=end-1
+    while (less(*pivot, *q)) q--;  // [begin+1]是哨兵, begin+1<=q<=end-2
+    if (p >= q) break;
+    std::iter_swap(p, q);
+    p++, q--;
+  }
+  // begin+2<=p<=end-1 && a[begin]=pivot && a[p-1]<pivot
+  return p;
+}
+
+template <typename RandomIter, typename Less>
+void select_topk(int k, RandomIter begin, RandomIter end, Less less) {
+  auto target = begin + k;
+  while (end - begin >= 5) {
+    auto pivot = q_partition(begin, end, less);
+    if (pivot < target)
+      begin = pivot;
+    else if (pivot == target)
+      return;
+    else
+      end = pivot;
+  }
+  insert_sort(begin, end, less);
 }

@@ -124,6 +124,18 @@ void println(const Args&... args) {
   std::cout << out.str();
 }
 
+template <typename Iter>
+std::string range_str(Iter begin, Iter end) {
+  std::ostringstream out;
+  out << "[";
+  for (; begin != end; ++begin) {
+    out << *begin << ",";
+  }
+  out.seekp(out.tellp() - 1);
+  out << "]";
+  return out.str();
+}
+
 /**
  * Bufcout
  */
