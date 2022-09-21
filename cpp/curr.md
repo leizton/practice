@@ -227,3 +227,5 @@ CLucene
 http://clucene.sourceforge.net/
 
 pid kalman
+
+模型压缩和加速四个技术是设计高效小型网络、剪枝、量化和蒸馏
