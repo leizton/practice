@@ -1,7 +1,6 @@
 #pragma once
 
 #include <bits/stdc++.h>
-#include "util/print.h"
 
 /*
  * string
@@ -75,6 +74,7 @@ RandomIter q_partition(RandomIter begin, RandomIter end, Less less) {
 
 template <typename RandomIter, typename Less>
 void select_topk(int k, RandomIter begin, RandomIter end, Less less) {
+  if (k <= 0 || (end-begin) <= k) return;
   auto target = begin + k;
   while (end - begin >= 5) {
     auto pivot = q_partition(begin, end, less);
