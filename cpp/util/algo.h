@@ -18,6 +18,7 @@ bool startswith(const std::string& s, const std::string& prefix);
 void splitString(const std::string& str, const std::string& delimiter,
                  std::vector<std::string>& out);
 
+int cstr2int(const char* s, int begin, int* end = nullptr);
 
 /*
  * sort

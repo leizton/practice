@@ -96,3 +96,17 @@ void splitString(const std::string& str, const std::string& delimiter,
     i = j + delimiter.length();
   }
 }
+
+int cstr2int(const char* s, int i, int* end) {
+  int res = 0;
+  bool is_negative = s[i] == '-';
+  if (is_negative || s[i] == '+') i++;
+  while (true) {
+    int v = s[i++];
+    v -= int('0');
+    if (0 <= v && v <= 9) res = res * 10 + v;
+    else break;
+  }
+  if (end) *end = i-1;
+  return is_negative ? -res : res;
+}
