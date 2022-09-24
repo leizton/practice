@@ -8,7 +8,7 @@ struct TreeNode {
   TreeNode* right;
   TreeNode() : val(0), left(nullptr), right(nullptr) {}
   TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
-  TreeNode(int v, TreeNode* l, TreeNode* r) : val(0), left(l), right(r) {}
+  TreeNode(int v, TreeNode* l, TreeNode* r) : val(v), left(l), right(r) {}
 };
 
 struct CmdReader {
@@ -45,5 +45,31 @@ public:
       }
     }
     return root;
+  }
+
+  static std::string dumpTree(TreeNode* root) {
+    // 层序遍历
+    if (!root) return "[]";
+    std::string result(256, '\0');
+    result.clear();
+    std::queue<TreeNode*> que;
+    que.push(root);
+    while (!que.empty()) {
+      auto* node = que.front();
+      que.pop();
+      if (node) {
+        result += "," + std::to_string(node->val);
+        que.push(node->left);
+        que.push(node->right);
+      } else {
+        result += ",N";
+      }
+    }
+    int p = (int)result.length() - 1;
+    while (result[p] == 'N') p -= 2;
+    result.resize(p+1);
+    result[0] = '[';
+    result += "]";
+    return result;
   }
 };
