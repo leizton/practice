@@ -31,6 +31,26 @@ vector<TreeNode*> generateTrees(int n) {
   return ret;
 }
 
+/*
+  96.cc
+  只需给出二叉树的种类数目
+  用动规求解
+*/
+int numTrees(int n) {
+  if (n <= 0) return 0;
+  // dp[i] = numTrees(i)
+  vector<int> dp(n+1, 0);
+  dp[0] = dp[1] = 1;
+  for (int i = 2; i <= n; i++) {
+    int num = 0;
+    for (int root = 1; root <= i; root++) {
+      num += dp[root-1] * dp[i-root];
+    }
+    dp[i] = num;
+  }
+  return dp[n];
+}
+
 int main() {
   auto ret = generateTrees(3);
   for (auto* root : ret) {
