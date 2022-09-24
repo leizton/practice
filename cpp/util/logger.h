@@ -6,6 +6,9 @@ class LogStream {
  public:
   LogStream() {
   }
+  LogStream(int line) {
+    sout_ << "[" << line << "] ";
+  }
   LogStream(const char* file, int line) {
     sout_ << "[" << file << ":" << line << "] ";
   }
@@ -31,4 +34,5 @@ class LogStream {
 };
 
 #define LOG() LogStream()
+#define LOG_LINE() LogStream(__LINE__)
 #define LOG_INFO() LogStream(__FILE__, __LINE__)
