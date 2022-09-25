@@ -73,6 +73,7 @@ RandomIter q_partition(RandomIter begin, RandomIter end, Less less) {
   return p;
 }
 
+// std::nth_element(begin, begin+k, end, less);
 template <typename RandomIter, typename Less>
 void select_topk(int k, RandomIter begin, RandomIter end, Less less) {
   if (k <= 0 || (end-begin) <= k) return;

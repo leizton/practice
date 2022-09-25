@@ -10,6 +10,7 @@ int main() {
 
   for (int i = 0; i < sz; i++) {
     std::random_shuffle(a.begin(), a.end());
+    // std::nth_element(a.begin(), a.begin() + i, a.end(), std::less<int>());
     select_topk(i, a.begin(), a.end(), std::less<int>());
 
     int n = 0;
