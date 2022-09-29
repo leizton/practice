@@ -189,8 +189,6 @@ https://cloud.tencent.com/developer/article/1005742
 
 日本gdp数据
 
-nth, sort cmp 越界
-
 https://zhuanlan.zhihu.com/p/525985268
 
 https://www.oreilly.com/library/view/power-and-performance/9780128007266/B9780128007266000082.xhtml#s0010
@@ -229,3 +227,9 @@ http://clucene.sourceforge.net/
 pid kalman
 
 模型压缩和加速四个技术是设计高效小型网络、剪枝、量化和蒸馏
+
+NeRF
+
+informer
+
+大规模推荐系统
