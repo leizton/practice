@@ -81,7 +81,7 @@ RandomIter unguarded_partition_pivot(RandomIter begin, RandomIter end, Compare& 
   move_median_to_begin(begin, begin+1, mid, end-1, cmp);
   // 待检查区间 [p, q]
   RandomIter p = begin+1, q = end-1;
-  print(rangestr(begin, end));
+  println(rangestr(begin, end));
   while (true) {
     /*
        和 guarded_partition_pivot() 区别就是移动 p q 时没有检查边界 *************************************************************** look here !!!
@@ -90,9 +90,9 @@ RandomIter unguarded_partition_pivot(RandomIter begin, RandomIter end, Compare& 
          当arr[begin,end-1]>=begin时  q会超出begin继续往前读  原因同上
     */
     while (less(p, begin)) ++p;
-    if (p > end) print("overflow p", (p-end), *p);      // 埋点检查
+    if (p >= end) println1("overflow p arr[end+", (p-end), "]=", *p);      // 埋点检查
     while (less(begin, q)) --q;
-    if (q < begin) print("overflow q", (q-begin), *q);  // 埋点检查
+    if (q < begin) println1("overflow q arr[begin", (q-begin), "]=", *q);  // 埋点检查
     if (p >= q) break;
     // 此时可能 *p 或 *q 等于 *begin, 交换后就不是稳定排序 ************************************************************************* look here !!!
     std::iter_swap(p, q);
@@ -147,6 +147,8 @@ int main() {
   using Compare = std::function<bool(int,int)>;
   using PPF = PartitionPivotFn<RandomIter, Compare>;
   Compare cmp = [] (int x, int y) { return x <= y; };
+  // Compare is_less = [] (int x, int y) { return x < y; }  is good
+  // Compare is_greater = [] (int x, int y) { return y < x; }  is good
   PPF unguarded_partition_pivot_fn = unguarded_partition_pivot<RandomIter, Compare>;
   PPF guarded_partition_pivot_fn = guarded_partition_pivot<RandomIter, Compare>;
   int n = g_introsort_loop_thre + 5;
@@ -158,26 +160,26 @@ int main() {
   a[0] = a[n-1] = 9;  // 哨兵 避免core
   a[1] = a[n-2] = 0;
   a[begin] = a[begin+1] = a[begin+(end-begin)/2] = a[end-1] = 3;
-  print(a);
-  print("-----");
+  println("arr: ", a);
+  println("-----");
   g_partition_pivot_fn = &unguarded_partition_pivot_fn;
   gcc_sort(a.begin()+begin, a.begin()+end, cmp);
-  print("-----");
-  print(a);
-  print("\n");
+  println("-----");
+  println("after sort: ", a);
+  println("\n");
 
   // 复现 q 超出 begin
   std::fill(a.begin(), a.end(), 7);
   a[0] = a[n-1] = 9;  // 哨兵 避免core
   a[1] = a[n-2] = 0;
   a[begin] = a[begin+1] = a[begin+(end-begin)/2] = a[end-1] = 3;
-  print(a);
-  print("-----");
+  println("arr: ", a);
+  println("-----");
   g_partition_pivot_fn = &unguarded_partition_pivot_fn;
   gcc_sort(a.begin()+begin, a.begin()+end, cmp);
-  print("-----");
-  print(a);
-  print("\n");
+  println("-----");
+  println("after sort: ", a);
+  println("\n");
 
   begin += 3;
   end += 3;
@@ -190,15 +192,15 @@ int main() {
   for (int i = 0; i < begin; i++) a[i] = 0;
   for (int i = end; i < n-1; i++) a[i] = 0;
   a[0] = a[n-1] = 9;
-  print("std::sort overflow p bad");
-  print(a);
-  print("-----");
-  print(rangestr(a.begin()+begin, a.begin()+end));
+  println("std::sort overflow p bad");
+  println("arr: ", a);
+  println("-----");
+  println("sort range: ", rangestr(a.begin()+begin, a.begin()+end));
   std::sort(a.begin()+begin, a.begin()+end, cmp);
-  print(rangestr(a.begin()+begin, a.begin()+end));
-  print("-----");
-  print(a);
-  print("\n");
+  println("after sort: ", rangestr(a.begin()+begin, a.begin()+end));
+  println("-----");
+  println("after sort: ", a);
+  println("\n");
 
   // std::sort q溢出不会引起越界访问
   n = g_introsort_loop_thre + 11;
@@ -208,13 +210,13 @@ int main() {
   for (int i = 0; i < begin; i++) a[i] = 0;
   for (int i = end; i < n-1; i++) a[i] = 0;
   a[0] = a[n-1] = 9;
-  print("std::sort overflow q good");
-  print(a);
-  print("-----");
-  print(rangestr(a.begin()+begin, a.begin()+end));
+  println("std::sort overflow q good");
+  println("arr: ", a);
+  println("-----");
+  println("sort range: ", rangestr(a.begin()+begin, a.begin()+end));
   std::sort(a.begin()+begin, a.begin()+end, cmp);
-  print(rangestr(a.begin()+begin, a.begin()+end));
-  print("-----");
-  print(a);
-  print("\n");
+  println("after sort: ", rangestr(a.begin()+begin, a.begin()+end));
+  println("-----");
+  println("after sort: ", a);
+  println("\n");
 }

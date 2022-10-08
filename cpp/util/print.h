@@ -124,6 +124,14 @@ void println(const Args&... args) {
   std::cout << out.str();
 }
 
+template <class... Args>
+void println1(const Args&... args) {
+  std::ostringstream out;
+  __print(out, "", false, args...);
+  out << "\n";
+  std::cout << out.str();
+}
+
 template <typename Iter>
 std::string range_str(Iter begin, Iter end) {
   std::ostringstream out;
