@@ -61,6 +61,7 @@ vector<vector<string>> partition_v1(string s) {
     }
 
     // 状态-2 s[i]前有分割. s[i]是独立的字符
+    // 本质上是 状态-1 中from==i的特殊情况, 即自己和自己构成回文
     split_mapping[i].reserve(prev_size);
     for (int j = 0; j < prev_size; j++) {
       split_mapping[i].emplace_back(j, (int)ret[j].size());
@@ -99,4 +100,43 @@ vector<vector<string>> partition(string s) {
   prev_path.reserve(s.length());
   dfs(s, 0, prev_path, ret);
   return convertResult(s, ret);
+}
+
+
+/*
+  132.cc
+
+  给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是回文。
+  返回符合要求的 最少分割次数
+
+  输入：s = "aab"
+  输出：1
+  解释：只需一次分割就可将 s 分割成 ["aa","b"] 这样两个回文子串。
+*/
+int minCut(string s) {
+  const int len = (int)s.length();
+  if (len <= 1) return 0;
+
+  vector<vector<uint8_t>> is_palindrome(len, vector<uint8_t>(len, 1));
+  for (int i = 1; i < len; i++)
+    for (int j = i-1; j >= 0; j--)
+      is_palindrome[j][i] = (s[j] == s[i]) && is_palindrome[j+1][i-1];
+
+  // dp[i]表示[0,i]上的最小分割数
+  vector<int> dp(len, 0);
+  for (int i = 1; i < (int)len; i++) {
+    if (is_palindrome[0][i]) {
+      dp[i] = 0;
+      continue;
+    }
+    int cut_num = INT_MAX;
+    for (int from = 0; from <= i; from++) {
+      if (is_palindrome[from][i]) {
+        int cut = dp[from-1] + 1;
+        cut_num = std::min(cut_num, cut);
+      }
+    }
+    dp[i] = cut_num;
+  }
+  return dp[len-1];
 }
