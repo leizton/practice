@@ -13,14 +13,8 @@ class WordDictionary {
 private:
   struct Node {
     Node* next = nullptr;
-    bool is_end = false;
-
-    ~Node() {
-      if (next) {
-        delete[] next;
-        next = nullptr;
-      }
-    }
+    bool is_end = false; // next非空也有可能是一个单词的结束
+    ~Node() { if (next) delete[] next; }
   };
   Node root_;
 
@@ -29,7 +23,7 @@ public:
     root_.next = new Node[26];
   }
 
-  void addWord(string w) {
+  void addWord(const string& w) {
     Node* prev = &root_;
     for (int i = 0; i < w.length(); i++) {
       Node& curr = prev->next[int(w[i] - 'a')];
@@ -41,7 +35,7 @@ public:
     prev->is_end = true;
   }
 
-  bool search(string w) {
+  bool search(const string& w) {
     return search(w.c_str(), 0, w.length(), &root_);
   }
 

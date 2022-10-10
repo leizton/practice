@@ -21,10 +21,11 @@ std::ostream& operator<<(std::ostream& out, std::pair<K, V> p) {
 template <class Container>
 std::ostream& print_seq_container(std::ostream& out, const Container& c) {
   out << "[";
+  int old_p = out.tellp();
   for (const auto& e : c) {
     out << e << ",";
   }
-  out.seekp(out.tellp() - 1);
+  if ((int)out.tellp() > old_p) out.seekp(out.tellp() - 1);
   out << "]";
   return out;
 }
@@ -32,10 +33,11 @@ std::ostream& print_seq_container(std::ostream& out, const Container& c) {
 template <class Container>
 std::ostream& print_map_container(std::ostream& out, const Container& c) {
   out << "[";
+  int old_p = out.tellp();
   for (const auto& p : c) {
     out << p.first << "=" << p.second << ",";
   }
-  out.seekp(out.tellp() - 1);
+  if ((int)out.tellp() > old_p) out.seekp(out.tellp() - 1);
   out << "]";
   return out;
 }
@@ -136,10 +138,11 @@ template <typename Iter>
 std::string range_str(Iter begin, Iter end) {
   std::ostringstream out;
   out << "[";
+  int old_p = out.tellp();
   for (; begin != end; ++begin) {
     out << *begin << ",";
   }
-  out.seekp(out.tellp() - 1);
+  if ((int)out.tellp() > old_p) out.seekp(out.tellp() - 1);
   out << "]";
   return out.str();
 }

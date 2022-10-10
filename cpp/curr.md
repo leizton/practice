@@ -187,8 +187,6 @@ https://yaoguais.github.io/article/jemalloc/structures.html
 LIRS cache 缓存淘汰算法
 https://cloud.tencent.com/developer/article/1005742
 
-日本gdp数据
-
 https://zhuanlan.zhihu.com/p/525985268
 
 https://www.oreilly.com/library/view/power-and-performance/9780128007266/B9780128007266000082.xhtml#s0010
@@ -203,8 +201,8 @@ https://www.tensorflow.org/lite/examples/recommendation/overview
 w2v
 https://www.tensorflow.org/tutorials/text/word2vec
 
-开源推荐系统
 https://github.com/NicolasHug/Surprise
+https://github.com/practical-recommender-systems/moviegeek
 https://github.com/tensorflow/recommenders
 https://github.com/alibaba/Alink
 https://github.com/gorse-io/gorse
@@ -212,10 +210,6 @@ https://github.com/RUCAIBox/RecBole
 
 SVDFeature
 https://www.jmlr.org/papers/v13/chen12a.html
-
-HaiSQL malloc
-https://www.zhihu.com/column/c_1087370989482070016
-https://gitee.com/wlmqgzm/libhaisqlmalloc
 
 ann邻近搜索
 https://zhuanlan.zhihu.com/p/266589272
@@ -226,10 +220,20 @@ http://clucene.sourceforge.net/
 
 pid kalman
 
-模型压缩和加速四个技术是设计高效小型网络、剪枝、量化和蒸馏
+New Tcmalloc
+abseil tips: https://abseil.io/tips
 
 NeRF
 
 informer
 
-《大规模推荐系统实践》
+《大规模推荐系统实战》
+practical recommender systems
+
+tensorflow
+
+auVPN
+
+national stats
+https://data.stats.gov.cn/index.htm
+https://cloud.tencent.com/developer/article/1897244
