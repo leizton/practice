@@ -60,7 +60,7 @@ bool dfs(const string& s, int begin, const WordPrefixTree& wtree, vector<uint8_t
 }
 
 // @ref 131.cc
-bool wordBreak(const string& s, vector<string>& words) {
+bool wordBreak_139(const string& s, vector<string>& words) {
   WordPrefixTree wtree;
   for (auto& w : words) {
     wtree.addWord(w);
@@ -69,7 +69,7 @@ bool wordBreak(const string& s, vector<string>& words) {
   return dfs(s, 0, wtree, checked);
 }
 
-bool wordBreak_official(const string& s, vector<string>& words) {
+bool wordBreak_139_official(const string& s, vector<string>& words) {
   unordered_set<string> word_set;
   for (auto& w : words) {
     word_set.insert(w);
@@ -80,6 +80,7 @@ bool wordBreak_official(const string& s, vector<string>& words) {
   dp[0] = 1;
   for (int i = 1; i <= (int)s.length(); i++) {
     for (int j = 0; j < i; j++) {
+      // word_set.contains(s[j, i-1]) 表示 s[j,i-1]满足wordBreak条件
       if (dp[j] && word_set.find(s.substr(j, i-j)) != word_set.end()) {
         dp[i] = 1;
         break;
@@ -89,15 +90,74 @@ bool wordBreak_official(const string& s, vector<string>& words) {
   return dp[s.length()];
 }
 
+/*
+140.cc
+返回 139.cc 中所有的可能分割结果
+
+输入:s = "catsanddog", wordDict = ["cat","cats","and","sand","dog"]
+输出:["cats and dog","cat sand dog"]
+*/
+
+void dfs_build(const string& s, vector<vector<int>>& gh, vector<int>& path, int curr_node, vector<string>& ret) {
+  if (curr_node == 0) {
+    ret.emplace_back();
+    auto& res = ret.back();
+    res.reserve(s.size() + path.size());
+    for (int i = path.size()-1; i > 0; i--) {
+      res += s.substr(path[i], path[i-1]-path[i]) + " ";
+    }
+    res.resize(res.size() - 1);
+    return;
+  }
+  for (int prev_node : gh[curr_node]) {
+    path.push_back(prev_node);
+    dfs_build(s, gh, path, prev_node, ret);
+    path.pop_back();
+  }
+}
+
+vector<string> wordBreak_140(const string& s, vector<string>& words) {
+  unordered_set<string> word_set;
+  for (auto& w : words) {
+    word_set.insert(w);
+  }
+
+  // gh[i] 非空表示 s[0,i) 可以由word_set的单词组成
+  const int n = (int)s.length();
+  vector<vector<int>> gh(n+1);
+  gh[0].push_back(0);
+
+  for (int i = 1; i <= n; i++) {
+    for (int j = 0; j < i; j++) {
+      if (!gh[j].empty() && word_set.find(s.substr(j, i-j)) != word_set.end()) {
+        gh[i].push_back(j);
+      }
+    }
+  }
+
+  vector<string> ret;
+  vector<int> path;
+  path.push_back(n);
+  dfs_build(s, gh, path, n, ret);
+  return ret;
+}
+
 int main() {
   {
     string s = "applepenapple";
     vector<string> words{"apple", "pen"};
-    assert_T(wordBreak(s, words));
+    assert_T(wordBreak_139(s, words));
   }
   {
     string s = "aaaaab";
     vector<string> words{"a","aa"};
-    assert_F(wordBreak(s, words));
+    assert_F(wordBreak_139(s, words));
+  }
+
+  {
+    string s = "catsanddog";
+    vector<string> words{"cat","cats","and","sand","dog"};
+    vector<string> answer{"cat sand dog", "cats and dog"};
+    assert_eq(answer, wordBreak_140(s, words));
   }
 }
