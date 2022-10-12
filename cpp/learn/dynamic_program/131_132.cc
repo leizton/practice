@@ -9,69 +9,6 @@
 */
 
 /*
-  类似 122.cc
-  两个状态: s[i]前面 有分割符 和 没有分割符
-*/
-struct Pair {
-  int begin; int num;
-  Pair() : begin(-1), num(0) {}
-  Pair(int b, int n) : begin(b), num(n) {}
-};
-vector<vector<string>> convertResult(const string& s, const vector<vector<Pair>>& input) {
-  vector<vector<string>> ret;
-  ret.reserve(input.size());
-  for (const vector<Pair>& e : input) {
-    ret.push_back({});
-    auto& r = ret.back();
-    r.reserve(e.size());
-    for (const Pair& p : e) {
-      r.emplace_back(s, p.begin, p.num);
-    }
-  }
-  return ret;
-}
-vector<vector<string>> partition_v1(string s) {
-  if (s.empty()) vector<vector<string>>{{""}};
-  vector<vector<Pair>> ret;
-  ret.push_back({Pair(0, 1)});
-
-  const int len = (int)s.length();
-  vector<vector<pair<int,int>>> split_mapping(len, vector<pair<int,int>>());
-  vector<vector<uint8_t>> is_palindrome(len, vector<uint8_t>(len, 1));
-  for (int i = 1; i < len; i++)
-    for (int j = i-1; j >= 0; j--)
-      is_palindrome[j][i] = (s[j] == s[i]) && is_palindrome[j+1][i-1];
-
-  for (int i = 1; i < (int)len; i++) {
-    const int prev_size = (int)ret.size();
-
-    // 状态-1 s[i]前没有分割. s[i]需要和前面的子串构成回文
-    if (is_palindrome[0][i]) {
-      ret.push_back(vector<Pair>{Pair{0, i+1}});
-    }
-    for (int from = 1; from < i; from++) {
-      if (is_palindrome[from][i]) {
-        vector<pair<int,int>>& cands = split_mapping[from];
-        for (auto& cand : cands) {
-          auto prev_path = ret[cand.first].begin();  // [0, from-1]上的结果
-          ret.push_back(vector<Pair>{prev_path, prev_path + cand.second});
-          ret.back().push_back(Pair{from, i+1-from});
-        }
-      }
-    }
-
-    // 状态-2 s[i]前有分割. s[i]是独立的字符
-    // 本质上是 状态-1 中from==i的特殊情况, 即自己和自己构成回文
-    split_mapping[i].reserve(prev_size);
-    for (int j = 0; j < prev_size; j++) {
-      split_mapping[i].emplace_back(j, (int)ret[j].size());
-      ret[j].push_back(Pair{i, 1});
-    }
-  }
-  return convertResult(s, ret);
-}
-
-/*
   分治思想的遍历
 */
 bool isPalindrome(const string& s, int left, int right) {
@@ -80,21 +17,20 @@ bool isPalindrome(const string& s, int left, int right) {
 }
 void dfs(const string& s, int begin, vector<Pair>& prev_path, vector<vector<Pair>>& ret) {
   // prev_path是[0,begin-1]上的某个结果
-  if (begin == s.length()) {
+  if (begin == (int)s.length()) {
     ret.emplace_back(prev_path);
     return;
   }
   //
-  for (int i = begin; i < s.length(); i++) {
+  for (int i = begin; i < (int)s.length(); i++) {
     if (isPalindrome(s, begin, i)) {
       prev_path.emplace_back(begin, i+1-begin);
-      dfs(s, i+1, prev_path, ret);  // 继续处理剩余的[i+1,len-1]
+      dfs(s, i+1, prev_path, ret);  // 继续处理剩余的[i+1,n-1]
       prev_path.pop_back();  // 回溯
     }
   }
 }
-vector<vector<string>> partition(string s) {
-  if (s.empty()) vector<vector<string>>{{""}};
+vector<vector<string>> partition_131_dfs(string s) {
   vector<vector<Pair>> ret;
   vector<Pair> prev_path;
   prev_path.reserve(s.length());
@@ -102,6 +38,66 @@ vector<vector<string>> partition(string s) {
   return convertResult(s, ret);
 }
 
+/*
+  动规模板之《序列的子串分割》
+*/
+void dfs_build(const string& s, vector<vector<int>>& gh, vector<int>& path, vector<vector<string>>& ret) {
+  int curr_node = path.back();
+  if (curr_node < 0) {
+    ret.emplace_back();
+    auto& res = ret.back();
+    res.reserve(path.size());
+    for (int i = path.size()-1; i >= 1; i--)
+      res.push_back(s.substr(path[i] + 1, path[i-1] - path[i]));
+    return;
+  }
+  for (int prev_node : gh[curr_node]) {
+    path.push_back(prev_node);
+    dfs_build(s, gh, path, ret);
+    path.pop_back();
+  }
+}
+vector<vector<string>> partition_131(string s) {
+  const int n = (int)s.length();
+  if (n == 0) return vector<vector<string>>{{""}};
+
+  vector<vector<uint8_t>> is_palindrome(n, vector<uint8_t>(n, 1));
+  for (int i = 1; i < n; i++)
+    for (int j = i-1; j >= 0; j--)
+      is_palindrome[j][i] = (s[j] == s[i]) && is_palindrome[j+1][i-1];
+
+  // gh[i][j-1] 表示 s[j,i] 构成回文 且 s[0,j-1]可拆
+  vector<vector<int>> gh(n);
+  gh[0].push_back(-1);  // s[0]自身构成回文
+  for (int i = 1; i < n; i++) {
+    if (is_palindrome[0][i]) {
+      gh[i].push_back(-1);
+    }
+    for (int j = 1; j <= i; j++) {
+      if (!gh[j-1].empty() && is_palindrome[j][i]) {
+        gh[i].push_back(j-1);
+      }
+    }
+  }
+
+  // transform
+  vector<vector<string>> ret;
+  vector<int> path;
+  path.push_back(n-1);
+  dfs_build(s, gh, path, ret);
+  return ret;
+}
+
+int main() {
+  print("--------------------");
+  print(partition(""));
+  print("--------------------");
+  print(partition("a"));
+  print("--------------------");
+  print(partition("aa"));
+  print("--------------------");
+  print(partition("aab"));
+}
 
 /*
   132.cc
@@ -113,24 +109,24 @@ vector<vector<string>> partition(string s) {
   输出：1
   解释：只需一次分割就可将 s 分割成 ["aa","b"] 这样两个回文子串。
 */
-int minCut(string s) {
-  const int len = (int)s.length();
-  if (len <= 1) return 0;
+int minCut_132(string s) {
+  const int n = (int)s.length();
+  if (n <= 1) return 0;
 
-  vector<vector<uint8_t>> is_palindrome(len, vector<uint8_t>(len, 1));
-  for (int i = 1; i < len; i++)
+  vector<vector<uint8_t>> is_palindrome(n, vector<uint8_t>(n, 1));
+  for (int i = 1; i < n; i++)
     for (int j = i-1; j >= 0; j--)
       is_palindrome[j][i] = (s[j] == s[i]) && is_palindrome[j+1][i-1];
 
   // dp[i]表示[0,i]上的最小分割数
-  vector<int> dp(len, 0);
-  for (int i = 1; i < (int)len; i++) {
+  vector<int> dp(n, 0);
+  for (int i = 1; i < (int)n; i++) {
     if (is_palindrome[0][i]) {
       dp[i] = 0;
       continue;
     }
     int cut_num = INT_MAX;
-    for (int from = 0; from <= i; from++) {
+    for (int from = 1; from <= i; from++) {
       if (is_palindrome[from][i]) {
         int cut = dp[from-1] + 1;
         cut_num = std::min(cut_num, cut);
@@ -138,5 +134,5 @@ int minCut(string s) {
     }
     dp[i] = cut_num;
   }
-  return dp[len-1];
+  return dp[n-1];
 }
