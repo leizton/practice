@@ -237,3 +237,6 @@ auVPN
 national stats
 https://data.stats.gov.cn/index.htm
 https://cloud.tencent.com/developer/article/1897244
+
+仿函数 std::function std::bind
+std::bad_function_call
