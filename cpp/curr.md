@@ -240,3 +240,31 @@ https://cloud.tencent.com/developer/article/1897244
 
 仿函数 std::function std::bind
 std::bad_function_call
+
+https://github.com/tstarling/thread-safe-lru/wiki/Benchmarks
+
+g++ -std=c++11 main.cc -fsanitize=address -fno-omit-frame-pointer -g
+
+https://github.com/miloyip/itoa-benchmark
+
+transform https://ke.qq.com/course/4964012#
+
+function call chain
+clangMR
+https://research.google/pubs/pub41342/
+clang engine
+https://clang.llvm.org/docs/RefactoringEngine.html
+
+log library
+https://binlog.org/UserGuide.html, https://github.com/morganstanley/binlog
+https://github.com/PlatformLab/NanoLog
+g3log: crash safe
+日志性能优化点
+  - 调用处不进入内核态
+  - 无锁 (线程安全的无锁队列)
+  - 不等IO操作 (buffer 后台线程flush)
+  - 多个日志行批量IO提高吞吐量 (batch)
+  - 调用处不完成format成string
+
+分布式系统设计模式
+https://martinfowler.com/articles/patterns-of-distributed-systems/#WhatThisIsAbout
