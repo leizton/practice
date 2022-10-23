@@ -268,3 +268,7 @@ g3log: crash safe
 
 分布式系统设计模式
 https://martinfowler.com/articles/patterns-of-distributed-systems/#WhatThisIsAbout
+
+transformer
+https://github.com/hellotransformers/Natural_Language_Processing_with_Transformers
+https://download.csdn.net/download/weixin_43909715/85090273?spm=1035.2023.3001.6557&utm_medium=distribute.pc_relevant_bbs_down_v2.none-task-download-2~default~OPENSEARCH~Paid-1-85090273-bbs-605796207.pc_relevant_bbs_down_v2_opensearchbbsnew&depth_1-utm_source=distribute.pc_relevant_bbs_down_v2.none-task-download-2~default~OPENSEARCH~Paid-1-85090273-bbs-605796207.pc_relevant_bbs_down_v2_opensearchbbsnew

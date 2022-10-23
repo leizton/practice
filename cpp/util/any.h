@@ -9,6 +9,7 @@
 
 class Any {
 private:
+  // 基类的作用是: 类型擦除
   struct WrapperBase {
     virtual ~WrapperBase() {}
     virtual const std::type_info& type() const = 0;

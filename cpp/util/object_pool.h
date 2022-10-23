@@ -107,7 +107,9 @@ public:
   ~AtomicObjectPool();
 
   // 初始化 n 个元素, 之后不再增加
-  void init(size_t n);
+  template <class ...Args>
+  void init(size_t n, Args ...args);
+
   size_t size() const;
 
   // 返回 false 表示没有空闲
@@ -144,7 +146,7 @@ AtomicObjectPool<T>::~AtomicObjectPool() {
 }
 
 template <class T>
-void AtomicObjectPool<T>::init(size_t n) {
+void AtomicObjectPool<T>::init(size_t n, Args ...args) {
   real_size_ = 2;
   while (real_size_ < n) {
     real_size_ *= 2;
@@ -153,7 +155,7 @@ void AtomicObjectPool<T>::init(size_t n) {
   pool_.reserve(real_size_);
   is_free_.reserve(real_size_);
   for (size_t i = 0; i < real_size_; i++) {
-    pool_.push_back(new AtomicObjectPool<T>::Object);
+    pool_.push_back(new AtomicObjectPool<T>::Object(args...));
     is_free_.push_back(AtomicWrapper<bool>());
     is_free_.back().v.store(true);
   }
