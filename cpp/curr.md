@@ -250,8 +250,6 @@ https://github.com/miloyip/itoa-benchmark
 transform https://ke.qq.com/course/4964012#
 
 function call chain
-clangMR
-https://research.google/pubs/pub41342/
 clang engine
 https://clang.llvm.org/docs/RefactoringEngine.html
 
