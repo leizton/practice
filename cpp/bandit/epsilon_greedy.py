@@ -2,6 +2,9 @@
 import random
 import utils
 
+# ε-greedy
+# 缺点: 选择多时极容易陷入某个非优解
+
 epsilon = 0.01
 coin_num = 0
 coin_reward = []
@@ -25,12 +28,14 @@ def action(run_i):
     explore_num += 1
     return utils.randint(coin_num)
   else:
-    max_coin_i, max_reward = -1, -1
+    max_reward = -1
     for i in range(coin_num):
-      if coin_reward[i] > max_reward:
-        max_reward = coin_reward[i]
-        max_coin_i = i
-    return max_coin_i
+      max_reward = max(max_reward, coin_reward[i])
+    candidate = []
+    for i in range(coin_num):
+      if coin_reward[i] >= (max_reward - 1):
+        candidate += [i]
+    return candidate[utils.randint(len(candidate))]
 
 def feedback(run_i, coin_i, reward):
   coin_reward[coin_i] += reward

@@ -1,63 +1,113 @@
 # -*- coding: UTF-8 -*-
+import math
 import random
+import matplotlib.pyplot as plt
 
 import utils
 import random_strategy
 import epsilon_greedy as curr_strategy
 
-# 假设5个硬币 正面概率不同
+# 假设n个硬币 正面概率不同
 # 正面奖励1 反面奖励0 最大化一段时间后的收益
-coin_num = 0
-coin_prob = []
-coin_history = []
-run_num = 0
+class GlobalData:
+  def __init__(self):
+    self.coin_num = 0
+    self.coin_prob = []
+    self.coin_history = []
+    self.run_num = 0
+    self.reward_sum = 0
+    self.debug = True
+
+G = GlobalData()
 
 def init():
-  global coin_num, coin_prob, coin_history, run_num
-  coin_num = 5
-  run_num = 100000
-  coin_prob = [0.8, 0.3, 0.2, 0.5, 0.5]
-  for i in range(coin_num):
-    coin_history += [[]]
+  global G
+  G.run_num = 100000
+  G.coin_num = 10
+  G.coin_prob = utils.randAlloc(0.1, 0.9, G.coin_num)
   #
-  random_reward = 0
-  for i in range(coin_num):
-    random_reward += coin_prob[i] * run_num
-  random_reward = int(random_reward/coin_num)
+  random_reward, max_coin_prob = 0, 0.
+  for i in range(G.coin_num):
+    random_reward += G.coin_prob[i] * G.run_num
+    max_coin_prob = max(max_coin_prob, G.coin_prob[i])
+  random_reward = int(random_reward/G.coin_num)
   print('random_reward: %s' % random_reward)
-  print('max_reward: %s' % run_num)
+  print('max_reward: %s' % round(G.run_num * max_coin_prob, 0))
   #
-  curr_strategy.onInit(coin_num)
+  curr_strategy.onInit(G.coin_num)
+
+def reset():
+  global G
+  G.coin_history = []
+  for i in range(G.coin_num):
+    G.coin_history += [[]]
+  G.reward_sum = 0
 
 # 选择第coin_i个硬币抛
 def sample(coin_i):
-  global coin_num, coin_prob, coin_history, run_num
-  reward = utils.rand(coin_prob[coin_i])
-  coin_history[coin_i] += [reward]
+  global G
+  reward = utils.rand(G.coin_prob[coin_i])
+  G.reward_sum += reward
+  if G.debug:
+    G.coin_history[coin_i] += [reward]
   return reward
 
 def run():
-  global coin_num, coin_prob, coin_history, run_num
-  for run_i in range(run_num):
+  global G
+  for run_i in range(G.run_num):
     coin_i = curr_strategy.action(run_i)
     reward = sample(coin_i)
     curr_strategy.feedback(run_i, coin_i, reward)
 
 def statResult():
-  reward_sum = 0
-  select_prop = []
-  for coin_i in range(coin_num):
-    select_prop += [len(coin_history[coin_i])]
-    for reward in coin_history[coin_i]:
-      reward_sum += reward
-  select_prop = utils.norm(select_prop)
-  print('--------------------')
-  curr_strategy.onComplete(reward_sum, select_prop)
-  print('--------------------')
-  print('reward_sum: %s' % reward_sum)
-  print('select_prop: %s' % select_prop)
+  global G
+  if G.debug:
+    select_prop = []
+    for coin_i in range(G.coin_num):
+      select_prop += [len(G.coin_history[coin_i])]
+    select_prop = utils.norm(select_prop)
+    print('--------------------')
+    curr_strategy.onComplete(G.reward_sum, select_prop)
+    print('--------------------')
+    print('reward_sum: %s' % G.reward_sum)
+    print('select_prop: %s' % select_prop)
+    print('coin_prob: %s' % G.coin_prob)
+  return G.reward_sum
 
-if __name__ == '__main__':
+def test():
   init()
+  reset()
   run()
   statResult()
+
+def testEpsilon():
+  global G
+  G.debug = False
+  init()
+  print('coin_prob: %s' % G.coin_prob)
+  print('--------------------')
+  curr_strategy.epsilon = 0
+  reward_mean, reward_min, reward_max = [], [], []
+  for i in range(80):
+    curr_strategy.epsilon += 0.01
+    r_mean, r_min, r_max = 0, int(math.pow(2, 60)), 0
+    exp_n = 10
+    for j in range(exp_n):
+      reset()
+      run()
+      r = statResult()
+      r_mean += r
+      r_min, r_max = min(r_min, r), max(r_max, r)
+      # print('run %s %s %s' % (i, j, r))
+    r_mean = int(round(r_mean/exp_n, 0))
+    reward_mean += [r_mean]
+    reward_min += [r_min]
+    reward_max += [r_max]
+    print('%-7s %-7s %-7s %-7s' % (round(curr_strategy.epsilon, 2), r_mean, r_min, r_max))
+  plt.plot(range(len(reward_mean)), reward_mean, '-', linewidth=1)
+  plt.plot(range(len(reward_min)), reward_min, '-', linewidth=1)
+  plt.plot(range(len(reward_max)), reward_max, '-', linewidth=1)
+  plt.show()
+
+if __name__ == '__main__':
+  test()
