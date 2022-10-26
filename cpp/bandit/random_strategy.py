@@ -1,18 +1,18 @@
 # -*- coding: UTF-8 -*-
 import random
 
-coin_num = 0
+class RandomBandit:
+  def __init__(self):
+    self.coin_num = 0
 
-def onInit(coin_n):
-  global coin_num
-  coin_num = coin_n
-  return
+  def onInit(self, coin_n):
+    self.coin_num = coin_n
 
-def onComplete(reward_sum, select_prop):
-  return
+  def onComplete(self, reward_sum, select_prop):
+    return
 
-def action(run_i):
-  return random.randint(0, coin_num-1)
+  def action(self, run_i):
+    return random.randint(0, self.coin_num-1)
 
-def feedback(run_i, coin_i, reward):
-  return
+  def feedback(self, run_i, coin_i, reward):
+    return
