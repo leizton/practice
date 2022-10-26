@@ -19,10 +19,8 @@ def norm(vec, precision = 3):
 def randint(rand_end):
   return random.randint(0, rand_end-1)
 
-def rand(prob, precision=8):
-  precision = max(1, min(15, int(precision)))
-  max_rand = pow10(precision)
-  return 1 if randint(max_rand) < (max_rand * prob) else 0
+def randHit(prob):
+  return random.random() < prob
 
 # 随机分配
 def randAlloc(prob_min, prob_max, N, precision=4):

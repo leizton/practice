@@ -271,3 +271,5 @@ transformer
 https://github.com/hellotransformers/Natural_Language_Processing_with_Transformers
 
 单词: 同形(编辑距离小)、近义、反义、相关(出现在同一个上下文)
+
+https://github.com/neo4j-contrib/neo4j-graph-algorithms
