@@ -146,6 +146,7 @@ AtomicObjectPool<T>::~AtomicObjectPool() {
 }
 
 template <class T>
+template <class ...Args>
 void AtomicObjectPool<T>::init(size_t n, Args ...args) {
   real_size_ = 2;
   while (real_size_ < n) {
