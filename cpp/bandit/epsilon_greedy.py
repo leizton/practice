@@ -26,18 +26,21 @@ class EpsilonGreedy:
     for i in range(self.coin_num):
       if self.coin_select_num[i] == 0:
         return i
+    # 计算平均收益最大的coin
+    max_reward_coin_i, max_reward = -1, -1
+    for i in range(self.coin_num):
+      reward_mean = self.coin_reward[i] / self.coin_select_num[i]
+      if reward_mean > max_reward:
+        max_reward_coin_i = i
+        max_reward = reward_mean
     if utils.randHit(self.epsilon):
       self.explore_num += 1
-      return utils.randint(self.coin_num)
+      select = utils.randint(self.coin_num)
+      while select == max_reward_coin_i:
+        select = utils.randint(self.coin_num)
+      return select
     else:
-      # 选择平均收益最大的coin
-      select_coin, max_reward = -1, -1
-      for i in range(self.coin_num):
-        reward_mean = self.coin_reward[i] / self.coin_select_num[i]
-        if reward_mean > max_reward:
-          select_coin = i
-          max_reward = reward_mean
-      return select_coin
+      return max_reward_coin_i
 
   def feedback(self, run_i, coin_i, reward):
     self.coin_select_num[coin_i] += 1
