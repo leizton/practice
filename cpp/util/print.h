@@ -42,6 +42,33 @@ std::ostream& print_map_container(std::ostream& out, const Container& c) {
   return out;
 }
 
+template <class Tuple, size_t N>
+struct PrintTupleHelper {
+  static void print(std::ostream& out, const Tuple& t) {
+    PrintTupleHelper<Tuple, N-1>::print(out, t);
+    out << ", " << std::get<N-1>(t);
+  }
+};
+template <class Tuple>
+struct PrintTupleHelper<Tuple, 1> {
+  static void print(std::ostream& out, const Tuple& t) {
+    out << std::get<0>(t);
+  }
+};
+template <class Tuple>
+struct PrintTupleHelper<Tuple, 0> {
+  static void print(std::ostream& out, const Tuple& t) {
+  }
+};
+
+template <class ...Args>
+std::ostream& print_tuple(std::ostream& out, const std::tuple<Args...>& t) {
+  out << "(";
+  PrintTupleHelper<decltype(t), sizeof...(Args)>::print(out, t);
+  out << ")";
+  return out;
+}
+
 template <class T>
 std::ostream& operator<<(std::ostream& out, const std::vector<T>& v) {
   return print_seq_container(out, v);
@@ -70,6 +97,11 @@ std::ostream& operator<<(std::ostream& out, const std::map<K, V>& m) {
 template <class K, class V>
 std::ostream& operator<<(std::ostream& out, const std::unordered_map<K, V>& m) {
   return print_map_container(out, m);
+}
+
+template <class ...Args>
+std::ostream& operator<<(std::ostream& out, const std::tuple<Args...>& t) {
+  return print_tuple(out, t);
 }
 
 inline void __out_to_stream(std::ostream& out, bool v) {
