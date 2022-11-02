@@ -5,83 +5,80 @@
 */
 
 /*
-  if match(s[i+1..j-1]) && s[i] = s[j]
-    s[i..j] = true
-  else
-    s[i..j] = false
+  首先回文属于子串, 所以按子串建模
+  考虑 dp[i]=以i结尾的最长回文子串的长度
+  推导dp[i]时 是从 s[i] s[i-1:i] s[i-2:i] ... s[0:i] 得出
+  dp[i] = max{
+    i+1 if s[i]==s[0] && is_palindrome(1,i-1)
+    i   if s[i]==s[1] && is_palindrome(2,i-1)
+    i-1 if s[i]==s[2] && is_palindrome(3,i-1)
+    ...
+    4   if s[i]==s[i-3] && is_palindrome(i-2,i-1)
+    3   if s[i]==s[i-2] && is_palindrome(i-1,i-1)
+    2   if s[i]==s[i-1]
+    1
+  }
+  用一个memo[n][n]记录is_palindrome的结果
 */
+string longestPalindrome(string s) {
+  const int n = s.length();
+  if (n == 0) return "";
 
-string longestPalindrome0(string s) {
-  if (s.empty()) return "";
-  const int N = s.length();
-  vector<vector<bool>> dp(N, vector<bool>(N, false));
-  int ans_from = 0, ans_to = 0;
-  // dp[i][i]
-  for (int i = 0; i < N; i++) {
-    dp[i][i] = true;
-    ans_from = ans_to = i;
-  }
-  // dp[i][i+1]
-  for (int i = 0; i < N-1; i++) {
-    if (s[i] == s[i+1]) {
-      dp[i][i+1] = true;
-      ans_from = i;
-      ans_to = i+1;
-    }
-  }
-  //
-  for (int k = 2; k < N; k++) {
-    int j = k;
-    for (int i = 0; i < N-k; i++,j++) {
-      if (s[i] == s[j] && dp[i+1][j-1]) {
-        dp[i][j] = true;
-        ans_from = i;
-        ans_to = j;
+  // memo[i][j]: s[i:j]是回文
+  vector<vector<int>> memo(n);
+
+  // 以 dp_pos 结尾的最长回文长度是 dp
+  int dp_pos = 0, dp = 1;
+  for (int i = 1; i < n; i++) {
+    int dp_i = -1;
+    for (int j : memo[i-1]) {
+      if (s[i] == s[j-1]) {
+        if (dp_i < 0) dp_i = i-j+2;
+        if (0 < j-1) memo[i].push_back(j-1);  // 不放入0
       }
     }
+    if (s[i] == s[i-1]) {
+      dp_i = std::max(dp_i, 2);
+      if (0 < i-1) memo[i].push_back(i-1);
+    }
+    memo[i].push_back(i);
+    if (dp < dp_i) {
+      dp_pos = i;
+      dp = dp_i;
+    }
   }
-  return s.substr(ans_from, ans_to-ans_from+1);
+  return s.substr(dp_pos-dp+1, dp);
 }
 
 /*
-  改变推进方式, 实现提前剪枝
+  中心扩展法
 */
-int search(const char* s, int N, int i, int j, int& from) {
-  for (i--, j++; 0 <= i && j < N; i--, j++) {
-    // 提前剪枝
+pair<int,int> search(const string& s, int n, int i, int j) {
+  for (i--, j++; 0 <= i && j < n; i--, j++) {
     if (s[i] != s[j]) break;
   }
-  from = i+1;
-  return (j-1) - from;
+  i++, j--;
+  return {i, j-i+1};  // s[i, j]是回文
 }
-string longestPalindrome(string s) {
-  if (s.empty()) return "";
-  const int N = s.length();
-  const char* sc = s.c_str();
-  int ans_from = 0, longest = 0;
-  int from = 0;
-  // dp[i][i]
-  for (int i = 1; i < N-1; i++) {
-    int cand = search(sc, N, i, i, from);
-    if (longest < cand) {
-      longest = cand;
-      ans_from = from;
+string longestPalindrome_opt(string s) {
+  const int n = s.length();
+  if (n == 0) return "";
+
+  int dp_pos = 0, dp = 1;
+  for (int i = 0; i < n-1; i++) {
+    auto dp_i = search(s, n, i, i);
+    if (s[i] == s[i+1]) {
+      auto dp_x = search(s, n, i, i+1);
+      if (dp_i.second < dp_x.second) dp_i = dp_x;
+    }
+    if (dp < dp_i.second) {
+      dp_pos = dp_i.first;
+      dp = dp_i.second;
     }
   }
-  // dp[i][i+1]
-  for (int i = 0; i < N-1; i++) {
-    if (sc[i] != sc[i+1]) continue;
-    int cand = search(sc, N, i, i+1, from);
-    if (longest < cand) {
-      longest = cand;
-      ans_from = from;
-    }
-  }
-  return s.substr(ans_from, longest+1);
+  return s.substr(dp_pos, dp);
 }
 
 int main() {
-  auto test = longestPalindrome;
-  assert_eq("aba", test("caba"));
-  assert_eq("xaabacxcabaax", test("xaabacxcabaaxcabaax"));
+  print(longestPalindrome_opt("babad"));
 }

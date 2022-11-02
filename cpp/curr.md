@@ -274,3 +274,5 @@ https://github.com/hellotransformers/Natural_Language_Processing_with_Transforme
 https://github.com/neo4j-contrib/neo4j-graph-algorithms
 
 what DL has learned. by OCR and morphology
+
+OCR w2v

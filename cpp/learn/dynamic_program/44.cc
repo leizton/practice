@@ -5,69 +5,38 @@
 两个字符串完全匹配才算匹配成功。
 */
 
-
-/*
-  match(p[0..m-1], s[0..n-1])的递归式
-  if p[0] == *
-    match(p[1..], s[0..])
-    or match(p[1..], s[1..])
-    or ...
-    or match(p[1..], s[n-1])
-    or match(p[1..], "")
-  elif p[0] == ? or p[0] == s[0]
-    match(p[1..], s[1..])
-  else
-    false
-
-  ** 把p[0]换成p[i], 从后向前递归 **
-
-  match(p[0..i], s[0..j])的递归如下
-  if p[i] == *
-    match(p[0..i-1], s[0..j])
-    or match(p[0..i-1], s[0..j-1])  ;p[i]匹配s[j]
-    or match(p[0..i-1], s[0..j-2])  ;p[i]匹配s[j-1..j]
-    or ...
-    or match(p[0..i-1], s[0])
-    or match(p[0..i-1], "")
-  elif p[i] == ? or p[i] == s[j]
-    match(p[0..i-1], s[0..j-1])
-  else
-    false
-*/
-
-// DP on Strings
 bool isMatch(string s, string p) {
-  const int M = p.length(), N = s.length();
-  vector<vector<bool>> dp(M+1, vector<bool>(N+1, false));
+  const int m = p.length(), n = s.length();
+
+  // dp[i][j]: p[0,i)和s[0,j)是否匹配
+  vector<vector<bool>> dp(m+1, vector<bool>(n+1, false));
   dp[0][0] = true;
   // p是空串
-  for (int j = 1; j <= N; j++) {
+  for (int j = 1; j <= n; j++) {
     dp[0][j] = false;
   }
   // s是空串
-  for (int i = 1; i <= M; i++) {
+  for (int i = 1; i <= m; i++) {
     dp[i][0] = (p[i-1] == '*') && dp[i-1][0];
   }
-  //
-  for (int i = 1; i <= M; i++) {
+
+  for (int i = 1; i <= m; i++) {
     if (p[i-1] == '*') {
-      for (int j = 0; j <= N; j++) {
+      for (int j = 0; j <= n; j++) {
+        // 左边
         if (dp[i-1][j]) {
-          for (; j <= N; j++) dp[i][j] = true;
+          for (; j <= n; j++) dp[i][j] = true;
           break;
         }
       }
-    } else if (p[i-1] == '?') {
-      for (int j = 1; j <= N; j++) {
-        dp[i][j] = dp[i-1][j-1];
-      }
     } else {
-      for (int j = 1; j <= N; j++) {
-        dp[i][j] = (p[i-1] == s[j-1]) && dp[i-1][j-1];
+      // 斜上方
+      for (int j = 1; j <= n; j++) {
+        dp[i][j] = (p[i-1] == '?' || p[i-1] == s[j-1]) && dp[i-1][j-1];
       }
     }
   }
-  return dp[M][N];
+  return dp[m][n];
 }
 
 int main() {

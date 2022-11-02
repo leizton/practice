@@ -2,52 +2,36 @@
 
 /*
 最小编辑距离
-给你两个单词 word1 和 word2，请返回将 word1 转换成 word2 所使用的最少操作数
+给你两个单词 w1 和 w2，请返回将 w1 转换成 w2 所使用的最少操作数
 你可以对一个单词进行如下三种操作：
   - 加一个字符
   - 减一个字符
   - 改一个字符
 */
 
-/*
-  从 s0(s1 ...) 和 t0(t1 ...) 考虑
-    - t0 (s0 s1 ...)  ->  (t1 ...)
-    - (s1 ...)        ->  (t0 t1 ...)
-    - t0 (s1 ...)     ->  t0 (t1 ...)
+int minDistance(string p, string s) {
+  const int m = p.length(), n = s.length();
 
-  ans(s[0..i], t[0..j])的递归式
-  if s[i] == t[j]
-    ;只需把 s[0..i-1] 变成 t[0..j-1]
-    ans(s[0..i-1], t[0..j-1])
-  else
-    ;对于不相等的处理有3种方法
-    min(
-      ans(s[0..i], t[0..j-1])   + 1  ; s 加 t[j]
-      ans(s[0..i-1], t[0..j])   + 1  ; s 丢弃 s[i]
-      ans(s[0..i-1], t[0..j-1]) + 1  ; s[i]->t[j]
-    )
-*/
-
-int minDistance(string s, string t) {
-  const int M = s.length(), N = t.length();
-  vector<vector<int>> dp(M+1, vector<int>(N+1, 0));
+  // dp[i][j]: p[0:i-1]变成s[0:j-1]的最小编辑距离
+  vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
   // s是空串
-  for (int j = 1; j <= N; j++) {
+  for (int j = 1; j <= n; j++) {
     dp[0][j] = j;
   }
   // t是空串
-  for (int i = 1; i <= M; i++) {
+  for (int i = 1; i <= m; i++) {
     dp[i][0] = i;
   }
-  //
-  for (int i = 1; i <= M; i++) {
-    for (int j = 1; j <= N; j++) {
-      if (s[i-1] == t[j-1]) {
-        dp[i][j] = dp[i-1][j-1];
-      } else {
-        dp[i][j] = std::min(dp[i-1][j], std::min(dp[i][j-1], dp[i-1][j-1])) + 1;
-      }
+
+  for (int i = 1; i <= m; i++) {
+    for (int j = 1; j <= n; j++) {
+      // 推导dp[i][j]
+      dp[i][j] = std::min({
+        dp[i-1][j-1] + (p[i-1]==s[j-1] ? 0 : 1),  // 修改字符. p[i-1]变成s[j-1]
+        dp[i-1][j] + 1,  // 加入字符p[j-1]. p[0,i-2] s[0,j-1] => p[0,i-1] s[0,j-1]
+        dp[i][j-1] + 1,  // 加入字符s[j-1]. p[0,i-1] s[0,j-2] => p[0,i-1] s[0,j-1]
+      });
     }
   }
-  return dp[M][N];
+  return dp[m][n];
 }
