@@ -11,9 +11,9 @@
 */
 
 int dfs(vector<int>& coins, int amount, vector<int>& memo) {
-  // 每次选择一个硬币
-  // 每个树节点有coins.size个分叉
-  // 树节点含义是用coins构成amount的最少硬币数
+  // dfs()计算当前树节点的最优值
+  // 每次选择一个硬币, 所以每个树节点有coins.size个分叉
+  // 树节点的最优值: 用coins构成amount的最少硬币数
   int result = INT_MAX;
   for (int coin : coins) {
     int left_amount = amount - coin;
