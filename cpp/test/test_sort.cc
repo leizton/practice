@@ -81,7 +81,7 @@ RandomIter unguarded_partition_pivot(RandomIter begin, RandomIter end, Compare& 
   move_median_to_begin(begin, begin+1, mid, end-1, cmp);
   // 待检查区间 [p, q]
   RandomIter p = begin+1, q = end-1;
-  println(rangestr(begin, end));
+  println("sorting:", rangestr(begin, end));
   while (true) {
     /*
        和 guarded_partition_pivot() 区别就是移动 p q 时没有检查边界 *************************************************************** look here !!!
@@ -90,9 +90,9 @@ RandomIter unguarded_partition_pivot(RandomIter begin, RandomIter end, Compare& 
          当arr[begin,end-1]>=begin时  q会超出begin继续往前读  原因同上
     */
     while (less(p, begin)) ++p;
-    if (p >= end) println1("overflow p arr[end+", (p-end), "]=", *p);      // 埋点检查
+    if (p >= end) println1("overflow p. arr[end+", (p-end), "]=", *p, ", pivot=", *begin);      // 埋点检查
     while (less(begin, q)) --q;
-    if (q < begin) println1("overflow q arr[begin", (q-begin), "]=", *q);  // 埋点检查
+    if (q < begin) println1("overflow q. arr[begin", (q-begin), "]=", *q, ", pivot=", *begin);  // 埋点检查
     if (p >= q) break;
     // 此时可能 *p 或 *q 等于 *begin, 交换后就不是稳定排序 ************************************************************************* look here !!!
     std::iter_swap(p, q);
@@ -160,8 +160,9 @@ int main() {
   a[0] = a[n-1] = 9;  // 哨兵 避免core
   a[1] = a[n-2] = 0;
   a[begin] = a[begin+1] = a[begin+(end-begin)/2] = a[end-1] = 3;
-  println("arr: ", a);
+  println("src_arr:", a);
   println("-----");
+  println("to_sort:", rangestr(a.begin()+begin, a.begin()+end));
   g_partition_pivot_fn = &unguarded_partition_pivot_fn;
   gcc_sort(a.begin()+begin, a.begin()+end, cmp);
   println("-----");
@@ -173,8 +174,9 @@ int main() {
   a[0] = a[n-1] = 9;  // 哨兵 避免core
   a[1] = a[n-2] = 0;
   a[begin] = a[begin+1] = a[begin+(end-begin)/2] = a[end-1] = 3;
-  println("arr: ", a);
+  println("src_arr:", a);
   println("-----");
+  println("to_sort:", rangestr(a.begin()+begin, a.begin()+end));
   g_partition_pivot_fn = &unguarded_partition_pivot_fn;
   gcc_sort(a.begin()+begin, a.begin()+end, cmp);
   println("-----");
@@ -193,9 +195,9 @@ int main() {
   for (int i = end; i < n-1; i++) a[i] = 0;
   a[0] = a[n-1] = 9;
   println("std::sort overflow p bad");
-  println("arr: ", a);
+  println("src_arr:", a);
   println("-----");
-  println("sort range: ", rangestr(a.begin()+begin, a.begin()+end));
+  println("to_sort:", rangestr(a.begin()+begin, a.begin()+end));
   std::sort(a.begin()+begin, a.begin()+end, cmp);
   println("after sort: ", rangestr(a.begin()+begin, a.begin()+end));
   println("-----");
@@ -211,9 +213,9 @@ int main() {
   for (int i = end; i < n-1; i++) a[i] = 0;
   a[0] = a[n-1] = 9;
   println("std::sort overflow q good");
-  println("arr: ", a);
+  println("src_arr:", a);
   println("-----");
-  println("sort range: ", rangestr(a.begin()+begin, a.begin()+end));
+  println("to_sort:", rangestr(a.begin()+begin, a.begin()+end));
   std::sort(a.begin()+begin, a.begin()+end, cmp);
   println("after sort: ", rangestr(a.begin()+begin, a.begin()+end));
   println("-----");
