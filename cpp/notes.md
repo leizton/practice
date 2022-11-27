@@ -16,6 +16,9 @@ threadB() {
 threadA的锁保证check和入等待集合的原子性, 即只有在is_ready时才wait, 避免check和wait之间插入set
 对于锁外唤醒, threadB的锁还有一个作用是保证set和notify的happens-before, set先于notify发生
 
+# 可重入锁实现原理
+
+
 # 基础算法
 排序 Timsort https://github.com/timsort/cpp-TimSort
 
