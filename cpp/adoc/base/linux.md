@@ -35,12 +35,15 @@ sort -u         # 排序后去重
 
 uniq -c   # 去重
 
+## grep
 cat line | grep -E "keyword_1|keyword_2"  # grep 两个关键词
+cat binary | grep -a  # -a 表示按文本读取 可显示中文
 
+## diff
 git diff $file1 $file2  # 用 git 比较更好用
 diff -qr $dir1 $dir2    # 比较两个目录, -q 仅显示有无diff 不显示详细, -r 递归子文件
 
-# nc 收发文件
+## nc 收发文件
 dst=`date +"%Y%m%d_%H%M%S"`;dst="ncfile_$dst";nc -4l 65530 > $dst  # 接收端
     # 先启动接收端
 nc $接收端ip 65530 < $ncfile  # 发送端

@@ -278,3 +278,26 @@ what DL has learned. by OCR and morphology
 OCR w2v
 
 c++ 性能瓶颈 hash_map concurrent_hash_map
+
+sonic_json
+https://github.com/leizton/sonic-cpp
+
+workflow
+
+proto和arrow相比痛点：
+1. 新增字段、修改字段类型需要上下游同步改pb文件费时且容易因前后兼容出错
+2. 序列化后的二进制数据不利于流处理分析(OLAP)
+3. 反射解析性能差，读取性能好(struct+offset)
+
+FAISS 相似向量检索库
+
+a collection of data science take home challenges
+https://github.com/leizton/DS-Take-Home
+
+cpu使用率上不去原因
+  cpu使用率超过30%后平响和超时急剧恶化
+  cpu均值低方差大
+
+google perftool
+
+lassos net 特征选择
