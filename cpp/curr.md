@@ -181,6 +181,7 @@ hashmap
   https://github.com/sparsehash/sparsehash
   rocksdb FullFilter 考虑cache-line的bloomfilter
   https://ilanbiala.github.io/15618-final-project/final-report.pdf
+  https://tessil.github.io/2016/08/29/benchmark-hopscotch-map.html
 
 https://yaoguais.github.io/article/jemalloc/structures.html
 
@@ -277,7 +278,9 @@ what DL has learned. by OCR and morphology
 
 OCR w2v
 
-c++ 性能瓶颈 hash_map concurrent_hash_map
+c++ 性能瓶颈
+  map hash_map concurrent_hash_map lru
+  string::find::compare map<string> hash_map<string>
 
 sonic_json
 https://github.com/leizton/sonic-cpp

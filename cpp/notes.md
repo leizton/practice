@@ -18,46 +18,6 @@ threadA的锁保证check和入等待集合的原子性, 即只有在is_ready时�
 
 # 可重入锁实现原理
 
-# protobuf
-~~~c++
-UserInfo::CopyFrom(const Message& from) {
-  if (&from == this) return;  // Tips
-  Clear();
-  UserInfo::MergeFrom(from) {
-    if (&from == this) return;  // Tips
-    const UserInfo* source = dynamic_cast<const UserInfo*>(&from);
-    if (source == nullptr) {
-      ::google::protobuf::internal::ReflectionOps::Merge(from, to=this) {
-        Reflection* from_refl, to_refl = from.GetReflection(), to->GetReflection()
-        vector<const FieldDescriptor*> fields;
-        from_refl->ListFieldsOmitStripped(from, &fields);  // 取出有值的字段(repeated字段非empty)
-        for (auto* field : fields) {
-          if (not field->is_repeated()) {
-            switch (field->cpp_type()) {
-              case FieldDescriptor::CPPTYPE_INT32:
-                // Reflection::SetInt32 实现代码搜索 void Reflection::Set##TYPENAME
-                // 当两个不同类型msg的field匹配时可以相互赋值, 匹配指每第i个field的类型都相同
-                to_refl->SetInt32(to, field, value=from_refl->GetInt32(from, field)) {
-                  to_refl->SetField<int32_t>(to, field, value)
-                    *(MutableRaw<int32_t>(message, field)) = value
-                      schema_.GetFieldOffset(field)
-                        return offsets_[field->index()]
-                }
-                break;
-              // Int64 UInt32 ...
-            }
-          } else {
-            // ...
-          }
-        }
-      }
-    } else {
-      MergeFrom(*source);
-    }
-  }
-}
-~~~
-
 # 基础算法
 排序 Timsort https://github.com/timsort/cpp-TimSort
 
