@@ -65,7 +65,19 @@ sudo perf top -p $PID -g
 ② gdb
 为了防止 `value has been optimized out`
 测试时加上 -g -O0 -DSF_VISIBILITY -fvisibility=hidden -fno-strict-aliasing
-
+打印stl
+https://daiwk.github.io/posts/knowledge-stack-heap-core.html
+~~~sh
+mkdir /tmp/tools && cd /tmp/tools
+svn co svn://gcc.gnu.org/svn/gcc/trunk/libstdc++-v3/python
+vi ~/.gdbinit # 贴入以下代码
+python
+import sys
+sys.path.insert(0, '/tmp/tools/python')
+from libstdcxx.v6.printers import register_libstdcxx_printers
+register_libstdcxx_printers (None)
+end
+~~~
 
 --------------------------------------------------------------------------------------------------------------
 # ldd

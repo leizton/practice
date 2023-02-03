@@ -89,3 +89,5 @@ void select_topk(int k, RandomIter begin, RandomIter end, Less less) {
   }
   insert_sort(begin, end, less);
 }
+
+float wilsonIntervalRatio(int numerator, int denominator);

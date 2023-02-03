@@ -1,11 +1,14 @@
+学习方向：work stock ai
+
+sonic_cpp workflow brpc glog
+springframework distribute log4j
+mq/flink tensorflow
 algo tcmalloc
-brpc micro_service_arch distribute
-recommend tensorflow flink
 machine_learning time_series_forecast
 
-linux多线程编程，https://www.codenong.com/cs105103411/
-
-linux应用程序性能调试工具，https://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/pstack.html
+linux环境编程：SIMD 并发编程 协程 性能调试
+  多线程编程 https://www.codenong.com/cs105103411/
+  性能调试 https://linuxtools-rst.readthedocs.io/zh_CN/latest/tool/pstack.html
 
 推荐系统算法实践，了解召回算法、排序算法
 https://zhuanlan.zhihu.com/p/266755203
@@ -172,17 +175,6 @@ mimalloc
 
 flat buffer
 
-hashmap
-  ConcurrentExpireMap
-  ConcurrentHashMap & java cache (caffine)
-  tbb-concurrenthashmap google-densehashmap folly-atomichashmap junction-leapfrog-conchashmap
-  https://github.com/preshing/junction/blob/master/junction/details/Leapfrog.h
-  https://preshing.com/20160201/new-concurrent-hash-maps-for-cpp/
-  https://github.com/sparsehash/sparsehash
-  rocksdb FullFilter 考虑cache-line的bloomfilter
-  https://ilanbiala.github.io/15618-final-project/final-report.pdf
-  https://tessil.github.io/2016/08/29/benchmark-hopscotch-map.html
-
 https://yaoguais.github.io/article/jemalloc/structures.html
 
 LIRS cache 缓存淘汰算法
@@ -282,9 +274,6 @@ c++ 性能瓶颈
   map hash_map concurrent_hash_map lru
   string::find::compare map<string> hash_map<string>
 
-sonic_json
-https://github.com/leizton/sonic-cpp
-
 workflow
 
 proto和arrow相比痛点：
@@ -304,3 +293,36 @@ cpu使用率上不去原因
 google perftool
 
 lassos net 特征选择
+
+jheap_dump in cpp
+
+https://charlesliuyx.github.io/2017/10/06/【直观详解】线性代数的本质/#向量究竟是什么
+
+熔断、限流、降级 sentinel
+
+https://github.com/google/btree
+boltdb
+
+sonic_json
+https://github.com/leizton/sonic-cpp
+
+git-diff
+
+set_empty_key
+lru lfu wnd-lfu caffine
+conc
+
+hashmap
+  ConcurrentExpireMap
+  ConcurrentHashMap & java cache (caffine)
+  tbb-concurrenthashmap google-densehashmap folly-atomichashmap junction-leapfrog-conchashmap
+  https://github.com/preshing/junction/blob/master/junction/details/Leapfrog.h
+  https://preshing.com/20160201/new-concurrent-hash-maps-for-cpp/
+  https://github.com/sparsehash/sparsehash
+  rocksdb FullFilter 考虑cache-line的bloomfilter
+  https://ilanbiala.github.io/15618-final-project/final-report.pdf
+  https://tessil.github.io/2016/08/29/benchmark-hopscotch-map.html
+
+https://mp.weixin.qq.com/s/Sf9vV7RCnVDlBKXx5jXs1Q
+
+《动手学深度学习》
