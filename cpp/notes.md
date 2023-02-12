@@ -58,31 +58,4 @@ struct Eoo {
 # gcc sort 比较函数不是严格弱序(严格小于)导致越界
 [测试文件](test/test_sort.cc)
 
-# linux kernel
-## 进程调度
-https://mp.weixin.qq.com/s/Sf9vV7RCnVDlBKXx5jXs1Q
-进程调度的需求分析,功能设计,实现方案
-  ①基本功能：不同进程间自由切换
-    - 保存和恢复进程运行的上下文环境 → 主要是寄存器
-      - linux 0.11 用结构体task_struct的tss保存进程的运行信息
-        struct task_struct {
-          tss_struct tss;  // 各寄存器的值
-        }
-        struct tss_struct {
-          long esp0, ss0, esp1, ss1, esp3, ss2;
-          long eax, ecx, edx, ebx;
-          long esp, ebp, esi, edi;
-          ...
-        }
-  ②支持多进程并发运行且充分利用硬件资源的调度策略
-    - 分时调度 → 何时切换进程
-      - 剩余时间片
-        每次定时时间中断到达时减1，减到0就切出该进程
-        struct task_struct { long counter; }
-  ③支持优先级调度
-    priority作为counter的初始值，priority越大进程在cpu的时间越长
-    struct task_struct { long priority; }
-  ④
-
 # books
-《同步》：个体包含振子，个体间能通信(gossip)，通过通信调整自身振子的频率

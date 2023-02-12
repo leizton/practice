@@ -151,6 +151,13 @@ void print(const Args&... args) {
 }
 
 template <class... Args>
+void printl(const Args&... args) {
+  std::ostringstream out;
+  __print(out, "", false, args...);
+  std::cout << out.str();
+}
+
+template <class... Args>
 void println(const Args&... args) {
   std::ostringstream out;
   __print(out, " ", false, args...);
@@ -159,7 +166,7 @@ void println(const Args&... args) {
 }
 
 template <class... Args>
-void println1(const Args&... args) {
+void prints(const Args&... args) {
   std::ostringstream out;
   __print(out, "", false, args...);
   out << "\n";

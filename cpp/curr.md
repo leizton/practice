@@ -1,6 +1,6 @@
 学习方向：work stock ai
 
-sonic_cpp workflow brpc glog
+workflow brpc glog
 springframework distribute log4j
 mq/flink tensorflow
 algo tcmalloc
@@ -303,9 +303,6 @@ https://charlesliuyx.github.io/2017/10/06/【直观详解】线性代数的本�
 https://github.com/google/btree
 boltdb
 
-sonic_json
-https://github.com/leizton/sonic-cpp
-
 git-diff
 
 set_empty_key
@@ -322,7 +319,11 @@ hashmap
   rocksdb FullFilter 考虑cache-line的bloomfilter
   https://ilanbiala.github.io/15618-final-project/final-report.pdf
   https://tessil.github.io/2016/08/29/benchmark-hopscotch-map.html
+  https://github.com/leizton/caffeine
 
 https://mp.weixin.qq.com/s/Sf9vV7RCnVDlBKXx5jXs1Q
+https://github.com/leizton/workflow
 
 《动手学深度学习》
+
+https://ausu.lol/zh-CN/order/place

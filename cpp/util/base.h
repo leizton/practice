@@ -20,6 +20,8 @@
 #include "singleton.h"
 #include "spin_lock.h"
 
+#include "simd.h"
+
 #include "logger.h"
 #include "print.h"
 #include "template_utils.h"
