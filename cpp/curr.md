@@ -4,6 +4,7 @@ workflow brpc glog
 springframework distribute log4j
 mq/flink tensorflow
 algo tcmalloc
+faiss
 machine_learning time_series_forecast
 
 linux环境编程：SIMD 并发编程 协程 性能调试
@@ -44,7 +45,7 @@ https://zhuanlan.zhihu.com/p/89439043
 MQ
 rocketmq -> kafka, 存储模型 大量topic
 mq -> kafka, 消费模型 P/C无缝扩缩容
-有序消费, 有用 难实现
+有序消费
 
 brpc
 https://zhuanlan.zhihu.com/p/120493593
@@ -87,14 +88,11 @@ https://ata.alibaba-inc.com/articles/171326?spm=ata.23639746.0.0.3b3c423d3uMFQz
 向量化执行引擎
 https://ata.alibaba-inc.com/articles/200621?spm=ata.23639746.0.0.3b3c423d3uMFQz
 
-○ lambda https://www.jianshu.com/p/923d11151027
-○ any
 ○ shared_ptr
 ○ shared_ptr assign 线程不安全分析
 ○ AtomicSharedPtr
 ○ vector 内部字段
 ○ vector iterator 比较
-○ function
 ○ sort cmp https://www.cnblogs.com/cswuyg/p/10155017.html
 ○ 粒子群算法
 ○ 贝叶斯优化
@@ -114,7 +112,6 @@ Transitioned-based
 Graphed-based
 neural biLSTM
 
-并查集, https://leetcode-cn.com/leetbook/detail/disjoint-set/
 拓扑排序
 树状数组
 最小编辑距离
@@ -274,14 +271,10 @@ c++ 性能瓶颈
   map hash_map concurrent_hash_map lru
   string::find::compare map<string> hash_map<string>
 
-workflow
-
 proto和arrow相比痛点：
 1. 新增字段、修改字段类型需要上下游同步改pb文件费时且容易因前后兼容出错
 2. 序列化后的二进制数据不利于流处理分析(OLAP)
 3. 反射解析性能差，读取性能好(struct+offset)
-
-FAISS 相似向量检索库
 
 a collection of data science take home challenges
 https://github.com/leizton/DS-Take-Home
@@ -324,6 +317,10 @@ hashmap
 https://mp.weixin.qq.com/s/Sf9vV7RCnVDlBKXx5jXs1Q
 https://github.com/leizton/workflow
 
-《动手学深度学习》
+《动手学强化学习》
 
 https://ausu.lol/zh-CN/order/place
+
+gdb print
+
+epoll event
