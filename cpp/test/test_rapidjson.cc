@@ -44,15 +44,27 @@ void ParseJson(const std::string& json_str) {
     return;
   }
   auto& arr = *arr_iter;
-  if (arr.value.GetType() != rapidjson::kArrayType) {
+  if (not arr.value.IsArray()) {
     return;
   }
+
   for (auto& ele : arr.value.GetArray()) {
     for (auto& kv : ele.GetObject()) {
-      if (kv.value.GetType() != rapidjson::kNumberType) {
+      if (not kv.value.IsInt()) {
         continue;
       }
       prints(kv.name.GetString(), "=", kv.value.GetInt());
+    }
+  }
+  print();
+
+  for (auto ele = arr.value.Begin(); ele != arr.value.End(); ++ele) {
+    if (not ele->IsObject()) {
+      continue;
+    }
+    for (auto kv = ele->MemberBegin(); kv != ele->MemberEnd(); ++kv) {
+      if (not kv->value.IsInt()) continue;
+      prints(kv->name.GetString(), "=", kv->value.GetInt());
     }
   }
 }
