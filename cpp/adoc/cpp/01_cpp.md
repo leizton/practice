@@ -159,7 +159,7 @@ enum memory_order {
     memory_order_seq_cst,
 };
 ~~~
-std::atomic 默认用 memory_order_seq_cst
+`std::atomic 默认用 memory_order_seq_cst`
 未经同步的并行程序运行结果不可预期(无一致性保证), 同步的方式有atomic和mutex
 @ref https://en.cppreference.com/w/cpp/atomic/memory_order
 relaxed

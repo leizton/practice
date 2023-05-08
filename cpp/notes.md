@@ -18,8 +18,8 @@ threadA的锁保证check和入等待集合的原子性, 即只有在is_ready时�
 
 # 可重入锁实现原理
 
-# 基础算法
-排序 Timsort https://github.com/timsort/cpp-TimSort
+# Timsort
+https://github.com/timsort/cpp-TimSort
 
 # realloc 和 malloc
 realloc相比malloc省去拷贝
@@ -55,7 +55,25 @@ struct Eoo {
 /usr/src/kernels/tools/perf
 -g 统计调用栈 call-graph
 
+# gdb print
+~~~sh
+mkdir /tmp/tools && cd /tmp/tools
+svn co svn://gcc.gnu.org/svn/gcc/trunk/libstdc++-v3/python
+vi ~/.gdbinit # 贴入以下代码
+python
+import sys
+sys.path.insert(0, '/tmp/tools/python')
+from libstdcxx.v6.printers import register_libstdcxx_printers
+register_libstdcxx_printers (None)
+end
+~~~
+
 # gcc sort 比较函数不是严格弱序(严格小于)导致越界
 [测试文件](test/test_sort.cc)
 
-# books
+# addr2line
+
+# 库函数
+~~~c++
+bzero(&aoo, sizeof(Aoo));  // 结构体数据清零
+~~~

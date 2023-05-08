@@ -5,7 +5,6 @@ springframework distribute log4j
 mq/flink tensorflow
 algo tcmalloc
 faiss
-machine_learning time_series_forecast
 
 linux环境编程：SIMD 并发编程 协程 性能调试
   多线程编程 https://www.codenong.com/cs105103411/
@@ -88,15 +87,6 @@ https://ata.alibaba-inc.com/articles/171326?spm=ata.23639746.0.0.3b3c423d3uMFQz
 向量化执行引擎
 https://ata.alibaba-inc.com/articles/200621?spm=ata.23639746.0.0.3b3c423d3uMFQz
 
-○ shared_ptr
-○ shared_ptr assign 线程不安全分析
-○ AtomicSharedPtr
-○ vector 内部字段
-○ vector iterator 比较
-○ sort cmp https://www.cnblogs.com/cswuyg/p/10155017.html
-○ 粒子群算法
-○ 贝叶斯优化
-
 tcmalloc
 https://zhuanlan.zhihu.com/p/29216091
 https://zhuanlan.zhihu.com/p/48957114
@@ -104,9 +94,7 @@ https://zhuanlan.zhihu.com/p/48957114
 并行b树
 https://zhuanlan.zhihu.com/b-tree
 
-flink
-http://www.zhaoqiansunli.com.cn/view/22115
-
+NLP语料库
 ontonotes
 Transitioned-based
 Graphed-based
@@ -115,9 +103,6 @@ neural biLSTM
 拓扑排序
 树状数组
 最小编辑距离
-
-规则引擎
-https://tech.meituan.com/2017/06/09/maze-framework.html
 
 https://www.zhihu.com/column/c_1288235772122718208
 
@@ -139,8 +124,6 @@ http://highscalability.com/all-time-favorites/
 图着色
 
 分析代码生成数据流
-
-nginx netty 内存池设计
 
 promise https://zhuanlan.zhihu.com/p/58428287
 
@@ -180,10 +163,6 @@ https://cloud.tencent.com/developer/article/1005742
 https://zhuanlan.zhihu.com/p/525985268
 
 https://www.oreilly.com/library/view/power-and-performance/9780128007266/B9780128007266000082.xhtml#s0010
-
-多样性
-https://zhuanlan.zhihu.com/p/264652162
-https://zhuanlan.zhihu.com/p/95607668, dpp
 
 tensorflow recommendation
 https://www.tensorflow.org/lite/examples/recommendation/overview
@@ -289,38 +268,45 @@ lassos net 特征选择
 
 jheap_dump in cpp
 
-https://charlesliuyx.github.io/2017/10/06/【直观详解】线性代数的本质/#向量究竟是什么
+combine opt
 
-熔断、限流、降级 sentinel
+set_empty_key 原因
 
-https://github.com/google/btree
-boltdb
+https://books.google.com/books/about/The_Renaissance_A_Very_Short_Introductio.html?id=qkpceSHvyRMC
 
-git-diff
+https://github.com/leizton/caffeine
 
-set_empty_key
-lru lfu wnd-lfu caffine
-conc
-
-hashmap
-  ConcurrentExpireMap
-  ConcurrentHashMap & java cache (caffine)
-  tbb-concurrenthashmap google-densehashmap folly-atomichashmap junction-leapfrog-conchashmap
-  https://github.com/preshing/junction/blob/master/junction/details/Leapfrog.h
-  https://preshing.com/20160201/new-concurrent-hash-maps-for-cpp/
-  https://github.com/sparsehash/sparsehash
-  rocksdb FullFilter 考虑cache-line的bloomfilter
-  https://ilanbiala.github.io/15618-final-project/final-report.pdf
-  https://tessil.github.io/2016/08/29/benchmark-hopscotch-map.html
-  https://github.com/leizton/caffeine
-
-https://mp.weixin.qq.com/s/Sf9vV7RCnVDlBKXx5jXs1Q
 https://github.com/leizton/workflow
-
-《动手学强化学习》
 
 https://ausu.lol/zh-CN/order/place
 
-gdb print
+多样性
+https://zhuanlan.zhihu.com/p/264652162
+DPP https://zhuanlan.zhihu.com/p/95607668
 
 epoll event
+
+transformer
+
+NeRF
+tf-cnn
+
+cnn-feature
+  A Performance Evaluation of Local Descriptors
+  based on OCR
+  input拆成多个集合分别train得到不同model, 看model的feature是否有共性
+  缩放、旋转对fea的影响
+  无监督地做个体识别、img分割
+
+https://github.com/twitter/the-algorithm
+
+聚类算法
+
+combine_opt
+
+混排
+https://wulc.me/2023/02/26/%E6%B7%B7%E6%8E%92%E9%82%A3%E4%BA%9B%E4%BA%8B/
+
+time_series
+  https://github.com/PacktPublishing/Time-Series-Analysis-with-Python-Cookbook
+  https://learning.oreilly.com/library/view/time-series-analysis/9781801075541/B17450_FM_Final_VK.xhtml

@@ -21,6 +21,7 @@ SIGCHLD      17                                         子进程退出
 du -s                           # sum 只显示总和
 du -h -m -k -b                  # 单位是 人类友好 MB KB byte
 du -h --max-depth=1             # 当前目录下各文件的大小, 即 ls -l | awk -F ' ' '{print $9}' | xargs du -hs
+du -h -d 1                      # -d 1 等同于 --max-depth=1
 du -m --max-depth=1 | sort -n   # 加上排序
 
 awk -F ' ' '{print $NF}'                  # 最后一列
@@ -65,6 +66,7 @@ sudo perf top -p $PID -g
 ② gdb
 为了防止 `value has been optimized out`
 测试时加上 -g -O0 -DSF_VISIBILITY -fvisibility=hidden -fno-strict-aliasing
+## gdb print
 打印stl
 https://daiwk.github.io/posts/knowledge-stack-heap-core.html
 ~~~sh

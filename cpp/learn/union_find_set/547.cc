@@ -9,44 +9,42 @@
 */
 
 int findCircleNum(vector<vector<int>>& is_conn) {
-  const int n = (int)is_conn.size();
-  if (n == 0) return 0;
+  if (is_conn.empty() || is_conn.size() != is_conn[0].size()) {
+    return 0;
+  }
+  const int node_num = (int)is_conn.size();
 
-  // cluster[i] = node_i 所属的连通域编号
-  vector<int> cluster(n, 0);
-  // init: 每个node都属于不同的集群
-  for (int i = 0; i < n; i++) {
-    cluster[i] = i;
+  // init. root(i) is assigned self
+  vector<int> root(node_num, 0);
+  for (int i = 0; i < node_num; i++) {
+    root[i] = i;
   }
 
-  for (int i = 0; i < n; i++) {
-    int root_of_i = i;
-    while (cluster[root_of_i] != root_of_i) root_of_i = cluster[root_of_i];
-    for (int j = i+1; j < n; j++) {
+  // merge
+  for (int i = 0; i < node_num; i++) {
+    for (int j = 0; j < i; j++) {
       if (is_conn[i][j]) {
-        int root_of_j = j;
-        while (cluster[root_of_j] != root_of_j) root_of_j = cluster[root_of_j];
-        // merge: 只在root层面合并
-        if (root_of_i < root_of_j) {
-          cluster[root_of_j] = root_of_i;
-        } else if (root_of_i > root_of_j) {
-          cluster[root_of_i] = root_of_j;
-          root_of_i = root_of_j;
+        int new_root = std::min(root[i], root[j]);
+        int mod_root = -1, k = -1;
+        if (root[i] != new_root) {
+          mod_root = root[i];
+          k = i;
+        } else if (root[j] != new_root) {
+          mod_root = root[j];
+          k = j;
+        }
+        for (; k >= mod_root; k--) {
+          if (root[k] == mod_root) {
+            root[k] = new_root;
+          }
         }
       }
     }
   }
 
-  // adjust: 改成和root直连
-  for (int i = 1; i < n; i++) {
-    int root = i;
-    while (cluster[root] != root) root = cluster[root];
-    cluster[i] = root;
+  int root_num = 0;
+  for (int i = 0; i < node_num; i++) {
+    if (root[i] == i) root_num++;
   }
-
-  int res = 1;
-  for (int i = 1; i < n; i++) {
-    if (cluster[i] == i) res++;
-  }
-  return res;
+  return root_num;
 }
