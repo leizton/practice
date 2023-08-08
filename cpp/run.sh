@@ -20,7 +20,7 @@ if [ $# -lt 1 ]; then
 else
   srcs="$1 $srcs"
 fi
-$cpp $srcs $libs 2>&1 | grep -v 'libstdc++.dylib'
+$cpp $srcs $libs 2>&1 | grep -v 'renamed to -macos_version_min'
 
 if [ -f a.out ]; then
   echo '##########'

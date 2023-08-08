@@ -18,6 +18,10 @@ SIGCHLD      17                                         子进程退出
 --------------------------------------------------------------------------------------------------------------
 # 常用命令
 ~~~sh
+# cpu
+cat /proc/cpuinfo | grep MHz           # cpu 主频
+cat /proc/cpuinfo | grep MHz | wc -l   # cpu 核数
+
 du -s                           # sum 只显示总和
 du -h -m -k -b                  # 单位是 人类友好 MB KB byte
 du -h --max-depth=1             # 当前目录下各文件的大小, 即 ls -l | awk -F ' ' '{print $9}' | xargs du -hs
@@ -35,6 +39,10 @@ sort -t ","     # 按,分割
 sort -u         # 排序后去重
 
 uniq -c   # 去重
+
+# 统计单词频率
+awk -F ',' '{print $1}' | sort | uniq -c | sort -nr
+  # `sort | uniq -c` 完成去重计数, `sort -nr`逆序排列
 
 ## grep
 cat line | grep -E "keyword_1|keyword_2"  # grep 两个关键词
@@ -154,3 +162,13 @@ nm libmy.so | grep $Symbol
 @ ref
   https://www.cnblogs.com/baiduboy/p/6048113.html
   https://www.huaweicloud.com/articles/6547604cf65e2f27964f89f39cd0018c.html
+
+# 查看binary包含的字符串
+strings libmy.so
+
+# excel
+~~~
+=SUMIF(k2:k123, "base", a2:a123)
+=MOD(ROW(A2), 2)
+=IF(A1="base", 0, 1)
+~~~

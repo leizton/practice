@@ -10,20 +10,21 @@
 vector<int> findRedundantConnection(vector<vector<int>>& edges) {
   const int n = (int)edges.size();
 
-  vector<int> cluster(n+1, 0);
+  // edges编号从1开始，所以root长度用n+1
+  vector<int> root(n+1, 0);
   for (int i = 1; i < n; i++) {
-    cluster[i] = i;
+    root[i] = i;
   }
 
   for (auto& edge : edges) {
     int root_i = edge[0];
-    while (cluster[root_i] != root_i) root_i = cluster[root_i];
+    while (root[root_i] != root_i) root_i = root[root_i];
     int root_j = edge[1];
-    while (cluster[root_j] != root_j) root_j = cluster[root_j];
+    while (root[root_j] != root_j) root_j = root[root_j];
     if (root_i < root_j) {
-      cluster[root_j] = root_i;
+      root[root_j] = root_i;
     } else if (root_i > root_j) {
-      cluster[root_i] = root_j;
+      root[root_i] = root_j;
     } else {
       // 当node_i和node_j有相同root且两个节点右边, 说明这是一个环
       return edge;

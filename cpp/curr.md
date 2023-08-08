@@ -1,6 +1,8 @@
-学习方向：work stock ai
+target: work stock ai
 
-workflow brpc glog
+cpp
+  https://github.com/topics/tbb
+  workflow brpc glog
 springframework distribute log4j
 mq/flink tensorflow
 algo tcmalloc
@@ -102,7 +104,6 @@ neural biLSTM
 
 拓扑排序
 树状数组
-最小编辑距离
 
 https://www.zhihu.com/column/c_1288235772122718208
 
@@ -244,11 +245,9 @@ https://github.com/neo4j-contrib/neo4j-graph-algorithms
 
 what DL has learned. by OCR and morphology
 
-OCR w2v
-
 c++ 性能瓶颈
   map hash_map concurrent_hash_map lru
-  string::find::compare map<string> hash_map<string>
+  string-find/compare map<string,val> hash_map<string,val>
 
 proto和arrow相比痛点：
 1. 新增字段、修改字段类型需要上下游同步改pb文件费时且容易因前后兼容出错
@@ -280,17 +279,13 @@ https://github.com/leizton/workflow
 
 https://ausu.lol/zh-CN/order/place
 
-多样性
-https://zhuanlan.zhihu.com/p/264652162
-DPP https://zhuanlan.zhihu.com/p/95607668
-
 epoll event
 
 transformer
 
 NeRF
-tf-cnn
 
+tf-cnn ocr
 cnn-feature
   A Performance Evaluation of Local Descriptors
   based on OCR
@@ -310,3 +305,36 @@ https://wulc.me/2023/02/26/%E6%B7%B7%E6%8E%92%E9%82%A3%E4%BA%9B%E4%BA%8B/
 time_series
   https://github.com/PacktPublishing/Time-Series-Analysis-with-Python-Cookbook
   https://learning.oreilly.com/library/view/time-series-analysis/9781801075541/B17450_FM_Final_VK.xhtml
+
+多样性
+https://zhuanlan.zhihu.com/p/264652162
+DPP https://zhuanlan.zhihu.com/p/95607668
+
+std::function internal sizeof
+
+image 四叉树分割
+
+https://tesseract-ocr.github.io/tessdoc/Data-Files.html
+
+推荐系统必读文章
+https://github.com/leizton/RSPapers
+
+weather & stock
+
+tcmalloc
+https://google.github.io/tcmalloc/design.html
+
+函数调用链
+
+https://github.com/stasi009/PracticalGuidetoRecSys/tree/main/snippets
+
+https://github.com/awesomedata/awesome-public-datasets
+
+https://zhuanlan.zhihu.com/p/423417458
+
+https://google.github.io/tcmalloc/design.html
+
+llm的ability是什么，怎么来的
+llm train 理解代码
+llm的推理能力与3d-vision的距离推测
+llm的推理能力本质来源
