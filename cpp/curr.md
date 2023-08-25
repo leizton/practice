@@ -271,17 +271,9 @@ combine opt
 
 set_empty_key 原因
 
-https://books.google.com/books/about/The_Renaissance_A_Very_Short_Introductio.html?id=qkpceSHvyRMC
-
-https://github.com/leizton/caffeine
-
 https://github.com/leizton/workflow
 
-https://ausu.lol/zh-CN/order/place
-
 epoll event
-
-transformer
 
 NeRF
 
@@ -292,10 +284,7 @@ cnn-feature
   input拆成多个集合分别train得到不同model, 看model的feature是否有共性
   缩放、旋转对fea的影响
   无监督地做个体识别、img分割
-
-https://github.com/twitter/the-algorithm
-
-聚类算法
+  聚类算法 twitter sim_cluster
 
 combine_opt
 
@@ -319,12 +308,10 @@ https://tesseract-ocr.github.io/tessdoc/Data-Files.html
 推荐系统必读文章
 https://github.com/leizton/RSPapers
 
-weather & stock
+weather & sk
 
 tcmalloc
 https://google.github.io/tcmalloc/design.html
-
-函数调用链
 
 https://github.com/stasi009/PracticalGuidetoRecSys/tree/main/snippets
 
@@ -338,6 +325,9 @@ llm的ability是什么，怎么来的
 llm train 理解代码
 llm的推理能力与3d-vision的距离推测
 llm的推理能力本质来源
+llm 学会代码库
+llm 的技术难点在于 fine-tune prompt
+函数调用链
 
 代码阅读/理解/推理 => 函数的摘要
 知识图谱约束、常识约束
@@ -348,3 +338,5 @@ https://zhuanlan.zhihu.com/p/562660923
 
 经济社会的起源
 西欧金融史
+
+sk cm_distr的形状模拟和分析
