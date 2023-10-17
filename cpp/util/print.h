@@ -18,29 +18,15 @@ std::ostream& operator<<(std::ostream& out, std::pair<K, V> p) {
   return out;
 }
 
-template <class Container>
-std::ostream& print_seq_container(std::ostream& out, const Container& c) {
-  out << "[";
-  int old_p = out.tellp();
-  for (const auto& e : c) {
-    out << e << ",";
-  }
-  if ((int)out.tellp() > old_p) out.seekp(out.tellp() - 1);
+# define print_seq_container(out, c) \
+  out << "["; bool flag = false; \
+  for (const auto& e : c) { if(flag) out<<","; flag=true; out<<e; } \
   out << "]";
-  return out;
-}
 
-template <class Container>
-std::ostream& print_map_container(std::ostream& out, const Container& c) {
-  out << "[";
-  int old_p = out.tellp();
-  for (const auto& p : c) {
-    out << p.first << "=" << p.second << ",";
-  }
-  if ((int)out.tellp() > old_p) out.seekp(out.tellp() - 1);
+# define print_map_container(out, c) \
+  out << "["; bool flag = false; \
+  for (const auto& p : c) { if(flag)out<<","; flag=true; out<<p.first<<"="<<p.second<<","; } \
   out << "]";
-  return out;
-}
 
 template <class Tuple, size_t N>
 struct PrintTupleHelper {
@@ -71,32 +57,38 @@ std::ostream& print_tuple(std::ostream& out, const std::tuple<Args...>& t) {
 
 template <class T>
 std::ostream& operator<<(std::ostream& out, const std::vector<T>& v) {
-  return print_seq_container(out, v);
+  print_seq_container(out, v);
+  return out;
 }
 
 template <class T>
 std::ostream& operator<<(std::ostream& out, const std::list<T>& l) {
-  return print_seq_container(out, l);
+  print_seq_container(out, l);
+  return out;
 }
 
 template <class T>
 std::ostream& operator<<(std::ostream& out, const std::set<T>& s) {
-  return print_seq_container(out, s);
+  print_seq_container(out, s);
+  return out;
 }
 
 template <class T>
 std::ostream& operator<<(std::ostream& out, const std::unordered_set<T>& s) {
-  return print_seq_container(out, s);
+  print_seq_container(out, s);
+  return out;
 }
 
 template <class K, class V>
 std::ostream& operator<<(std::ostream& out, const std::map<K, V>& m) {
-  return print_map_container(out, m);
+  print_map_container(out, m);
+  return out;
 }
 
 template <class K, class V>
 std::ostream& operator<<(std::ostream& out, const std::unordered_map<K, V>& m) {
-  return print_map_container(out, m);
+  print_map_container(out, m);
+  return out;
 }
 
 template <class ...Args>

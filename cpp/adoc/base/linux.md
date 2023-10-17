@@ -170,5 +170,5 @@ strings libmy.so
 ~~~
 =SUMIF(k2:k123, "base", a2:a123)
 =MOD(ROW(A2), 2)
-=IF(A1="base", 0, 1)
+=IF(A1="base", j$10, j$11)
 ~~~

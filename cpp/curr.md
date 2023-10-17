@@ -218,10 +218,6 @@ https://github.com/miloyip/itoa-benchmark
 
 transform https://ke.qq.com/course/4964012#
 
-function call chain
-clang engine
-https://clang.llvm.org/docs/RefactoringEngine.html
-
 log library
 https://binlog.org/UserGuide.html, https://github.com/morganstanley/binlog
 https://github.com/PlatformLab/NanoLog
@@ -340,3 +336,10 @@ https://zhuanlan.zhihu.com/p/562660923
 西欧金融史
 
 sk cm_distr的形状模拟和分析
+
+fast-edit
+https://github.com/hiyouga/FastEdit
+
+FFM
+https://tech.meituan.com/2016/03/03/deep-understanding-of-ffm-principles-and-practices.html
+

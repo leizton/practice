@@ -5,7 +5,7 @@ rm -f core*
 
 ulimit -c unlimited
 
-cpp="$gcc_home/bin/g++ -std=c++11 \
+cpp="$gcc_home/bin/g++ -std=c++17 \
     -Werror -Wall -Wno-unused-variable -g -O2 -rdynamic \
     -mavx2 -mpclmul -mbmi \
     -I. -I/usr/local/include \
