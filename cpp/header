@@ -2,6 +2,12 @@
 
 #include <util/base.h>
 
+#include <sparsehash/dense_hash_map>
+#include <sparsehash/dense_hash_set>
+
+#include <rapidjson/document.h>
+#include <rapidjson/writer.h>
+
 struct TreeNode {
   int val;
   TreeNode* left;
@@ -18,20 +24,25 @@ public:
     if (n <= 2) return nullptr;
     const char* s = data.c_str();
     size_t i = 1u;
-    int v = atoi(s+1);
-    while (s[i] != ',' && s[i] != ']') i++;
-    i++;
+    size_t stoi_sz = 0u;
+    int v = std::stoi(s+i, &stoi_sz);
+    i += stoi_sz;
     TreeNode* root = new TreeNode(v);
     queue<pair<TreeNode*,bool>> que;
     que.push({root,false});
     while (i < n) {
       TreeNode* node = nullptr;
-      if (s[i] == 'N') {
-        i += 2;
-      } else {
-        v = atoi(s+i);
-        while (s[i] != ',' && s[i] != ']') i++;
+      if (s[i] == ' ') {
         i++;
+        continue;
+      } if (s[i] == 'N') {
+        i += 2;
+      } else if (s[i] == 'n') {
+        i += 5;
+      } else {
+        stoi_sz = 0u;
+        v = std::stoi(s+i, &stoi_sz);
+        i += stoi_sz;
         node = new TreeNode(v);
         que.push({node,false});
       }

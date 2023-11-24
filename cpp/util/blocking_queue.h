@@ -11,10 +11,12 @@ class BlockingQueue {
   bool empty();
   size_t size();
 
+  BlockingQueue() : size_(0u) {}
+
  private:
   std::mutex mtx_;
   std::list<T> que_;
-  volatile size_t size_ = 0u;
+  std::atomic<size_t> size_;
 };
 
 template <class T>
@@ -35,10 +37,10 @@ bool BlockingQueue<T>::pop(T& elem) {
 
 template <class T>
 bool BlockingQueue<T>::empty() {
-  return size_ == 0u;
+  return size_.load() == 0u;
 }
 
 template <class T>
 size_t BlockingQueue<T>::size() {
-  return size_;
+  return size_.load();
 }
