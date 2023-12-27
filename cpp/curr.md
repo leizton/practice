@@ -343,3 +343,7 @@ https://github.com/hiyouga/FastEdit
 FFM
 https://tech.meituan.com/2016/03/03/deep-understanding-of-ffm-principles-and-practices.html
 
+向量检索库
+https://github.com/microsoft/SPTAG
+
+https://www.shenyanchao.cn/blog/2018/12/04/lucene-fst/
