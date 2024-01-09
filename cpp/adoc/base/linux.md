@@ -27,6 +27,7 @@ du -h -m -k -b                  # 单位是 人类友好 MB KB byte
 du -h --max-depth=1             # 当前目录下各文件的大小, 即 ls -l | awk -F ' ' '{print $9}' | xargs du -hs
 du -h -d 1                      # -d 1 等同于 --max-depth=1
 du -m --max-depth=1 | sort -n   # 加上排序
+du -hs * | sort -h              # 当前目录下文件和子目录按size排序
 
 awk -F ' ' '{print $NF}'                  # 最后一列
 awk -F ' ' '{sum+=$1}END{print sum/NR}'   # 统计平均值

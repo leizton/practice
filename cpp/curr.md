@@ -291,10 +291,6 @@ time_series
   https://github.com/PacktPublishing/Time-Series-Analysis-with-Python-Cookbook
   https://learning.oreilly.com/library/view/time-series-analysis/9781801075541/B17450_FM_Final_VK.xhtml
 
-多样性
-https://zhuanlan.zhihu.com/p/264652162
-DPP https://zhuanlan.zhihu.com/p/95607668
-
 std::function internal sizeof
 
 image 四叉树分割
@@ -347,3 +343,9 @@ https://tech.meituan.com/2016/03/03/deep-understanding-of-ffm-principles-and-pra
 https://github.com/microsoft/SPTAG
 
 https://www.shenyanchao.cn/blog/2018/12/04/lucene-fst/
+
+100小球，每次拿1-5颗，拿完者胜，先拿一定取胜的策略
+
+多样性
+https://zhuanlan.zhihu.com/p/264652162
+DPP https://zhuanlan.zhihu.com/p/95607668
