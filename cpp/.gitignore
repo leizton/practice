@@ -12,3 +12,6 @@ __pycache__
 
 ontonotes-release-5.0
 ontonotes
+
+libtorch
+libtorch-shared-with-deps-latest.zip
