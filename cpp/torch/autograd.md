@@ -89,6 +89,7 @@ Engine::execute_with_graph_task(graph_task, graph_root, input_buffer) {
 }
 
 Engine::evaluate_function(graph_task, Node& fn, InputBuffer& inputs, shared_ptr<ReadyQueue>& cpu_ready_queue) {
+  // run node
   auto outputs = call_function(graph_task, &fn, inputs) {
     for hook : fn.tensor_pre_hooks()
       inputs = (*hook)(inputs);
@@ -97,14 +98,14 @@ Engine::evaluate_function(graph_task, Node& fn, InputBuffer& inputs, shared_ptr<
     for pair : fn.pre_hooks()
       inputs = (*pair.second)(inputs);
     //
-    outputs = fn(std::move(inputs));
+    outputs = fn(inputs);
     //
     for hook : fn.post_hooks()
       outputs = (*hook)(outputs, inputs);
     return outputs
   }
   if (!graph_task->keep_graph_) fn.release_variables();
-  // 驱动next
+  // 驱动 next
   auto num_outputs = outputs.size();
   for i : range(num_outputs) {
     auto& next = fn.next_edge(i);
@@ -117,8 +118,32 @@ Engine::evaluate_function(graph_task, Node& fn, InputBuffer& inputs, shared_ptr<
     }
     if is_ready {
       auto queue = this->ready_queue(cpu_ready_queue, input_buffer.device());
-      queue->push(NodeTask(graph_task, next.function, std::move(input_buffer)));
+      queue->push(NodeTask(graph_task, next.function, input_buffer));
     }
   }
 }
+~~~
+
+# 以 ExpBackward0 举例
+tensor的grad_fn 就是 GraphTask的Node
+~~~c++
+struct Node {
+  variable_list operator()(variable_list&& inputs) {
+    return apply(inputs);
+  }
+  virtual variable_list apply(variable_list&& inputs) = 0;
+};
+
+struct ExpBackward0 : public Node {
+  variable_list apply(variable_list&& grad_outputs) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto result = result_.unpack(this);
+    variable_list grad_inputs(1);
+    // result.conj(): 如果result是复数(is_complex)则返回复共轭, 否则返回自身
+    // grad_outputs: 输出张量关于loss的梯度. exp()的梯度就是自身的输出, 所以直接乘result
+    // grad_inputs: 输入张量关于loss的梯度
+    grad_inputs[0] = grad_outputs[0] * result.conj();
+    return grad_inputs;
+  }
+};
 ~~~
