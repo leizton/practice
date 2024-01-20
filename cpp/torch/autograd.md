@@ -146,4 +146,22 @@ struct ExpBackward0 : public Node {
     return grad_inputs;
   }
 };
+
+struct MulBackward0 : public Node {
+  variable_list MulBackward0::apply(variable_list&& grad_outputs) {
+    std::lock_guard<std::mutex> lock(mutex_);
+    auto other = other_.unpack();
+    auto self = self_.unpack();
+    // 乘法算子是二元输入
+    variable_list grad_inputs(2);
+    grad_inputs[0] = grad_outputs[0] * other;  // self关于loss的梯度, ∂_loss/∂_self
+    grad_inputs[1] = grad_outputs[0] * self;   // other关于loss的梯度, ∂_loss/∂_other
+    return grad_inputs;
+  }
+};
+template <typename T>
+Tensor mul_tensor_backward(const Tensor& grad, T other, ScalarType self_st) {
+  auto out = grad * other.conj();
+  return handle_r_to_c(self_st, std::move(out));
+}
 ~~~
