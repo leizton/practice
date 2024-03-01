@@ -164,12 +164,21 @@ nm libmy.so | grep $Symbol
   https://www.cnblogs.com/baiduboy/p/6048113.html
   https://www.huaweicloud.com/articles/6547604cf65e2f27964f89f39cd0018c.html
 
+--------------------------------------------------------------------------------------------------------------
 # 查看binary包含的字符串
 strings libmy.so
 
+--------------------------------------------------------------------------------------------------------------
 # excel
 ~~~
 =SUMIF(k2:k123, "base", a2:a123)
 =MOD(ROW(A2), 2)
 =IF(A1="base", j$10, j$11)
 ~~~
+
+--------------------------------------------------------------------------------------------------------------
+# git
+查看某个commit创建到现在合入master的MergeCommit有哪些
+假设HEAD的commit_id是$head_cid
+`git rev-list`可以列出两个commit之间的commit_id
+git rev-list $input_cid..$head_cid | xargs git show -s --format="%ci %h %s" | grep "Merge branch .* into master"
