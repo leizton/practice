@@ -33,5 +33,7 @@
 
 #include "base64.h"
 
+#include "serialize_utils.h"
+
 #include "utils.h"
 #include "aoo.h"

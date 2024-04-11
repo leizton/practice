@@ -7,7 +7,7 @@ rm -f core*
 ulimit -c unlimited
 
 start_ts=$(python -c "import time;print(int(time.time()*1000))")
-$gcc_home/bin/g++ -std=c++20 -I. main.cc 2>&1 | grep -v 'renamed to -macos_version_min'
+$gcc_home/bin/g++ -std=c++20 -I. -I/usr/local/include main.cc 2>&1 | grep -v 'renamed to -macos_version_min'
 cost_ms=$(python -c "import time;print(int(time.time()*1000-int($start_ts)))")
 echo "compile cost $cost_ms ms"
 

@@ -9,7 +9,7 @@ void printHex(T x) {
 
 template <class T>
 void printBin(T x) {
-  std::cout << std::setbase(2) << x << std::endl;
+  std::cout << bitset<64>(x) << std::endl;
 }
 
 template <class K, class V>
@@ -25,7 +25,7 @@ std::ostream& operator<<(std::ostream& out, std::pair<K, V> p) {
 
 # define print_map_container(out, c) \
   out << "["; bool flag = false; \
-  for (const auto& p : c) { if(flag)out<<","; flag=true; out<<p.first<<"="<<p.second<<","; } \
+  for (const auto& p : c) { if(flag)out<<","; flag=true; out<<p.first<<"="<<p.second; } \
   out << "]";
 
 template <class Tuple, size_t N>
