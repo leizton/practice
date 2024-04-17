@@ -5,11 +5,12 @@ int SerializeUtils::SerializeToString(const SerializeApi& obj, std::string& outp
   int output_size = obj.ByteSize();
   output.clear();
   output.resize(output_size);
-  int ser_size = SerializeUtils::Serialize(obj, (uint8_t*)output.data(), 0);
+  int ser_size = Serialize(obj, (uint8_t*)output.data(), 0);
   return (ser_size == output_size) ? output_size : -1;
 }
 
 int SerializeUtils::DeserializeFromString(SerializeApi& obj, const std::string& input) {
+  DeserializeClear(obj);
   int input_size = (int)input.length();
   int deser_size = Deserialize(obj, (uint8_t*)input.data(), input_size, 0);
   return (deser_size == input_size) ? input_size : -1;
@@ -49,6 +50,42 @@ int SerializeUtils::Deserialize(bool& i, const uint8_t* input, const int input_s
   return offset + 1;
 }
 
+int SerializeUtils::ByteSize(int16_t i) {
+  return 2;
+}
+
+int SerializeUtils::Serialize(int16_t i, uint8_t* output, int offset) {
+  if (offset < 0) return -1;
+  output[offset] = uint8_t(i & 0xFF);
+  output[offset + 1] = uint8_t((i >> 8) & 0xFF);
+  return offset + 2;
+}
+
+int SerializeUtils::Deserialize(int16_t& i, const uint8_t* input, const int input_size, int offset) {
+  if (offset < 0) return -1;
+  i = int16_t((uint8_t(input[offset]) & 0xFF));
+  i |= int16_t((uint8_t(input[offset + 1]) & 0xFF)) << 8;
+  return offset + 2;
+}
+
+int SerializeUtils::ByteSize(uint16_t i) {
+  return 2;
+}
+
+int SerializeUtils::Serialize(uint16_t i, uint8_t* output, int offset) {
+  if (offset < 0) return -1;
+  output[offset] = uint8_t(i & 0xFF);
+  output[offset + 1] = uint8_t((i >> 8) & 0xFF);
+  return offset + 2;
+}
+
+int SerializeUtils::Deserialize(uint16_t& i, const uint8_t* input, const int input_size, int offset) {
+  if (offset < 0) return -1;
+  i = uint16_t((uint8_t(input[offset]) & 0xFF));
+  i |= uint16_t((uint8_t(input[offset + 1]) & 0xFF)) << 8;
+  return offset + 2;
+}
+
 int SerializeUtils::ByteSize(int32_t i) {
   return 4;
 }
@@ -64,7 +101,6 @@ int SerializeUtils::Serialize(int32_t i, uint8_t* output, int offset) {
 
 int SerializeUtils::Deserialize(int32_t& i, const uint8_t* input, const int input_size, int offset) {
   if (offset < 0) return -1;
-  if (input_size < offset + ByteSize(i)) return -1;
   i = int32_t((uint8_t(input[offset]) & 0xFF));
   i |= int32_t((uint8_t(input[offset + 1]) & 0xFF)) << 8;
   i |= int32_t((uint8_t(input[offset + 2]) & 0xFF)) << 16;
@@ -87,7 +123,6 @@ int SerializeUtils::Serialize(uint32_t i, uint8_t* output, int offset) {
 
 int SerializeUtils::Deserialize(uint32_t& i, const uint8_t* input, const int input_size, int offset) {
   if (offset < 0) return -1;
-  if (input_size < offset + ByteSize(i)) return -1;
   i = uint32_t((uint8_t(input[offset]) & 0xFF));
   i |= uint32_t((uint8_t(input[offset + 1]) & 0xFF)) << 8;
   i |= uint32_t((uint8_t(input[offset + 2]) & 0xFF)) << 16;
@@ -114,7 +149,6 @@ int SerializeUtils::Serialize(int64_t i, uint8_t* output, int offset) {
 
 int SerializeUtils::Deserialize(int64_t& i, const uint8_t* input, const int input_size, int offset) {
   if (offset < 0) return -1;
-  if (input_size < offset + ByteSize(i)) return -1;
   i = int64_t((uint8_t(input[offset]) & 0xFF));
   i |= int64_t((uint8_t(input[offset + 1]) & 0xFF)) << 8;
   i |= int64_t((uint8_t(input[offset + 2]) & 0xFF)) << 16;
@@ -145,7 +179,6 @@ int SerializeUtils::Serialize(uint64_t i, uint8_t* output, int offset) {
 
 int SerializeUtils::Deserialize(uint64_t& i, const uint8_t* input, const int input_size, int offset) {
   if (offset < 0) return -1;
-  if (input_size < offset + ByteSize(i)) return -1;
   i = uint64_t((uint8_t(input[offset]) & 0xFF));
   i |= uint64_t((uint8_t(input[offset + 1]) & 0xFF)) << 8;
   i |= uint64_t((uint8_t(input[offset + 2]) & 0xFF)) << 16;

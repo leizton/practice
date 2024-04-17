@@ -1,9 +1,11 @@
 #include <header>
 
+#define OPERATOR_EQUAL_FAILSE(clz, fd) { LOG_ERROR() << "not equal: " << #clz << "::" << #fd; return false; }
+
 struct ShoppingItem : public SerializeApi {
 #define SERIALIZE_UTILS_FIELD_LIST(field) \
-  field(name, std::string) \
-  field(price, double) \
+  field(1, name, std::string) \
+  field(2, price, double) \
   ;
   SERIALIZE_UTILS_API_IMPL;
 #undef SERIALIZE_UTILS_FIELD_LIST
@@ -16,34 +18,36 @@ struct ShoppingItem : public SerializeApi {
   }
 
   bool operator==(const ShoppingItem& x) const {
-    if (name != x.name) return false;
-    if (price != x.price) return false;
+    if (name != x.name) OPERATOR_EQUAL_FAILSE(ShoppingItem, name);
+    if (price != x.price) OPERATOR_EQUAL_FAILSE(ShoppingItem, price);
     return true;
   }
 };
 
 struct ShoppingList : public SerializeApi {
 #define SERIALIZE_UTILS_FIELD_LIST(field) \
-  field(user, std::string) \
-  field(total_price, double) \
-  field(items, std::vector<ShoppingItem>) \
-  field(item_counts, std::unordered_map<std::string, int>) \
+  field(1, timestamp, int64_t) \
+  field(2, user, std::string) \
+  field(3, total_price, double) \
+  field(4, items, std::vector<ShoppingItem>) \
+  field(5, item_counts, std::unordered_map<std::string, int>) \
   ;
   SERIALIZE_UTILS_API_IMPL;
 #undef SERIALIZE_UTILS_FIELD_LIST
 
   bool operator==(const ShoppingList& x) const {
-    if (user != x.user) return false;
-    if (total_price != x.total_price) return false;
-    if (items.size() != x.items.size()) return false;
-    if (item_counts.size() != x.item_counts.size()) return false;
+    if (timestamp != x.timestamp) OPERATOR_EQUAL_FAILSE(ShoppingList, timestamp);
+    if (user != x.user) OPERATOR_EQUAL_FAILSE(ShoppingList, user);
+    if (total_price != x.total_price) OPERATOR_EQUAL_FAILSE(ShoppingList, total_price);
+    if (items.size() != x.items.size()) OPERATOR_EQUAL_FAILSE(ShoppingList, items);
+    if (item_counts.size() != x.item_counts.size()) OPERATOR_EQUAL_FAILSE(ShoppingList, item_counts);
     for (size_t i = 0; i < items.size(); i++) {
-      if (items[i] != x.items[i]) return false;
+      if (items[i] != x.items[i]) OPERATOR_EQUAL_FAILSE(ShoppingList, items);
     }
     for (auto& e : item_counts) {
       auto iter = x.item_counts.find(e.first);
-      if (iter == x.item_counts.end()) return false;
-      if (iter->second != e.second) return false;
+      if (iter == x.item_counts.end()) OPERATOR_EQUAL_FAILSE(ShoppingList, item_counts);
+      if (iter->second != e.second) OPERATOR_EQUAL_FAILSE(ShoppingList, item_counts);
     }
     return true;
   }
@@ -62,6 +66,7 @@ struct ShoppingList : public SerializeApi {
 
 void test() {
   ShoppingList sl1;
+  sl1.timestamp = nowUs();
   sl1.user = "Alice";
   sl1.AddItem("a", 0.11);
   sl1.AddItem("b", 0.12);
@@ -71,7 +76,7 @@ void test() {
 
   std::string raw;
   ShoppingList sl2;
-  int ser_n = 1000;
+  int ser_n = 10000;
   int ser_size = 0, deser_size = 0;
 
   auto t0 = nowUs();
