@@ -13,9 +13,9 @@
 
 #include "logger.h"
 
-#define SERIALIZE_UTILS_FIELD_DEFINE(fid, fd, ...) __VA_ARGS__ fd;
-#define SERIALIZE_UTILS_BYTE_SIZE(fid, fd, ...) sz += SerializeUtils::FdByteSize(fid, fd);
-#define SERIALIZE_UTILS_SERIALIZE(fid, fd, ...) { \
+#define SERIALIZEUTILS_FIELD_DEFINE(fid, fd, ...) __VA_ARGS__ fd;
+#define SERIALIZEUTILS_BYTE_SIZE(fid, fd, ...) sz += SerializeUtils::FdByteSize(fid, fd);
+#define SERIALIZEUTILS_SERIALIZE(fid, fd, ...) { \
   if (fid <= prev_fid) { \
     LOG_ERROR() << "FdSerialize fid disorder: " << fid << ", " << #fd; \
     return -1; \
@@ -27,28 +27,33 @@
     return -1; \
   } \
 }
-#define SERIALIZE_UTILS_DESERIALIZE(fid, fd, ...) { \
+#define SERIALIZEUTILS_DESERIALIZE(fid, fd, ...) { \
   offset = SerializeUtils::FdDeserialize(fid, #fd, fd, input, input_size, offset); \
   if (offset < 0) { \
     LOG_ERROR() << "FdDeserialize fail: " << fid << ", " << #fd << ", " << input_size << ", " << offset; \
     return -1; \
   } \
 }
-#define SERIALIZE_UTILS_DESERIALIZE_CLEAR(fid, fd, ...) SerializeUtils::DeserializeClear(fd);
+#define SERIALIZEUTILS_DESERIALIZE_CLEAR(fid, fd, ...) SerializeUtils::DeserializeClear(fd);
 
-#define SERIALIZE_UTILS_API_IMPL_INNER \
+#define SERIALIZEUTILS_API_IMPL_INNER \
   int ByteSize_() const { \
     int sz = 8; \
-    SERIALIZE_UTILS_FIELD_LIST(SERIALIZE_UTILS_BYTE_SIZE) \
+    SERIALIZEUTILS_FIELD_LIST(SERIALIZEUTILS_BYTE_SIZE) \
     serialize_size_ = sz; \
     return sz; \
   } \
   int Serialize_(uint8_t* output, int offset) const { \
     int begin_offset = offset; offset += 8; int prev_fid = 0; \
-    SERIALIZE_UTILS_FIELD_LIST(SERIALIZE_UTILS_SERIALIZE) \
+    SERIALIZEUTILS_FIELD_LIST(SERIALIZEUTILS_SERIALIZE) \
     SerializeUtils::Serialize(begin_offset, output, begin_offset); \
     SerializeUtils::Serialize(offset, output, begin_offset+4); \
-    return (offset>0 && (offset-begin_offset)==serialize_size_) ? offset : -1; \
+    if (offset < 0) { LOG_ERROR() << "Serialize fail offset=" << offset; return -1; } \
+    if (offset-begin_offset != serialize_size_) { \
+      LOG_ERROR() << "Serialize fail (offset-begin_offset != serialize_size_). " << offset << ", " << begin_offset << ", " << serialize_size_; \
+      return -1; \
+    } \
+    return offset; \
   } \
   int Deserialize_(const uint8_t* input, const int input_size_src, int offset_src) { \
     int offset = 0; SerializeUtils::Deserialize(offset, input, input_size_src, offset_src); \
@@ -56,30 +61,32 @@
     offset += 4; \
     int input_size = 0; offset = SerializeUtils::Deserialize(input_size, input, input_size_src, offset); \
     if (input_size > input_size_src) { LOG_ERROR() << "Deserialize fail (input_size > input_size_src)." << input_size << ", " << input_size_src; return -1; } \
-    SERIALIZE_UTILS_FIELD_LIST(SERIALIZE_UTILS_DESERIALIZE) \
+    SERIALIZEUTILS_FIELD_LIST(SERIALIZEUTILS_DESERIALIZE) \
     if (offset != input_size) { LOG_ERROR() << "Deserialize fail (offset != input_size)." << offset << ", " << input_size; return -1; } \
     return offset; \
   } \
   void DeserializeClear_() { \
-    SERIALIZE_UTILS_FIELD_LIST(SERIALIZE_UTILS_DESERIALIZE_CLEAR) \
+    SERIALIZEUTILS_FIELD_LIST(SERIALIZEUTILS_DESERIALIZE_CLEAR) \
   }
-#define SERIALIZE_UTILS_API_IMPL_NO_CLEAR \
-  SERIALIZE_UTILS_FIELD_LIST(SERIALIZE_UTILS_FIELD_DEFINE) \
-  SERIALIZE_UTILS_API_IMPL_INNER \
+#define SERIALIZEUTILS_API_IMPL_NO_CLEAR \
+  SERIALIZEUTILS_FIELD_LIST(SERIALIZEUTILS_FIELD_DEFINE) \
+  SERIALIZEUTILS_API_IMPL_INNER \
   int ByteSize() const override { return ByteSize_(); } \
   int Serialize(uint8_t* output, int offset) const override { return Serialize_(output, offset); } \
   int Deserialize(const uint8_t* input, const int input_size, int offset) override { return Deserialize_(input, input_size, offset); }
-#define SERIALIZE_UTILS_API_IMPL \
-  SERIALIZE_UTILS_API_IMPL_NO_CLEAR \
+#define SERIALIZEUTILS_API_IMPL \
+  SERIALIZEUTILS_API_IMPL_NO_CLEAR \
   void DeserializeClear() override { DeserializeClear_(); }
-#define SERIALIZE_UTILS_API_IMPL_WITH_BASE_CLASS(BaseClass) \
-  SERIALIZE_UTILS_FIELD_LIST(SERIALIZE_UTILS_FIELD_DEFINE) \
-  SERIALIZE_UTILS_API_IMPL_INNER \
+#define SERIALIZEUTILS_API_IMPL_WITH_BASE_CLASS(BaseClass) \
+  SERIALIZEUTILS_FIELD_LIST(SERIALIZEUTILS_FIELD_DEFINE) \
+  SERIALIZEUTILS_API_IMPL_INNER \
   int ByteSize() const override { \
     return BaseClass::ByteSize() + ByteSize_(); \
   } \
   int Serialize(uint8_t* output, int offset) const override { \
     offset = BaseClass::Serialize(output, offset); if (offset < 0) return -1; \
+    offset = BaseClass::Serialize(output, offset); \
+    if (offset < 0) { LOG_ERROR() << #BaseClass << "::Serialize fail"; return -1; } \
     return Serialize_(output, offset); \
   } \
   int Deserialize(const uint8_t* input, const int input_size, int offset) override { \

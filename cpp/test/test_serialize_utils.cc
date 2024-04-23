@@ -3,12 +3,12 @@
 #define OPERATOR_EQUAL_FAILSE(clz, fd) { LOG_ERROR() << "not equal: " << #clz << "::" << #fd; return false; }
 
 struct ShoppingItem : public SerializeApi {
-#define SERIALIZE_UTILS_FIELD_LIST(field) \
+#define SERIALIZEUTILS_FIELD_LIST(field) \
   field(1, name, std::string) \
   field(2, price, double) \
   ;
-  SERIALIZE_UTILS_API_IMPL;
-#undef SERIALIZE_UTILS_FIELD_LIST
+  SERIALIZEUTILS_API_IMPL;
+#undef SERIALIZEUTILS_FIELD_LIST
 
   ShoppingItem() {
   }
@@ -25,15 +25,15 @@ struct ShoppingItem : public SerializeApi {
 };
 
 struct ShoppingList : public SerializeApi {
-#define SERIALIZE_UTILS_FIELD_LIST(field) \
+#define SERIALIZEUTILS_FIELD_LIST(field) \
   field(1, timestamp, int64_t) \
   field(2, user, std::string) \
   field(3, total_price, double) \
   field(4, items, std::vector<ShoppingItem>) \
   field(5, item_counts, std::unordered_map<std::string, int>) \
   ;
-  SERIALIZE_UTILS_API_IMPL;
-#undef SERIALIZE_UTILS_FIELD_LIST
+  SERIALIZEUTILS_API_IMPL;
+#undef SERIALIZEUTILS_FIELD_LIST
 
   bool operator==(const ShoppingList& x) const {
     if (timestamp != x.timestamp) OPERATOR_EQUAL_FAILSE(ShoppingList, timestamp);
