@@ -17,20 +17,20 @@
 #define SERIALIZEUTILS_BYTE_SIZE(fid, fd, ...) sz += SerializeUtils::FdByteSize(fid, fd);
 #define SERIALIZEUTILS_SERIALIZE(fid, fd, ...) { \
   if (fid <= prev_fid) { \
-    LOG_ERROR() << "SERIALIZE_UTILS FdSerialize fid disorder: " << fid << ", " << #fd; \
+    LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS FdSerialize fid disorder: " << fid << ", " << #fd; \
     return -1; \
   } \
   prev_fid = fid; \
   offset = SerializeUtils::FdSerialize(fid, fd, output, offset); \
   if (offset < 0) { \
-    LOG_ERROR() << "SERIALIZE_UTILS FdSerialize fail: " << fid << ", " << #fd << ", " << offset; \
+    LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS FdSerialize fail: " << fid << ", " << #fd << ", " << offset; \
     return -1; \
   } \
 }
 #define SERIALIZEUTILS_DESERIALIZE(fid, fd, ...) { \
   offset = SerializeUtils::FdDeserialize(fid, #fd, fd, input, input_size, offset); \
   if (offset < 0) { \
-    LOG_ERROR() << "SERIALIZE_UTILS FdDeserialize fail: " << fid << ", " << #fd << ", " << input_size << ", " << offset; \
+    LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS FdDeserialize fail: " << fid << ", " << #fd << ", " << input_size << ", " << offset; \
     return -1; \
   } \
 }
@@ -49,21 +49,21 @@
     SERIALIZEUTILS_FIELD_LIST(SERIALIZEUTILS_SERIALIZE) \
     SerializeUtils::Serialize(begin_offset, output, begin_offset); \
     SerializeUtils::Serialize(offset, output, begin_offset+4); \
-    if (offset < 0) { LOG_ERROR() << "SERIALIZE_UTILS Serialize fail offset=" << offset; return -1; } \
+    if (offset < 0) { LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS Serialize fail offset=" << offset; return -1; } \
     if (offset-begin_offset != serialize_utils_ser_size_) { \
-      LOG_ERROR() << "SERIALIZE_UTILS Serialize fail (offset-begin_offset != serialize_size). " << offset << ", " << begin_offset << ", " << serialize_utils_ser_size_; \
+      LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS Serialize fail (offset-begin_offset != serialize_size). " << offset << ", " << begin_offset << ", " << serialize_utils_ser_size_; \
       return -1; \
     } \
     return offset; \
   } \
   int Deserialize_(const uint8_t* input, const int input_size_src, int offset_src) { \
     int offset = 0; SerializeUtils::Deserialize(offset, input, input_size_src, offset_src); \
-    if (offset != offset_src) { LOG_ERROR() << "SERIALIZE_UTILS Deserialize fail (offset != offset_src). " << offset << ", " << offset_src; return -1; } \
+    if (offset != offset_src) { LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS Deserialize fail (offset != offset_src). " << offset << ", " << offset_src; return -1; } \
     offset += 4; \
     int input_size = 0; offset = SerializeUtils::Deserialize(input_size, input, input_size_src, offset); \
-    if (input_size > input_size_src) { LOG_ERROR() << "SERIALIZE_UTILS Deserialize fail (input_size > input_size_src)." << input_size << ", " << input_size_src; return -1; } \
+    if (input_size > input_size_src) { LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS Deserialize fail (input_size > input_size_src)." << input_size << ", " << input_size_src; return -1; } \
     SERIALIZEUTILS_FIELD_LIST(SERIALIZEUTILS_DESERIALIZE) \
-    if (offset != input_size) { LOG_ERROR() << "SERIALIZE_UTILS Deserialize fail (offset != input_size)." << offset << ", " << input_size; return -1; } \
+    if (offset != input_size) { LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS Deserialize fail (offset != input_size)." << offset << ", " << input_size; return -1; } \
     return offset; \
   } \
   void DeserializeClear_() { \
@@ -87,11 +87,12 @@
   int Serialize(uint8_t* output, int offset) const override { \
     offset = BaseClass::Serialize(output, offset); if (offset < 0) return -1; \
     offset = BaseClass::Serialize(output, offset); \
-    if (offset < 0) { LOG_ERROR() << #BaseClass << "::Serialize fail"; return -1; } \
+    if (offset < 0) { LOG_ERROR() << "SERIALIZE_UTILS " << #BaseClass << "::Serialize fail"; return -1; } \
     return Serialize_(output, offset); \
   } \
   int Deserialize(const uint8_t* input, const int input_size, int offset) override { \
-    offset = BaseClass::Deserialize(input, input_size, offset); if (offset < 0) return -1; \
+    offset = BaseClass::Deserialize(input, input_size, offset); \
+    if (offset < 0) { LOG_ERROR() << "SERIALIZE_UTILS " << #BaseClass << "::Deserialize fail"; return -1; } \
     return Deserialize_(input, input_size, offset); \
   } \
   void DeserializeClear() override { \
@@ -498,7 +499,7 @@ template <class T>
 int SerializeUtils::FdDeserialize(int fid, const char* fd, T& v, const uint8_t* input, const int input_size, int offset) {
   if (offset < 0) return -1;
   if (offset == input_size) {
-    LOG_ERROR() << "SERIALIZE_UTILS FdDeserialize lost field: " << fid << ", " << fd;
+    LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS FdDeserialize lost field: " << fid << ", " << fd;
     return input_size;
   }
   int next_offset = -1;
@@ -514,12 +515,12 @@ int SerializeUtils::FdDeserialize(int fid, const char* fd, T& v, const uint8_t* 
     }
     if (parsed_fid <= 0 || offset < 0 || next_offset <= offset) return -1;
     if (parsed_fid > fid) {  // fid字段数据缺失
-      LOG_ERROR() << "SERIALIZE_UTILS FdDeserialize lost field: " << fid << ", " << fd;
+      LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS FdDeserialize lost field: " << fid << ", " << fd;
       return curr_offset;
     }
-    LOG_ERROR() << "SERIALIZE_UTILS FdDeserialize ignore field: " << fid << ", " << fd;
+    LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS FdDeserialize ignore field: " << fid << ", " << fd;
     offset = next_offset;  // parsed_fid字段已删除
   }
-  LOG_ERROR() << "SERIALIZE_UTILS FdDeserialize lost field: " << fid << ", " << fd;
+  LOG_ERROR() << "SERIALIZE_UTILS SERIALIZE_UTILS FdDeserialize lost field: " << fid << ", " << fd;
   return input_size;
 }
