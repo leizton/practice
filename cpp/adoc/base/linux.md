@@ -45,6 +45,11 @@ uniq -c   # 去重
 awk -F ',' '{print $1}' | sort | uniq -c | sort -nr
   # `sort | uniq -c` 完成去重计数, `sort -nr`逆序排列
 
+# sed
+ls -l | awk -F ' ' '{print $NF}' | sed 's/^/abc/'     # 加前缀abc. 注意abc最后有一个'/'
+ls -l | awk -F ' ' '{print $NF}' | sed 's/$/abc/'     # 加后缀abc
+ls -l | awk -F ' ' '{print $NF}' | sed 's/abc/123/g'  # 全部的abc替换成123
+
 ## grep
 cat line | grep -E "keyword_1|keyword_2"  # grep 两个关键词
 cat binary | grep -a  # -a 表示按文本读取 可显示中文

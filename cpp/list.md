@@ -43,14 +43,6 @@ rocketmq -> kafka, 存储模型 大量topic
 mq -> kafka, 消费模型 P/C无缝扩缩容
 有序消费
 
-tensorflow
-https://www.cnblogs.com/jicanghai/p/9537282.html
-https://zhuanlan.zhihu.com/p/25646408
-
-recommend
-https://zhuanlan.zhihu.com/p/115690499
-https://www.tensorflow.org/recommenders/examples/basic_retrieval?hl=zh-cn
-
 用户多兴趣
 https://blog.csdn.net/EdmundYan/article/details/117754084
 
