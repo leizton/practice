@@ -9,7 +9,7 @@ ulimit -c unlimited
 if [ $# -lt 1 ]; then
   srcs="main.cc"
 else
-  srcs="$1"
+  srcs="$@"
 fi
 
 start_ts=$(python -c "import time;print(int(time.time()*1000))")

@@ -1,4 +1,5 @@
-#include "util/base.h"
+#include "util/backtrace.h"
+#include "util/logger.h"
 
 void printStackTrace() {
   btrace::StackTrace record;
@@ -7,28 +8,28 @@ void printStackTrace() {
 }
 
 void run_c(int x) {
-  LOG() << "-------------------- c()";
+  LOG() << "-------------------- c() entry";
   printStackTrace();
   std::vector<int> v;
-  v.at(10) = x;
-  LOG() << "-------------------- c() ret";
+  v.at(10) = x;  // throw exception
+  LOG() << "-------------------- c() return";
 }
 
 void run_b() {
-  LOG() << "-------------------- b()";
+  LOG() << "-------------------- b() entry";
   run_c(1);
-  LOG() << "-------------------- b() ret";
+  LOG() << "-------------------- b() return";
 }
 
 void run_a() {
-  LOG() << "-------------------- a()";
+  LOG() << "-------------------- a() entry";
   try {
     run_b();
-  } catch (exception& ex) {
-    LOG() << "-------------------- a() catch";
+  } catch (...) {
+    LOG() << "-------------------- a() catch exception";
     printStackTrace();
   }
-  LOG() << "-------------------- a() ret";
+  LOG() << "-------------------- a() return";
 }
 
 int main() {

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "print.h"
+#include <sstream>
+#include <iostream>
 
 class LogStream {
  public:
@@ -14,8 +15,7 @@ class LogStream {
   }
 
   ~LogStream() {
-    sout_ << "\n";
-    std::cout << sout_.str();
+    std::cout << sout_.str() << std::endl;
   }
 
   template <class T>
@@ -30,7 +30,7 @@ class LogStream {
   }
 
  private:
-  std::ostringstream sout_; // TODO: 替换. std::ostringstream 在多线程场景有锁性能问题
+  std::ostringstream sout_;
 };
 
 #define LOG() LogStream()
