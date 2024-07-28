@@ -33,6 +33,7 @@ void run_a() {
 }
 
 int main() {
+  btrace::init();
   run_a();
   return 0;
 }

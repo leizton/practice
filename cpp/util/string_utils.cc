@@ -1,7 +1,7 @@
-#include <util/string_utils.h>
-
 #include <stdlib.h>
 #include <cstring>
+
+#include "string_utils.h"
 
 bool str2int(const std::string& s, int& v) {
   if (s.empty()) return false;
@@ -19,10 +19,10 @@ bool str2int(const std::string& s, int& v) {
   }
 }
 
-bool str2int64(const std::string& s, int64_t& v) {
+bool str2int64(const std::string& s, int64_t& v, int base) {
   if (s.empty()) return false;
   char* p = nullptr;
-  int64_t t = std::strtoll(s.c_str(), &p, 10);
+  int64_t t = std::strtoll(s.c_str(), &p, base);
   if (p && *p == '\0') {
     v = t;
     return true;
@@ -31,10 +31,10 @@ bool str2int64(const std::string& s, int64_t& v) {
   }
 }
 
-bool str2uint64(const std::string& s, uint64_t& v) {
+bool str2uint64(const std::string& s, uint64_t& v, int base) {
   if (s.empty()) return false;
   char* p = nullptr;
-  uint64_t t = std::strtoull(s.c_str(), &p, 10);
+  uint64_t t = std::strtoull(s.c_str(), &p, base);
   if (p && *p == '\0') {
     v = t;
     return true;
@@ -78,8 +78,17 @@ std::string double2Str(double d, int precision) {
 
 bool startswith(const std::string& s, const std::string& prefix) {
   size_t n = prefix.length();
-  if (n <= s.length()) {
+  if (s.length() >= n) {
     return ::strncmp(s.c_str(), prefix.c_str(), n) == 0;
+  } else {
+    return false;
+  }
+}
+
+bool endswith(const std::string& s, const std::string& suffix) {
+  size_t n = suffix.length();
+  if (s.length() >= n) {
+    return ::strncmp(s.c_str() + (s.length() - n), suffix.c_str(), n) == 0;
   } else {
     return false;
   }

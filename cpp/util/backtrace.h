@@ -14,19 +14,17 @@ struct StackTrace {
   std::vector<std::string> syms;
   // 解析符号的错误信息
   int parse_sym_errno = 0;
+  // 跳过 unwindBacktrace 栈
+  int skip_stack = 1;
 
   std::string toString();
 
   // 解析符号
-  void parseSymbols();
+  bool parseSymbols();
 };
 
 void unwindBacktrace(StackTrace* record);
 
-/**
- * 获取函数信息
- * @param opaque 透传参数
- */
-_Unwind_Reason_Code unwindGetOneFrame(struct _Unwind_Context* uc, void* opaque);
+void init();
 
 } // namespace btrace

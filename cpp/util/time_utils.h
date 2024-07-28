@@ -9,23 +9,23 @@
 /**
  * now
  */
-inline int64_t nowSec() {
-  time_t ts;
-  ::time(&ts);
-  return ts;
-  // return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-}
-inline int64_t nowMs() {
-  timeb ts;
-  ::ftime(&ts);
-  return int64_t(ts.time) * int64_t(1000) + int64_t(ts.millitm);
-  // return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-}
 inline int64_t nowUs() {
   timeval ts;
   ::gettimeofday(&ts, 0);
   return int64_t(ts.tv_sec) * int64_t(1000000) + int64_t(ts.tv_usec);
   // return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+inline int64_t nowMs() {
+  timeval ts;
+  ::gettimeofday(&ts, 0);
+  return int64_t(ts.tv_sec) * int64_t(1000) + (int64_t(ts.tv_usec) / 1000);
+  // return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+inline int64_t nowSec() {
+  time_t ts;
+  ::time(&ts);
+  return ts;
+  // return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
 /**

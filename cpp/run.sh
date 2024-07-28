@@ -7,7 +7,7 @@ rm -f core*
 ulimit -c unlimited
 
 cpp="$gcc_home/bin/g++ -std=c++20 \
-    -Werror -Wall -Wno-unused-variable -g -O2 -rdynamic \
+    -Werror -Wall -Wno-unused-variable -O2 -g3 -rdynamic \
     -mavx2 -mpclmul -mbmi \
     -I. -I/usr/local/include \
     -L/usr/local/lib"
