@@ -1,7 +1,6 @@
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
 
-/*
 void parse_msg_rapidjson(const google::protobuf::Message *msg,
                          bool print_empty_arr,
                          rapidjson::Document& json_doc);
@@ -14,7 +13,7 @@ void parse_repeated_field_rapidjson(const google::protobuf::Message *msg,
 void parse_msg_rapidjson2(const google::protobuf::Message *msg,
                           bool print_empty_arr,
                           rapidjson::Value& json_doc,
-                          rapidjson::Document& json_doc_ori);
+                          rapidjson::Document& json_doc_root);
 
 std::string pb2json(const google::protobuf::Message *msg, bool print_empty_arr) {
   rapidjson::Document json_doc;
@@ -150,7 +149,7 @@ void parse_repeated_field_rapidjson(const google::protobuf::Message *msg,
       break;
     case google::protobuf::FieldDescriptor::CPPTYPE_FLOAT:
       for (int i = 0; i < count; i++) {
-        float value2 = ref->GetRepeatedFloat(*msg, field, i);
+        double value2 = ref->GetRepeatedFloat(*msg, field, i);
         rapidjson::Value json_value(rapidjson::kNumberType);
         json_value.SetDouble(value2);
         json_value_array.PushBack(json_value, json_alloc);
@@ -174,17 +173,17 @@ void parse_repeated_field_rapidjson(const google::protobuf::Message *msg,
       break;
     case google::protobuf::FieldDescriptor::CPPTYPE_INT32:
       for (int i = 0; i < count; i++) {
-        int32_t value5 = ref->GetRepeatedInt32(*msg, field, i);
+        int64_t value5 = ref->GetRepeatedInt32(*msg, field, i);
         rapidjson::Value json_value(rapidjson::kNumberType);
-        json_value.SetInt(value5);
+        json_value.SetInt64(value5);
         json_value_array.PushBack(json_value, json_alloc);
       }
       break;
     case google::protobuf::FieldDescriptor::CPPTYPE_UINT32:
       for (int i = 0; i < count; i++) {
-        uint32_t value6 = ref->GetRepeatedUInt32(*msg, field, i);
+        uint64_t value6 = ref->GetRepeatedUInt32(*msg, field, i);
         rapidjson::Value json_value(rapidjson::kNumberType);
-        json_value.SetUint(value6);
+        json_value.SetUint64(value6);
         json_value_array.PushBack(json_value, json_alloc);
       }
       break;
@@ -228,8 +227,8 @@ void parse_repeated_field_rapidjson(const google::protobuf::Message *msg,
 void parse_msg_rapidjson2(const google::protobuf::Message *msg,
                           bool print_empty_arr,
                           rapidjson::Value& json_doc,
-                          rapidjson::Document& json_doc_ori) {
-  auto& json_alloc = json_doc_ori.GetAllocator();
+                          rapidjson::Document& json_doc_root) {
+  auto& json_alloc = json_doc_root.GetAllocator();
   const google::protobuf::Descriptor *d = msg->GetDescriptor();
   if (!d) {
     return;
@@ -252,15 +251,15 @@ void parse_msg_rapidjson2(const google::protobuf::Message *msg,
       const int count = ref->FieldSize(*msg, field);
       if (count > 0 || print_empty_arr) {
         rapidjson::Value json_value_array(rapidjson::kArrayType);
-        parse_repeated_field_rapidjson(msg, ref, field, print_empty_arr, json_value_array, json_doc_ori);
+        parse_repeated_field_rapidjson(msg, ref, field, print_empty_arr, json_value_array, json_doc_root);
         json_doc.AddMember(json_key, json_value_array, json_alloc);
       }
     } else if (ref->HasField(*msg, field)) {
       double value1;
-      float value2;
+      double value2;
       int64_t value3;
       uint64_t value4;
-      int32_t value5;
+      int64_t value5;
       uint32_t value6;
       bool value7;
       std::string value8;
@@ -293,12 +292,12 @@ void parse_msg_rapidjson2(const google::protobuf::Message *msg,
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_INT32:
           value5 = ref->GetInt32(*msg, field);
-          json_value_number.SetInt(value5);
+          json_value_number.SetInt64(value5);
           json_doc.AddMember(json_key, json_value_number, json_alloc);
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_UINT32:
           value6 = ref->GetUInt32(*msg, field);
-          json_value_number.SetUint(value6);
+          json_value_number.SetUint64(value6);
           json_doc.AddMember(json_key, json_value_number, json_alloc);
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_BOOL:
@@ -313,12 +312,12 @@ void parse_msg_rapidjson2(const google::protobuf::Message *msg,
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_MESSAGE:
           value9 = &(ref->GetMessage(*msg, field));
-          parse_msg_rapidjson2(value9, print_empty_arr, json_value_object, json_doc_ori);
+          parse_msg_rapidjson2(value9, print_empty_arr, json_value_object, json_doc_root);
           json_doc.AddMember(json_key, json_value_object, json_alloc);
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_ENUM:
           value10 = ref->GetEnum(*msg, field);
-          json_value_number.SetInt(value10->number());
+          json_value_number.SetInt64(value10->number());
           json_doc.AddMember(json_key, json_value_number, json_alloc);
           break;
         default:
@@ -327,4 +326,3 @@ void parse_msg_rapidjson2(const google::protobuf::Message *msg,
     }
   }
 }
-*/

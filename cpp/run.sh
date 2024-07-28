@@ -6,15 +6,26 @@ rm -f core*
 
 ulimit -c unlimited
 
-cpp="$gcc_home/bin/g++ -std=c++20 \
-    -Werror -Wall -Wno-unused-variable -O2 -g3 -rdynamic \
+system=$(uname)
+if [[ $system == "Darwin" ]]; then
+  gdb_flag="-g2"
+else
+  gdb_flag="-g3"
+fi
+
+CXX="$gcc_home/bin/g++ -std=c++20 \
+    -Werror -Wall -Wno-unused-variable -O2 $gdb_flag -rdynamic \
     -mavx2 -mpclmul -mbmi \
     -I. -I/usr/local/include \
     -L/usr/local/lib"
 
 libs="-lpthread"
 
-srcs=`ls ./util/*.cc`
+srcs="\
+  ./util/algo.cc \
+  ./util/base64.cc \
+"
+
 if [ $# -lt 1 ]; then
   srcs="main.cc $srcs"
 else
@@ -22,7 +33,7 @@ else
 fi
 
 start_ts=$(python -c "import time;print(int(time.time()*1000))")
-$cpp $srcs $libs 2>&1 | grep -v 'renamed to -macos_version_min'
+$CXX $srcs $libs 2>&1 | grep -v 'renamed to -macos_version_min'
 cost_ms=$(python -c "import time;print(int(time.time()*1000-int($start_ts)))")
 echo "compile cost $cost_ms ms"
 
