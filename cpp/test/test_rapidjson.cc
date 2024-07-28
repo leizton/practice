@@ -2,11 +2,17 @@
 
 #include <rapidjson/document.h>
 #include <rapidjson/writer.h>
+#include <rapidjson/prettywriter.h>
 
-std::string JsonDocToString(const rapidjson::Document& doc) {
+std::string JsonDocToString(const rapidjson::Document& doc, bool pretty = true) {
   rapidjson::StringBuffer buffer;
-  rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-  doc.Accept(writer);
+  if (pretty == false) {
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
+  } else {
+    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+    doc.Accept(writer);
+  }
   return buffer.GetString();
 }
 
@@ -65,6 +71,13 @@ void ParseJson(const std::string& json_str) {
     for (auto kv = ele->MemberBegin(); kv != ele->MemberEnd(); ++kv) {
       if (not kv->value.IsInt()) continue;
       prints(kv->name.GetString(), "=", kv->value.GetInt());
+      kv->value.SetInt(300);
+    }
+    {
+      rapidjson::StringBuffer val_buffer;
+      rapidjson::Writer<rapidjson::StringBuffer> val_writer(val_buffer);
+      ele->Accept(val_writer);
+      println("raw json: ", val_buffer.GetString());
     }
   }
 }
