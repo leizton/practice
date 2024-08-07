@@ -34,7 +34,7 @@ struct Sched {
   int32 mwait;  // number of m's waiting for work
   int32 mcount; // number of m's that have been created
 
-  volatile uint32 atomic; // atomic scheduling word (see below)
+  std::atomic_uint32 mcpu;
 
   int32 profilehz; // cpu profiling rate
 
@@ -51,6 +51,14 @@ void schedule(G* gp) {
   if (gp != nullptr) {
     gp->m = nullptr;
     runtime_sched.grunning--;
+    runtime_sched.mcpu--;
+    if (gp->status == Grunnable || gp->status == Gdead) {
+      throw std::runtime_error("bad gp->status in sched");
+    }
+    else if (gp->status == Grunning) {
+      gp->status = Grunnable;
+      gput(gp);
+    }
   }
 }
 ~~~

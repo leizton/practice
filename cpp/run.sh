@@ -21,7 +21,11 @@ CXX="$gcc_home/bin/g++ -std=c++20 \
 
 libs="-lpthread"
 
-srcs=`ls ./util/*.cc`
+srcs="\
+  ./util/algo.cc \
+  ./util/base64.cc \
+"
+
 if [ $# -lt 1 ]; then
   srcs="main.cc $srcs"
 else
