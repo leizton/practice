@@ -52,12 +52,22 @@ void schedule(G* gp) {
     gp->m = nullptr;
     runtime_sched.grunning--;
     runtime_sched.mcpu--;
+
     if (gp->status == Grunnable || gp->status == Gdead) {
       throw std::runtime_error("bad gp->status in sched");
     }
     else if (gp->status == Grunning) {
       gp->status = Grunnable;
       gput(gp);
+    }
+    else if (gp->status == Gmoribund) {
+      gp->status = Gdead;
+      // g 和 m 解绑
+      if (gp->lockedm) {
+        gp->lockedm = nullptr;
+        m->lockedg = nullptr;
+      }
+      gp->idlem = nullptr;
     }
   }
 }
