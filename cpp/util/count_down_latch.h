@@ -12,7 +12,8 @@ public:
 
   void wait() {
     std::unique_lock<std::mutex> lk(mtx_);
-    cond_.wait(lk, [this] { return this->count_.load() <= 0; });
+    // cond_.wait(lk, [this] { return this->count_ <= 0; });
+    while (count_ > 0) cond_.wait(lk);
   }
 
   void countDown(int32_t n) {
@@ -46,7 +47,8 @@ public:
   bool wait(int64_t timeout_us = -1) {
     std::unique_lock<std::mutex> lk(mtx_);
     if (timeout_us <= 0) {
-      cond_.wait(lk, [this] { return this->count_ <= 0; });
+      // cond_.wait(lk, [this] { return this->count_ <= 0; });
+      while (count_ > 0) cond_.wait(lk);
       return true;
     } else {
       std::chrono::microseconds to(timeout_us);
