@@ -5,7 +5,7 @@
 int readFromOffset(const int fd, void* buf, const size_t count, const off_t offset);
 
 inline bool readFromOffsetExact(const int fd, void* buf, const size_t count, const off_t offset) {
-  return int(readFromOffset(fd, buf, count, offset)) == count;
+  return readFromOffset(fd, buf, count, offset) == int(count);
 }
 
 struct FileFd {

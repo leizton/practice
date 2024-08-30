@@ -9,7 +9,6 @@
 #include "elf_utils.h"
 #include "demangle.h"
 #include "file_utils.h"
-#include "string_utils.h"
 
 using namespace std;
 
@@ -134,12 +133,15 @@ bool StackTrace::parseSymbols() {
      *   - 映射文件所在的inode节点号
      *   - 映射文件名
      */
-    if (!endswith(line, btrace_info.exe_filepath)) {
-      continue;  // 只解析本binary的符号, 不解析动态库so的符号
-    }
+    {
+      auto& tmp = btrace_info.exe_filepath;
+      size_t n1 = tmp.length(), n2 = line.length();
+      if (n1 > n2 || strncmp(line.c_str() + (n2 - n1), tmp.c_str(), n) != 0) {
+        continue;  // 只解析本binary的符号, 不解析动态库so的符号
+      }
+    }      
 
     // start_addr end_addr
-    int line_len = static_cast<int>(line.size());
     const char* p = line.c_str();
     char* pend = nullptr;
     uint64_t start_addr = std::strtoull(p, &pend, 16);
@@ -194,29 +196,33 @@ bool StackTrace::parseSymbols() {
   return true;
 }
 
-void init() {
-  char buf[1024];
-  int exe_filepath_size = readlink("/proc/self/exe", buf, 1024);
-  if (exe_filepath_size == -1) {
-    std::cout << "readlink fail" << std::endl;
-    return;
+void init(std::string exe_filepath) {
+  if (exe_filepath.empty()) {
+    char buf[1024];
+    int exe_filepath_size = readlink("/proc/self/exe", buf, 1024);
+    if (exe_filepath_size == -1) {
+      std::cerr << "[backtrace] readlink fail" << std::endl;
+      return;
+    }
+    btrace_info.exe_filepath = std::string(buf, exe_filepath_size);
+  } else {
+    btrace_info.exe_filepath = exe_filepath;
   }
-  btrace_info.exe_filepath = std::string(buf, exe_filepath_size);
-  std::cout << "exe_filepath: " << btrace_info.exe_filepath << std::endl;
+  std::cout << "[backtrace] exe_filepath: " << btrace_info.exe_filepath << std::endl;
 
   auto exe_fd = openFile(btrace_info.exe_filepath.c_str(), O_RDONLY);
   if (!exe_fd.is_open()) {
-    std::cout << "open exe_file fail" << std::endl;
+    std::cout << "[backtrace] open exe_file fail" << std::endl;
     return;
   }
   int elf_type = getFileElfType(exe_fd.fd);
   if (elf_type == -1) {
-    std::cout << "get elf_type fail" << std::endl;
+    std::cout << "[backtrace] get elf_type fail" << std::endl;
     return;
   }
   ElfW(Ehdr) elf_header;
   if (!readFromOffsetExact(exe_fd.fd, &elf_header, sizeof(elf_header), 0)) {
-    std::cout << "read elf_header fail" << std::endl;
+    std::cout << "[backtrace] read elf_header fail" << std::endl;
     return;
   }
 
@@ -224,8 +230,8 @@ void init() {
   loadAllSymbols(exe_fd.fd, SHT_SYMTAB, elf_header, &btrace_info.static_symbols);
   // 动态符号表
   loadAllSymbols(exe_fd.fd, SHT_DYNSYM, elf_header, &btrace_info.dynamic_symbols);
-  std::cout << "static_symbols num: " << btrace_info.static_symbols.size() << std::endl;
-  std::cout << "dynamic_symbols num: " << btrace_info.dynamic_symbols.size() << std::endl;
+  std::cout << "[backtrace] static_symbols num: " << btrace_info.static_symbols.size() << std::endl;
+  std::cout << "[backtrace] dynamic_symbols num: " << btrace_info.dynamic_symbols.size() << std::endl;
 }
 
 std::string BtraceInfo::getSymbol(const int exe_fd, uint64_t pc) const {

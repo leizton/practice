@@ -25,6 +25,6 @@ struct StackTrace {
 
 void unwindBacktrace(StackTrace* record);
 
-void init();
+void init(std::string exe_filepath = "");
 
 } // namespace btrace

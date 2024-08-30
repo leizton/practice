@@ -50,15 +50,25 @@ ls -l | awk -F ' ' '{print $NF}' | sed 's/^/abc/'     # 加前缀abc. 注意abc�
 ls -l | awk -F ' ' '{print $NF}' | sed 's/$/abc/'     # 加后缀abc
 ls -l | awk -F ' ' '{print $NF}' | sed 's/abc/123/g'  # 全部的abc替换成123
 
-## grep
+# grep
 cat line | grep -E "keyword_1|keyword_2"  # grep 两个关键词
 cat binary | grep -a  # -a 表示按文本读取 可显示中文
 
-## diff
+# ps
+-o # 输出指定列
+-e # 列出所有进程
+   # stime开始时间, etime运行时间, comm进程名或线程名, cmd包含启动参数的完整启动命令
+   ps -eo pid,ppid,stime,etime,%cpu,%mem,comm,cmd
+-p # 指定进程
+   ps -p 123 -o pid,cmd
+-T # 列出所有线程, 需要配合 -p 使用
+   ps -p 123 -To tid,stime,etime,comm
+
+# diff
 git diff $file1 $file2  # 用 git 比较更好用
 diff -qr $dir1 $dir2    # 比较两个目录, -q 仅显示有无diff 不显示详细, -r 递归子文件
 
-## nc 收发文件
+# nc 收发文件
 dst=`date +"%Y%m%d_%H%M%S"`;dst="ncfile_$dst";nc -4l 65530 > $dst  # 接收端
     # 先启动接收端
 nc $接收端ip 65530 < $ncfile  # 发送端
@@ -187,3 +197,8 @@ strings libmy.so
 假设HEAD的commit_id是$head_cid
 `git rev-list`可以列出两个commit之间的commit_id
 git rev-list $input_cid..$head_cid | xargs git show -s --format="%ci %h %s" | grep "Merge branch .* into master"
+
+## tag 即 branch
+`git fetch --tags` 拉取所有tag
+`git tag` 列出有哪些tag
+`git checkout $tag; git checkout -b $tag` 从指定tag切出新分支
