@@ -16,6 +16,11 @@ recommend
   https://arxiv.org/abs/2306.07705  快手数据集
   https://github.com/RUCAIBox/RecBole
   https://github.com/microsoft/recommenders
-  https://deeprec.readthedocs.io/en/latest/index.html
-  https://github.com/alibaba/x-deeplearning
   https://github.com/tensorflow/recommenders
+  https://github.com/alibaba/x-deeplearning
+  https://github.com/alibaba/EasyRec
+  https://deeprec.readthedocs.io/en/latest/index.html
+
+movieLens数据, https://grouplens.org/datasets/movielens/
+
+https://github.com/facebookresearch/faiss/wiki

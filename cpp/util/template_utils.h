@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <cstring>
 
 template <typename T>
 const std::string& getTypeName() {

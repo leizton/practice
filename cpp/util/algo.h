@@ -1,6 +1,6 @@
 #pragma once
 
-#include <bits/stdc++.h>
+#include "cpp_lib.h"
 
 /*
  * sort

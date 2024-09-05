@@ -2,8 +2,10 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <cstdio>
 #include <fcntl.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include "cpp_lib.h"
 

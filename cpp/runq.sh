@@ -1,7 +1,4 @@
 #! /bin/bash
-if [ -e ~/.bash_profile ]; then
-  source ~/.bash_profile
-fi
 rm -f a.out
 rm -rf a.out.dSYM
 rm -f core*

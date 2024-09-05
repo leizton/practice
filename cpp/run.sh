@@ -1,5 +1,4 @@
 #! /bin/bash
-source ~/.bash_profile
 rm -f a.out
 rm -rf a.out.dSYM
 rm -f core*

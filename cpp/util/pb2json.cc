@@ -2,12 +2,23 @@
 #include <rapidjson/writer.h>
 
 double limitNumber(double v) {
-  if (std::abs(v) < 1e-7) {
+  constexpr double upper = 1e9;
+  constexpr double lower = -1e9;
+  constexpr double percision = 1e-7;
+  uint64_t v64 = *reinterpret_cast<uint64_t*>(static_cast<void*>(&v));
+  uint64_t exponent = (v64 >> 52) & 0x7FF;
+  uint64_t sign = (v64 >> 63);
+  // avoid exponent overflow. ex: *((uint64_t*)&d) = UINT64_MAX;
+  if (exp == 0) {
     return 0;
-  } else if (v > 1e9) {
-    return 1e9;
-  } else if (v < -1e9) {
-    return -1e9;
+  } else if (exp >= 2047) {
+    return sign ? lower : upper;
+  } else if (std::abs(v) < percision) {
+    return 0;
+  } else if (v > upper) {
+    return upper;
+  } else if (v < lower) {
+    return lower;
   } else {
     return v;
   }
@@ -54,30 +65,25 @@ void parse_msg_rapidjson(const google::protobuf::Message& msg,
                          rapidjson::Value& json_doc,
                          rapidjson::Document::AllocatorType& json_alloc) {
   const google::protobuf::Descriptor* d = msg.GetDescriptor();
-  if (!d) {
+  const google::protobuf::Reflection* ref = msg.GetReflection();
+  if (d == nullptr || ref == nullptr) {
     return;
   }
 
-  size_t count = d->field_count();
-  for (size_t i = 0; i != count; ++i) {
+  for (int i = 0; i < d->field_count(); ++i) {
     const google::protobuf::FieldDescriptor* field = d->field(i);
-    if (!field) {
-      continue;
-    }
-    const google::protobuf::Reflection* ref = msg.GetReflection();
-    if (!ref) {
+    if (field == nullptr || ref->HasField(msg, field) == false) {
       continue;
     }
     rapidjson::Value::StringRefType json_key(field->name().c_str(), field->name().length());
 
     if (field->is_repeated()) {
-      const int count = ref->FieldSize(msg, field);
-      if (count > 0 || print_empty_arr) {
+      if (ref->FieldSize(msg, field) > 0 || print_empty_arr) {
         rapidjson::Value json_value(rapidjson::kArrayType);
         parse_repeated_field_rapidjson(msg, ref, field, print_empty_arr, json_value, json_alloc);
         json_doc.AddMember(json_key, json_value, json_alloc);
       }
-    } else if (ref->HasField(msg, field)) {
+    } else {
       double value_double;
       int64_t value_int64;
       uint64_t value_uint64;
@@ -89,35 +95,35 @@ void parse_msg_rapidjson(const google::protobuf::Message& msg,
       switch (field->cpp_type()) {
         case google::protobuf::FieldDescriptor::CPPTYPE_DOUBLE:
           value_double = ref->GetDouble(msg, field);
-          json_doc.AddMember(json_key, limitNumber(value_double), json_alloc);
+          json_doc.AddMember<double>(json_key, limitNumber(value_double), json_alloc);
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_FLOAT:
           value_double = ref->GetFloat(msg, field);
-          json_doc.AddMember(json_key, limitNumber(value_double), json_alloc);
+          json_doc.AddMember<double>(json_key, limitNumber(value_double), json_alloc);
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_INT64:
           value_int64 = ref->GetInt64(msg, field);
-          json_doc.AddMember(json_key, limitNumber(value_int64), json_alloc);
+          json_doc.AddMember<int64_t>(json_key, limitNumber(value_int64), json_alloc);
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_UINT64:
           value_uint64 = ref->GetUInt64(msg, field);
-          json_doc.AddMember(json_key, limitNumber(value_uint64), json_alloc);
+          json_doc.AddMember<uint64_t>(json_key, limitNumber(value_uint64), json_alloc);
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_INT32:
           value_int64 = ref->GetInt32(msg, field);
-          json_doc.AddMember(json_key, limitNumber(value_int64), json_alloc);
+          json_doc.AddMember<int64_t>(json_key, limitNumber(value_int64), json_alloc);
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_UINT32:
           value_uint64 = ref->GetUInt32(msg, field);
-          json_doc.AddMember(json_key, limitNumber(value_uint64), json_alloc);
+          json_doc.AddMember<uint64_t>(json_key, limitNumber(value_uint64), json_alloc);
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_ENUM:
           value_int64 = ref->GetEnum(msg, field)->number();
-          json_doc.AddMember(json_key, limitNumber(value_int64), json_alloc);
+          json_doc.AddMember<int64_t>(json_key, limitNumber(value_int64), json_alloc);
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_BOOL:
           value_bool = ref->GetBool(msg, field);
-          json_doc.AddMember(json_key, value_bool, json_alloc);
+          json_doc.AddMember<bool>(json_key, value_bool, json_alloc);
           break;
         case google::protobuf::FieldDescriptor::CPPTYPE_STRING:
           value_string = ref->GetString(msg, field);
@@ -142,56 +148,53 @@ void parse_repeated_field_rapidjson(const google::protobuf::Message& msg,
                                     rapidjson::Value& json_value_array,
                                     rapidjson::Document::AllocatorType& json_alloc) {
   const int count = ref->FieldSize(msg, field);
-  if (count <= 0) {
-    return;
-  }
   switch (field->cpp_type()) {
     case google::protobuf::FieldDescriptor::CPPTYPE_DOUBLE:
       for (int i = 0; i < count; i++) {
         double value = ref->GetRepeatedDouble(msg, field, i);
-        json_value_array.PushBack(limitNumber(value), json_alloc);
+        json_value_array.PushBack<double>(limitNumber(value), json_alloc);
       }
       break;
     case google::protobuf::FieldDescriptor::CPPTYPE_FLOAT:
       for (int i = 0; i < count; i++) {
         double value = ref->GetRepeatedFloat(msg, field, i);
-        json_value_array.PushBack(limitNumber(value), json_alloc);
+        json_value_array.PushBack<double>(limitNumber(value), json_alloc);
       }
       break;
     case google::protobuf::FieldDescriptor::CPPTYPE_INT64:
       for (int i = 0; i < count; i++) {
         int64_t value = ref->GetRepeatedInt64(msg, field, i);
-        json_value_array.PushBack(limitNumber(value), json_alloc);
+        json_value_array.PushBack<int64_t>(limitNumber(value), json_alloc);
       }
       break;
     case google::protobuf::FieldDescriptor::CPPTYPE_UINT64:
       for (int i = 0; i < count; i++) {
         uint64_t value = ref->GetRepeatedUInt64(msg, field, i);
-        json_value_array.PushBack(limitNumber(value), json_alloc);
+        json_value_array.PushBack<uint64_t>(limitNumber(value), json_alloc);
       }
       break;
     case google::protobuf::FieldDescriptor::CPPTYPE_INT32:
       for (int i = 0; i < count; i++) {
         int64_t value = ref->GetRepeatedInt32(msg, field, i);
-        json_value_array.PushBack(limitNumber(value), json_alloc);
+        json_value_array.PushBack<int64_t>(limitNumber(value), json_alloc);
       }
       break;
     case google::protobuf::FieldDescriptor::CPPTYPE_UINT32:
       for (int i = 0; i < count; i++) {
         uint64_t value = ref->GetRepeatedUInt32(msg, field, i);
-        json_value_array.PushBack(limitNumber(value), json_alloc);
+        json_value_array.PushBack<uint64_t>(limitNumber(value), json_alloc);
       }
       break;
     case google::protobuf::FieldDescriptor::CPPTYPE_ENUM:
       for (int i = 0; i < count; i++) {
         int64_t value = ref->GetRepeatedEnum(msg, field, i)->number();
-        json_value_array.PushBack(limitNumber(value), json_alloc);
+        json_value_array.PushBack<int64_t>(limitNumber(value), json_alloc);
       }
       break;
     case google::protobuf::FieldDescriptor::CPPTYPE_BOOL:
       for (int i = 0; i < count; i++) {
         bool value = ref->GetRepeatedBool(msg, field, i);
-        json_value_array.PushBack(value, json_alloc);
+        json_value_array.PushBack<bool>(value, json_alloc);
       }
       break;
     case google::protobuf::FieldDescriptor::CPPTYPE_STRING:
